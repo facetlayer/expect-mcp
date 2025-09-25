@@ -1,0 +1,19 @@
+import { fileURLToPath } from 'node:url';
+import { defineConfig } from 'vitest/config';
+
+const srcDir = fileURLToPath(new URL('./src', import.meta.url));
+
+export default defineConfig({
+  resolve: {
+    alias: [
+      {
+        find: '@facetlayer/expect-mcp/vitest',
+        replacement: `${srcDir}/vitest.ts`,
+      },
+      {
+        find: '@facetlayer/expect-mcp',
+        replacement: `${srcDir}/index.ts`,
+      },
+    ],
+  },
+});
