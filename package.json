@@ -15,6 +15,10 @@
       "types": "./dist/vitest.d.ts",
       "default": "./dist/vitest.js"
     },
+    "./vitest-setup": {
+      "types": "./dist/vitest.d.ts",
+      "default": "./dist/vitest.js"
+    },
     "./package.json": "./package.json"
   },
   "files": [
@@ -23,7 +27,8 @@
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "clean": "rm -rf dist",
-    "test": "vitest"
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "keywords": [
     "vitest",
@@ -46,5 +51,8 @@
     "@types/node": "^20.11.0",
     "typescript": "^5.4.0",
     "vitest": "^1.5.0"
+  },
+  "dependencies": {
+    "@facetlayer/json-rpc-subprocess": "file:../node-libraries/json-rpc-subprocess"
   }
 }

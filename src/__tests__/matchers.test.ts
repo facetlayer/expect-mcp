@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
-import '@facetlayer/expect-mcp/vitest';
+import 'expect-mcp/vitest';
 
-import { extendExpectWithMCP, isMCPResponse } from '@facetlayer/expect-mcp';
+import { extendExpectWithMCP, isMCPResponse } from 'expect-mcp';
 
 const validSuccessResponse = {
   jsonrpc: '2.0' as const,
@@ -53,7 +53,7 @@ describe('toBeValidMCPResponse', () => {
 
   it('throws a readable error message when the assertion fails', () => {
     expect(() => expect({}).toBeValidMCPResponse()).toThrowErrorMatchingInlineSnapshot(
-      `Expected received value to be a valid MCP response, but got {}`,
+      `[Error: Expected received value to be a valid MCP response, but got Object {}]`,
     );
   });
 });
@@ -69,13 +69,13 @@ describe('toHaveMCPError', () => {
 
   it('fails when the response is successful', () => {
     expect(() => expect(validSuccessResponse).toHaveMCPError()).toThrowErrorMatchingInlineSnapshot(
-      `Expected MCP response to include an error, but it was successful.`,
+      `[Error: Expected MCP response to include an error, but it was successful.]`,
     );
   });
 
   it('fails when the error code does not match', () => {
     expect(() => expect(errorResponse).toHaveMCPError(500)).toThrowErrorMatchingInlineSnapshot(
-      `Expected MCP error code 500, but received 123`,
+      `[Error: Expected MCP error code 500, but received 123]`,
     );
   });
 });

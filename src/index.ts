@@ -1,4 +1,5 @@
 import { expect } from 'vitest';
+import { MCPStdinSubprocess } from './MCPStdinSubprocess.js';
 
 import type {
   MCPContentMessage,
@@ -165,15 +166,93 @@ const toHaveMCPError: MCPMatcherImplementations['toHaveMCPError'] = function (
   };
 };
 
+const toHaveTool: MCPMatcherImplementations['toHaveTool'] = async function (
+  this,
+  received,
+  toolName,
+): Promise<MCPMatcherResult> {
+  const utils = resolveUtils(this);
+
+  if (!(received instanceof MCPStdinSubprocess)) {
+    return {
+      pass: false,
+      message: () =>
+        `Expected an MCPStdinSubprocess instance, but received ${utils.printReceived(received)}`,
+    };
+  }
+
+  try {
+    const hasTool = await received.hasTool(toolName);
+
+    return {
+      pass: hasTool,
+      message: () =>
+        hasTool
+          ? `Expected MCP server not to have tool ${utils.printExpected(toolName)}, but it does`
+          : `Expected MCP server to have tool ${utils.printExpected(toolName)}, but it doesn't`,
+    };
+  } catch (error) {
+    return {
+      pass: false,
+      message: () =>
+        `Error checking for tool ${utils.printExpected(toolName)}: ${error instanceof Error ? error.message : String(error)}`,
+    };
+  }
+};
+
+const toHaveResource: MCPMatcherImplementations['toHaveResource'] = async function (
+  this,
+  received,
+  resourceName,
+): Promise<MCPMatcherResult> {
+  const utils = resolveUtils(this);
+
+  if (!(received instanceof MCPStdinSubprocess)) {
+    return {
+      pass: false,
+      message: () =>
+        `Expected an MCPStdinSubprocess instance, but received ${utils.printReceived(received)}`,
+    };
+  }
+
+  try {
+    const hasResource = await received.hasResource(resourceName);
+
+    return {
+      pass: hasResource,
+      message: () =>
+        hasResource
+          ? `Expected MCP server not to have resource ${utils.printExpected(resourceName)}, but it does`
+          : `Expected MCP server to have resource ${utils.printExpected(resourceName)}, but it doesn't`,
+    };
+  } catch (error) {
+    return {
+      pass: false,
+      message: () =>
+        `Error checking for resource ${utils.printExpected(resourceName)}: ${error instanceof Error ? error.message : String(error)}`,
+    };
+  }
+};
+
 const mcpMatchers: MCPMatcherImplementations = {
   toBeValidMCPResponse,
   toHaveMCPError,
+  toHaveTool,
+  toHaveResource,
 };
 
 export function extendExpectWithMCP(customMatchers: Partial<MCPMatcherImplementations> = {}): typeof expect {
   expect.extend({ ...mcpMatchers, ...customMatchers });
   return expect;
 }
+
+export function shellCommand(command: string, args: string[] = []): MCPStdinSubprocess {
+  const subprocess = new MCPStdinSubprocess();
+  subprocess.spawn(command, args);
+  return subprocess;
+}
+
+export { MCPStdinSubprocess };
 
 export type {
   MCPContentMessage,
@@ -184,3 +263,13 @@ export type {
   MCPResponse,
   MCPResult,
 } from './types.js';
+
+export type {
+  MCPCapabilities,
+  MCPInitializeParams,
+  MCPInitializeResult,
+  MCPTool,
+  MCPResource,
+  MCPToolsListResult,
+  MCPResourcesListResult,
+} from './MCPStdinSubprocess.js';
