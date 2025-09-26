@@ -1,0 +1,9 @@
+{
+  "default": "echo-service",
+  "services": {
+    "echo-service": {
+      "shell": "echo 'Hello from echo service'",
+      "root": "."
+    }
+  }
+}

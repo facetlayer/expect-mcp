@@ -1,7 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import 'expect-mcp/vitest';
-
-import { extendExpectWithMCP, isMCPResponse } from 'expect-mcp';
+import { isMCPResponse } from '../index.js';
 
 const validSuccessResponse = {
   jsonrpc: '2.0' as const,
@@ -77,12 +75,5 @@ describe('toHaveMCPError', () => {
     expect(() => expect(errorResponse).toHaveMCPError(500)).toThrowErrorMatchingInlineSnapshot(
       `[Error: Expected MCP error code 500, but received 123]`,
     );
-  });
-});
-
-describe('extendExpectWithMCP', () => {
-  it('returns Vitest\'s expect instance so tests can chain additional registrations', () => {
-    const returnedExpect = extendExpectWithMCP();
-    expect(returnedExpect).toBe(expect);
   });
 });

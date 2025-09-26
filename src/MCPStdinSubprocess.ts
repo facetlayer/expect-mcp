@@ -93,8 +93,6 @@ export class MCPStdinSubprocess extends JsonRpcSubprocess {
     this.initializeResult = result;
     this.initialized = true;
 
-    await this.sendRequest('initialized', {});
-
     return result;
   }
 
@@ -132,6 +130,19 @@ export class MCPStdinSubprocess extends JsonRpcSubprocess {
   async hasResource(resourceName: string): Promise<boolean> {
     const resources = await this.getResources();
     return resources.some(resource => resource.name === resourceName);
+  }
+
+  async callTool(name: string, arguments_: any = {}): Promise<any> {
+    if (!this.initialized) {
+      throw new Error('MCP not initialized. Call initialize() first.');
+    }
+
+    const response = await this.sendRequest('tools/call', {
+      name,
+      arguments: arguments_
+    });
+
+    return response;
   }
 
   getInitializeResult(): MCPInitializeResult | undefined {
