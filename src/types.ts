@@ -50,8 +50,3 @@ export interface MCPMatchers {
   toHaveTool(toolName: string): Promise<void>;
   toHaveResource(resourceName: string): Promise<void>;
 }
-
-declare module 'vitest' {
-  interface Assertion<T = any> extends MCPMatchers {}
-  interface AsymmetricMatchersContaining extends MCPMatchers {}
-}

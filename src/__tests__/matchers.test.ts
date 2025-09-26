@@ -1,5 +1,14 @@
 import { describe, expect, it } from 'vitest';
 import { isMCPResponse } from '../index.js';
+import '../vitest-setup.js';
+
+// Ensure types are imported for TypeScript
+import type { MCPMatchers } from '../types.js';
+
+declare module 'vitest' {
+  interface Assertion extends MCPMatchers {}
+  interface AsymmetricMatchersContaining extends MCPMatchers {}
+}
 
 const validSuccessResponse = {
   jsonrpc: '2.0' as const,
