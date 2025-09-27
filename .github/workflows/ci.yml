@@ -27,15 +27,15 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
-      - name: Build
-        run: pnpm build
-
-      - name: Run tests
-        run: pnpm test
-
       - name: Install gallery dependencies
         run: pnpm install
         working-directory: ./test/gallery
+
+      - name: Build
+        run: pnpm build
+
+      - name: Run main tests
+        run: pnpm test
 
       - name: Run gallery tests
         run: pnpm test
