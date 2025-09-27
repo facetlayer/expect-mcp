@@ -106,6 +106,67 @@ The `shellCommand` function returns an `MCPStdinSubprocess` instance which exten
 - `hasTool(name)` - Check if a specific tool is available
 - `hasResource(name)` - Check if a specific resource is available
 
+## Strict Mode
+
+Strict mode is an optional feature that enables enhanced validation and error checking for MCP communications. When enabled, it adds comprehensive validation to ensure all MCP interactions conform to the official specification.
+
+### Enabling Strict Mode
+
+```ts
+import { MCPStdinSubprocess } from 'expect-mcp';
+
+// Enable strict mode for enhanced validation
+const app = new MCPStdinSubprocess({
+  strictMode: true,
+  command: 'node',
+  args: ['path/to/mcp-server.js']
+});
+
+await app.initialize();
+console.log(app.isStrictModeEnabled()); // true
+```
+
+### Features
+
+When strict mode is enabled, the following validations are performed:
+
+- **JSON-RPC Compliance**: All messages must conform to JSON-RPC 2.0 format
+- **Schema Validation**: MCP responses are validated against official schemas using Zod
+- **Protocol Version Enforcement**: Ensures compatibility with the latest MCP protocol version (2025-06-18)
+- **Error Assertions**: Throws detailed errors for any non-JSON or malformed responses
+
+### Error Types
+
+Strict mode can throw the following types of errors:
+
+```ts
+// JSON parsing errors
+"Strict mode: Response is not valid JSON: <error details>"
+
+// JSON-RPC format errors
+"Strict mode: Invalid JSON-RPC response: <validation details>"
+
+// Schema validation errors
+"Strict mode: Initialize response validation failed: <schema errors>"
+```
+
+### Use Cases
+
+Strict mode is particularly useful for:
+
+- **Development**: Catching protocol violations early in development
+- **Testing**: Ensuring test reliability with deterministic validation
+- **CI/CD**: Validating MCP integrations in automated testing
+- **Debugging**: Getting detailed error information for malformed responses
+
+### Performance Considerations
+
+Strict mode adds validation overhead, so consider:
+
+- Enable in development and testing environments
+- Monitor performance impact in production if enabled
+- Validation occurs on every message when enabled
+
 ## TypeScript support
 
 The package includes TypeScript definitions for `MCPResponse`, `MCPResult`, `MCPContentMessage`, `MCPError`, and the matcher contracts. Import them directly from `expect-mcp` when you need shared utilities or to build additional matchers on top of the defaults.

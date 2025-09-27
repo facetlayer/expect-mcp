@@ -1,4 +1,10 @@
 import { JsonRpcSubprocess, JsonRpcSubprocessOptions } from '@facetlayer/json-rpc-subprocess';
+import { z } from 'zod';
+import {
+  JSONRPCMessageSchema,
+  LATEST_PROTOCOL_VERSION,
+} from './schemas/index.js';
+import { InitializeResultSchema } from './schemas/initialization.js';
 
 export interface MCPCapabilities {
   tools?: {
@@ -60,19 +66,75 @@ export interface MCPResourcesListResult {
   resources: MCPResource[];
 }
 
+export interface MCPStdinSubprocessOptions extends JsonRpcSubprocessOptions {
+  strictMode?: boolean;
+}
+
 export class MCPStdinSubprocess extends JsonRpcSubprocess {
   private initializeResult?: MCPInitializeResult;
   private toolsCache?: MCPTool[];
   private resourcesCache?: MCPResource[];
   private initialized = false;
   private stderrBuffer: string[] = [];
+  private strictMode: boolean;
 
-  constructor(options?: JsonRpcSubprocessOptions) {
+  constructor(options?: MCPStdinSubprocessOptions) {
     super(options);
+    this.strictMode = options?.strictMode ?? false;
 
     this.on('stderr', line => {
       this.stderrBuffer.push(line);
     });
+
+    if (this.strictMode) {
+      this.setupStrictModeValidation();
+    }
+  }
+
+  private setupStrictModeValidation() {
+    this.on('response', (data: any) => {
+      this.validateStrictModeResponse(data);
+    });
+
+    this.on('notification', (data: any) => {
+      this.validateStrictModeNotification(data);
+    });
+  }
+
+  private validateStrictModeResponse(data: any) {
+    if (!this.strictMode) return;
+
+    try {
+      const parsed = typeof data === 'string' ? JSON.parse(data) : data;
+      const result = JSONRPCMessageSchema.safeParse(parsed);
+
+      if (!result.success) {
+        throw new Error(`Strict mode: Invalid JSON-RPC response: ${result.error.message}`);
+      }
+    } catch (error) {
+      if (error instanceof SyntaxError) {
+        throw new Error(`Strict mode: Response is not valid JSON: ${error.message}`);
+      }
+      throw error;
+    }
+  }
+
+  private validateStrictModeNotification(data: any) {
+    if (!this.strictMode) return;
+
+    try {
+      const parsed = typeof data === 'string' ? JSON.parse(data) : data;
+      const result = JSONRPCMessageSchema.safeParse(parsed);
+
+      if (!result.success) {
+        throw new Error(`Strict mode: Invalid JSON-RPC notification: ${result.error.message}`);
+      }
+    } catch (error) {
+      if (error instanceof SyntaxError) {
+        throw new Error(`Strict mode: Notification is not valid JSON: ${error.message}`);
+      }
+      throw error;
+    }
   }
 
   async initialize(params?: Partial<MCPInitializeParams>): Promise<MCPInitializeResult> {
@@ -83,7 +145,7 @@ export class MCPStdinSubprocess extends JsonRpcSubprocess {
     await this.waitForStart();
 
     const initParams: MCPInitializeParams = {
-      protocolVersion: '2024-11-05',
+      protocolVersion: LATEST_PROTOCOL_VERSION,
       capabilities: {
         tools: {},
         resources: {},
@@ -98,6 +160,14 @@ export class MCPStdinSubprocess extends JsonRpcSubprocess {
 
     try {
       const result = await this.sendRequest('initialize', initParams);
+
+      if (this.strictMode) {
+        const validation = InitializeResultSchema.safeParse(result);
+        if (!validation.success) {
+          throw new Error(`Strict mode: Initialize response validation failed: ${validation.error.message}`);
+        }
+      }
+
       this.initializeResult = result;
       this.initialized = true;
 
@@ -170,5 +240,9 @@ export class MCPStdinSubprocess extends JsonRpcSubprocess {
 
   isInitialized(): boolean {
     return this.initialized;
+  }
+
+  isStrictModeEnabled(): boolean {
+    return this.strictMode;
   }
 }
