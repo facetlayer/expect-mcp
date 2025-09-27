@@ -1,7 +1,14 @@
-import { MCPStdinSubprocess } from "./MCPStdinSubprocess.js";
+import { JsonRpcSubprocessOptions } from '@facetlayer/json-rpc-subprocess';
+import { MCPStdinSubprocess } from './MCPStdinSubprocess.js';
 
-export function shellCommand(command: string, args: string[] = []): MCPStdinSubprocess {
-    const subprocess = new MCPStdinSubprocess();
-    subprocess.spawn(command, args);
-    return subprocess;
-  }
+export function shellCommand(
+  shellCommand: string,
+  processOptions: JsonRpcSubprocessOptions = {}
+): MCPStdinSubprocess {
+  const subprocess = new MCPStdinSubprocess();
+  subprocess.spawn(shellCommand, [], {
+    ...processOptions,
+    shell: true,
+  });
+  return subprocess;
+}

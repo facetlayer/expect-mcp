@@ -1,1 +1,5 @@
-{"dependencies":{"@facetlayer/candle":"0.7.0"}}
+{
+  "dependencies": {
+    "@facetlayer/candle": "0.7.1"
+  }
+}

@@ -1,16 +1,48 @@
-import { describe, it, expect, beforeAll, afterAll } from 'vitest';
+import Path from 'path';
+import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { shellCommand } from '../../../src/index.js';
 import type { MCPStdinSubprocess } from '../../../src/MCPStdinSubprocess.js';
-import '../../../../src/vitest.js';
+import '../../../src/vitest-setup.js';
 
-const LocalBinPath = __dirname + '/node_modules/.bin';
+const LocalBinPath = Path.join(__dirname, '..', 'node_modules', '.bin');
+const LocalProjectDir = __dirname;
+
+async function retryUntil(
+  condition: () => Promise<boolean>,
+  timeout: number = 10000,
+  interval: number = 100
+) {
+  const startTime = Date.now();
+  while (Date.now() - startTime < timeout) {
+    if (await condition()) return true;
+    await new Promise(resolve => setTimeout(resolve, interval));
+  }
+  return false;
+}
 
 describe('Candle MCP Server', () => {
   let app: MCPStdinSubprocess;
 
   beforeAll(async () => {
     // Launch candle in MCP mode
-    app = shellCommand('node', [LocalBinPath + '/candle', '--mcp']);
+    app = shellCommand(`${LocalBinPath}/candle --mcp`, {
+      cwd: LocalProjectDir,
+    });
+    app.on('stdout', data => {
+      //console.log('[candle] ' + data);
+    });
+    app.on('stderr', data => {
+      //console.log('[candle] ' + data);
+    });
+    app.on('spawn', () => {
+      //console.log('[candle] spawned');
+    });
+    app.on('start', () => {
+      //console.log('[candle] started');
+    });
+    app.on('error', error => {
+      //console.log('[candle] error', error);
+    });
     await app.initialize();
   });
 
@@ -56,52 +88,26 @@ describe('Candle MCP Server', () => {
   });
 
   it('should execute ListServices tool and return structured response', async () => {
-    if (!app.callTool) {
-      throw new Error('callTool method not available on MCPStdinSubprocess');
-    }
-
     const response = await app.callTool('ListServices', {});
 
-    // Candle returns its response wrapped in MCP JSON-RPC format
-    expect(response).toHaveProperty('result');
-
-    // The actual candle result is directly in response.result, which has { error?, logs }
-    const candleResult = response.result;
-
-    // Should always have logs array
-    expect(candleResult).toHaveProperty('logs');
-    expect(Array.isArray(candleResult.logs)).toBe(true);
-
-    // Should have either result or error field (not both undefined/null)
-    const hasResult = 'result' in candleResult && candleResult.result !== undefined && candleResult.result !== null;
-    const hasError = 'error' in candleResult && candleResult.error !== undefined && candleResult.error !== null;
-    expect(hasResult || hasError).toBe(true);
-
     // Log what we got for debugging
-    console.log('ListServices response:', JSON.stringify(candleResult, null, 2));
+    expect(response).toHaveProperty('result');
+    expect(response.result).toHaveProperty('processes');
   });
 
-  it('should execute GetLogs tool and handle nonexistent service', async () => {
-    if (!app.callTool) {
-      throw new Error('callTool method not available on MCPStdinSubprocess');
-    }
+  it('can launch a service and get logs', async () => {
+    const startServiceResponse = await app.callTool('StartService', { name: 'echo-service' });
+    expect(startServiceResponse).toHaveProperty('logs');
+    expect(startServiceResponse.logs[0]).toContain(`Started 'echo-service'`);
 
-    const response = await app.callTool('GetLogs', { name: 'nonexistent-service' });
+    await retryUntil(async () => {
+      const res = await app.callTool('GetLogs', { name: 'echo-service' });
+      return res.logs.length > 0;
+    });
 
-    expect(response).toHaveProperty('result');
-    const candleResult = response.result;
-
-    // Should always have logs array
-    expect(candleResult).toHaveProperty('logs');
-    expect(Array.isArray(candleResult.logs)).toBe(true);
-
-    // Should have either result or error
-    const hasResult = candleResult.result !== undefined && candleResult.result !== null;
-    const hasError = candleResult.error !== undefined && candleResult.error !== null;
-    expect(hasResult || hasError).toBe(true);
-
-    // Log what we got for debugging
-    console.log('GetLogs response:', JSON.stringify(candleResult, null, 2));
+    const getLogsResponse = await app.callTool('GetLogs', { name: 'echo-service' });
+    expect(getLogsResponse).toHaveProperty('logs');
+    expect(getLogsResponse.logs[0]).toContain(`Hello from echo service`);
   });
 
   it('should have proper MCP server info', () => {

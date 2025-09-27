@@ -65,9 +65,14 @@ export class MCPStdinSubprocess extends JsonRpcSubprocess {
   private toolsCache?: MCPTool[];
   private resourcesCache?: MCPResource[];
   private initialized = false;
+  private stderrBuffer: string[] = [];
 
   constructor(options?: JsonRpcSubprocessOptions) {
     super(options);
+
+    this.on('stderr', line => {
+      this.stderrBuffer.push(line);
+    });
   }
 
   async initialize(params?: Partial<MCPInitializeParams>): Promise<MCPInitializeResult> {
@@ -75,25 +80,39 @@ export class MCPStdinSubprocess extends JsonRpcSubprocess {
       throw new Error('MCP already initialized');
     }
 
+    await this.waitForStart();
+
     const initParams: MCPInitializeParams = {
       protocolVersion: '2024-11-05',
       capabilities: {
         tools: {},
         resources: {},
-        prompts: {}
+        prompts: {},
       },
       clientInfo: {
         name: 'expect-mcp',
-        version: '0.0.1'
+        version: '0.0.1',
       },
-      ...params
+      ...params,
     };
 
-    const result = await this.sendRequest('initialize', initParams);
-    this.initializeResult = result;
-    this.initialized = true;
+    try {
+      const result = await this.sendRequest('initialize', initParams);
+      this.initializeResult = result;
+      this.initialized = true;
 
-    return result;
+      return result;
+    } catch (error: any) {
+      // Show a brief error message with the stderr buffer.
+      let errorMessage = error.message;
+      if (error.getErrorMessageWithoutMethod) {
+        errorMessage = error.getErrorMessageWithoutMethod();
+      }
+
+      throw new Error(
+        'Failed to initialize MCP: ' + this.stderrBuffer.join('\n') + '\n' + errorMessage
+      );
+    }
   }
 
   async getTools(): Promise<MCPTool[]> {
@@ -139,7 +158,7 @@ export class MCPStdinSubprocess extends JsonRpcSubprocess {
 
     const response = await this.sendRequest('tools/call', {
       name,
-      arguments: arguments_
+      arguments: arguments_,
     });
 
     return response;
