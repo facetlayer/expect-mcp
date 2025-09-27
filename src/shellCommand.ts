@@ -1,13 +1,9 @@
 import { JsonRpcSubprocessOptions } from '@facetlayer/json-rpc-subprocess';
-import { MCPStdinSubprocess } from './MCPStdinSubprocess.js';
-
-interface MCPSubprocessOptions extends JsonRpcSubprocessOptions {
-  // TODO: strict mode
-}
+import { MCPStdinSubprocess, MCPStdinSubprocessOptions } from './MCPStdinSubprocess.js';
 
 export function shellCommand(
   shellCommand: string,
-  processOptions: MCPSubprocessOptions = {}
+  processOptions: MCPStdinSubprocessOptions = {}
 ): MCPStdinSubprocess {
   const subprocess = new MCPStdinSubprocess(processOptions);
   subprocess.spawn(shellCommand, [], {
