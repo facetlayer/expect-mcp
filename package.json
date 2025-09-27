@@ -39,7 +39,7 @@
     "model context protocol",
     "testing"
   ],
-  "author": "",
+  "author": "andyfischer",
   "license": "MIT",
   "engines": {
     "node": ">=18"
