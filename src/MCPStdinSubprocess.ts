@@ -1,5 +1,4 @@
 import { JsonRpcSubprocess, JsonRpcSubprocessOptions } from '@facetlayer/json-rpc-subprocess';
-import { z } from 'zod';
 import {
   JSONRPCMessageSchema,
   LATEST_PROTOCOL_VERSION,

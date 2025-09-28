@@ -9,7 +9,7 @@ export const ProgressTokenSchema = z.union([z.string(), z.number()]);
 
 export const CursorSchema = z.string();
 
-export const MetaSchema = z.record(z.unknown()).optional();
+export const MetaSchema = z.record(z.string(), z.unknown()).optional();
 
 export const BaseRequestSchema = z.object({
   method: z.string(),
@@ -23,12 +23,12 @@ export const BaseRequestSchema = z.object({
 export const BaseNotificationSchema = z.object({
   method: z.string(),
   params: z.object({
-    _meta: z.record(z.unknown()).optional(),
+    _meta: z.record(z.string(), z.unknown()).optional(),
   }).passthrough().optional(),
 });
 
 export const BaseResultSchema = z.object({
-  _meta: z.record(z.unknown()).optional(),
+  _meta: z.record(z.string(), z.unknown()).optional(),
 }).passthrough();
 
 export const JSONRPCRequestSchema = BaseRequestSchema.extend({

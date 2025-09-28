@@ -1,5 +1,5 @@
 import { expect } from 'vitest';
-import { mcpMatchers } from './mcpMatchers.js';
+import { mcpMatchers } from './matchers/index.js';
 import { MCPMatcherImplementations, MCPMatchers } from './types.js';
 
 declare module 'vitest' {

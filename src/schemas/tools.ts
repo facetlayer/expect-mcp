@@ -5,24 +5,24 @@ import { BaseMetadataSchema } from './initialization.js';
 export const TextContentSchema = z.object({
   type: z.literal('text'),
   text: z.string(),
-  annotations: z.record(z.unknown()).optional(),
-  _meta: z.record(z.unknown()).optional(),
+  annotations: z.record(z.string(), z.unknown()).optional(),
+  _meta: z.record(z.string(), z.unknown()).optional(),
 });
 
 export const ImageContentSchema = z.object({
   type: z.literal('image'),
   data: z.string(),
   mimeType: z.string(),
-  annotations: z.record(z.unknown()).optional(),
-  _meta: z.record(z.unknown()).optional(),
+  annotations: z.record(z.string(), z.unknown()).optional(),
+  _meta: z.record(z.string(), z.unknown()).optional(),
 });
 
 export const AudioContentSchema = z.object({
   type: z.literal('audio'),
   data: z.string(),
   mimeType: z.string(),
-  annotations: z.record(z.unknown()).optional(),
-  _meta: z.record(z.unknown()).optional(),
+  annotations: z.record(z.string(), z.unknown()).optional(),
+  _meta: z.record(z.string(), z.unknown()).optional(),
 });
 
 export const ContentBlockSchema = z.union([
@@ -33,7 +33,7 @@ export const ContentBlockSchema = z.union([
 
 export const JSONSchemaObjectSchema = z.object({
   type: z.literal('object'),
-  properties: z.record(z.object({})).optional(),
+  properties: z.record(z.string(), z.object({})).optional(),
   required: z.array(z.string()).optional(),
 });
 
@@ -50,14 +50,14 @@ export const ToolSchema = BaseMetadataSchema.merge(z.object({
   inputSchema: JSONSchemaObjectSchema,
   outputSchema: JSONSchemaObjectSchema.optional(),
   annotations: ToolAnnotationsSchema.optional(),
-  _meta: z.record(z.unknown()).optional(),
+  _meta: z.record(z.string(), z.unknown()).optional(),
 }));
 
 export const ListToolsRequestSchema = BaseRequestSchema.merge(z.object({
   method: z.literal('tools/list'),
   params: z.object({
     cursor: CursorSchema.optional(),
-    _meta: z.record(z.unknown()).optional(),
+    _meta: z.record(z.string(), z.unknown()).optional(),
   }).passthrough().optional(),
 }));
 
@@ -70,14 +70,14 @@ export const CallToolRequestSchema = BaseRequestSchema.merge(z.object({
   method: z.literal('tools/call'),
   params: z.object({
     name: z.string(),
-    arguments: z.record(z.unknown()).optional(),
-    _meta: z.record(z.unknown()).optional(),
+    arguments: z.record(z.string(), z.unknown()).optional(),
+    _meta: z.record(z.string(), z.unknown()).optional(),
   }).passthrough(),
 }));
 
 export const CallToolResultSchema = BaseResultSchema.merge(z.object({
   content: z.array(ContentBlockSchema),
-  structuredContent: z.record(z.unknown()).optional(),
+  structuredContent: z.record(z.string(), z.unknown()).optional(),
   isError: z.boolean().optional(),
 }));
 

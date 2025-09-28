@@ -11,7 +11,7 @@ export const ImplementationSchema = BaseMetadataSchema.extend({
 });
 
 export const ClientCapabilitiesSchema = z.object({
-  experimental: z.record(z.object({})).optional(),
+  experimental: z.any().optional(),
   roots: z.object({
     listChanged: z.boolean().optional(),
   }).optional(),
@@ -20,7 +20,7 @@ export const ClientCapabilitiesSchema = z.object({
 });
 
 export const ServerCapabilitiesSchema = z.object({
-  experimental: z.record(z.object({})).optional(),
+  experimental: z.any().optional(),
   logging: z.object({}).optional(),
   completions: z.object({}).optional(),
   prompts: z.object({
@@ -41,7 +41,7 @@ export const InitializeRequestSchema = BaseRequestSchema.merge(z.object({
     protocolVersion: z.string(),
     capabilities: ClientCapabilitiesSchema,
     clientInfo: ImplementationSchema,
-    _meta: z.record(z.unknown()).optional(),
+    _meta: z.any().optional(),
   }).passthrough(),
 }));
 

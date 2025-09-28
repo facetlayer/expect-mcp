@@ -54,7 +54,6 @@ describe('Playwright MCP Server', () => {
 
   describe('Tool Discovery and Validation', () => {
     it('should provide expected browser automation tools', async () => {
-      // Test using expect-mcp's toHaveTool matcher
       await expect(app).toHaveTool('browser_navigate');
       await expect(app).toHaveTool('browser_click');
       await expect(app).toHaveTool('browser_type');

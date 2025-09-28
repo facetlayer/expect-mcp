@@ -7,11 +7,11 @@ export default defineConfig({
   resolve: {
     alias: [
       {
-        find: '@facetlayer/expect-mcp/vitest',
+        find: 'expect-mcp/vitest',
         replacement: `${srcDir}/vitest.ts`,
       },
       {
-        find: '@facetlayer/expect-mcp',
+        find: 'expect-mcp',
         replacement: `${srcDir}/index.ts`,
       },
     ],

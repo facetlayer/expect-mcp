@@ -14,7 +14,7 @@ export const ResourceSchema = BaseMetadataSchema.extend({
   mimeType: z.string().optional(),
   annotations: AnnotationsSchema.optional(),
   size: z.number().optional(),
-  _meta: z.record(z.unknown()).optional(),
+  _meta: z.record(z.string(), z.unknown()).optional(),
 });
 
 export const ResourceTemplateSchema = BaseMetadataSchema.extend({
@@ -22,13 +22,13 @@ export const ResourceTemplateSchema = BaseMetadataSchema.extend({
   description: z.string().optional(),
   mimeType: z.string().optional(),
   annotations: AnnotationsSchema.optional(),
-  _meta: z.record(z.unknown()).optional(),
+  _meta: z.record(z.string(), z.unknown()).optional(),
 });
 
 export const ResourceContentsSchema = z.object({
   uri: z.string().url(),
   mimeType: z.string().optional(),
-  _meta: z.record(z.unknown()).optional(),
+  _meta: z.record(z.string(), z.unknown()).optional(),
 });
 
 export const TextResourceContentsSchema = ResourceContentsSchema.extend({
@@ -43,7 +43,7 @@ export const EmbeddedResourceSchema = z.object({
   type: z.literal('resource'),
   resource: z.union([TextResourceContentsSchema, BlobResourceContentsSchema]),
   annotations: AnnotationsSchema.optional(),
-  _meta: z.record(z.unknown()).optional(),
+  _meta: z.record(z.string(), z.unknown()).optional(),
 });
 
 export const ResourceLinkSchema = ResourceSchema.extend({
@@ -54,7 +54,7 @@ export const ListResourcesRequestSchema = BaseRequestSchema.merge(z.object({
   method: z.literal('resources/list'),
   params: z.object({
     cursor: CursorSchema.optional(),
-    _meta: z.record(z.unknown()).optional(),
+    _meta: z.record(z.string(), z.unknown()).optional(),
   }).passthrough().optional(),
 }));
 
@@ -67,7 +67,7 @@ export const ReadResourceRequestSchema = BaseRequestSchema.merge(z.object({
   method: z.literal('resources/read'),
   params: z.object({
     uri: z.string().url(),
-    _meta: z.record(z.unknown()).optional(),
+    _meta: z.record(z.string(), z.unknown()).optional(),
   }).passthrough(),
 }));
 
@@ -79,7 +79,7 @@ export const SubscribeRequestSchema = BaseRequestSchema.merge(z.object({
   method: z.literal('resources/subscribe'),
   params: z.object({
     uri: z.string().url(),
-    _meta: z.record(z.unknown()).optional(),
+    _meta: z.record(z.string(), z.unknown()).optional(),
   }).passthrough(),
 }));
 
@@ -87,7 +87,7 @@ export const UnsubscribeRequestSchema = BaseRequestSchema.merge(z.object({
   method: z.literal('resources/unsubscribe'),
   params: z.object({
     uri: z.string().url(),
-    _meta: z.record(z.unknown()).optional(),
+    _meta: z.record(z.string(), z.unknown()).optional(),
   }).passthrough(),
 }));
 
