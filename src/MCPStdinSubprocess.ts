@@ -4,66 +4,7 @@ import {
   LATEST_PROTOCOL_VERSION,
 } from './schemas/index.js';
 import { InitializeResultSchema } from './schemas/initialization.js';
-
-export interface MCPCapabilities {
-  tools?: {
-    listChanged?: boolean;
-  };
-  resources?: {
-    subscribe?: boolean;
-    listChanged?: boolean;
-  };
-  prompts?: {
-    listChanged?: boolean;
-  };
-  logging?: {
-    level?: string;
-  };
-}
-
-export interface MCPInitializeParams {
-  protocolVersion: string;
-  capabilities: MCPCapabilities;
-  clientInfo: {
-    name: string;
-    version: string;
-  };
-}
-
-export interface MCPInitializeResult {
-  protocolVersion: string;
-  capabilities: MCPCapabilities;
-  serverInfo: {
-    name: string;
-    version: string;
-  };
-  instructions?: string;
-}
-
-export interface MCPTool {
-  name: string;
-  description?: string;
-  inputSchema: {
-    type: 'object';
-    properties?: Record<string, any>;
-    required?: string[];
-  };
-}
-
-export interface MCPResource {
-  uri: string;
-  name: string;
-  description?: string;
-  mimeType?: string;
-}
-
-export interface MCPToolsListResult {
-  tools: MCPTool[];
-}
-
-export interface MCPResourcesListResult {
-  resources: MCPResource[];
-}
+import { MCPInitializeParams, MCPInitializeResult, MCPResource, MCPResourcesListResult, MCPTool, MCPToolsListResult } from './types/MCP.js';
 
 export interface MCPStdinSubprocessOptions extends JsonRpcSubprocessOptions {
   strictMode?: boolean;
@@ -77,6 +18,9 @@ export class MCPStdinSubprocess extends JsonRpcSubprocess {
   private stderrBuffer: string[] = [];
   private strictMode: boolean;
 
+  private initializePromise: Promise<MCPInitializeResult> | null = null;
+  private strictModeFailure: Error | null = null;
+
   constructor(options?: MCPStdinSubprocessOptions) {
     super(options);
     this.strictMode = options?.strictMode ?? false;
@@ -86,60 +30,11 @@ export class MCPStdinSubprocess extends JsonRpcSubprocess {
     });
 
     if (this.strictMode) {
-      this.setupStrictModeValidation();
+      // todo
     }
   }
 
-  private setupStrictModeValidation() {
-    this.on('response', (data: any) => {
-      this.validateStrictModeResponse(data);
-    });
-
-    this.on('notification', (data: any) => {
-      this.validateStrictModeNotification(data);
-    });
-  }
-
-  private validateStrictModeResponse(data: any) {
-    if (!this.strictMode) return;
-
-    try {
-      const parsed = typeof data === 'string' ? JSON.parse(data) : data;
-      const result = JSONRPCMessageSchema.safeParse(parsed);
-
-      if (!result.success) {
-        throw new Error(`Strict mode: Invalid JSON-RPC response: ${result.error.message}`);
-      }
-    } catch (error) {
-      if (error instanceof SyntaxError) {
-        throw new Error(`Strict mode: Response is not valid JSON: ${error.message}`);
-      }
-      throw error;
-    }
-  }
-
-  private validateStrictModeNotification(data: any) {
-    if (!this.strictMode) return;
-
-    try {
-      const parsed = typeof data === 'string' ? JSON.parse(data) : data;
-      const result = JSONRPCMessageSchema.safeParse(parsed);
-
-      if (!result.success) {
-        throw new Error(`Strict mode: Invalid JSON-RPC notification: ${result.error.message}`);
-      }
-    } catch (error) {
-      if (error instanceof SyntaxError) {
-        throw new Error(`Strict mode: Notification is not valid JSON: ${error.message}`);
-      }
-      throw error;
-    }
-  }
-
-  async initialize(params?: Partial<MCPInitializeParams>): Promise<MCPInitializeResult> {
-    if (this.initialized) {
-      throw new Error('MCP already initialized');
-    }
+  async _actuallyInitialize(params?: Partial<MCPInitializeParams>): Promise<MCPInitializeResult> {
 
     await this.waitForStart();
 
@@ -184,10 +79,42 @@ export class MCPStdinSubprocess extends JsonRpcSubprocess {
     }
   }
 
-  async getTools(): Promise<MCPTool[]> {
-    if (!this.initialized) {
-      throw new Error('MCP not initialized. Call initialize() first.');
+  /*
+    initialize()
+
+    Public call to explicitly initialize the MCP.
+
+    This can be called by the client to explicitly initialize the MCP, especially with
+    custom parameters.
+
+    If the initialize step was already done, then this throws an error.
+  */
+  async initialize(params?: Partial<MCPInitializeParams>): Promise<MCPInitializeResult> {
+    if (this.initializePromise) {
+      throw new Error('initialize() already in progress');
     }
+
+    this.initializePromise = this._actuallyInitialize(params);
+    return this.initializePromise;
+  }
+
+  /*
+    _implicitInitialize
+
+    Called internally to ensure the MCP is initialized.
+
+    If the initialize step was already done, then this just returns the existing promise result.
+  */
+  async _implicitInitialize() {
+    if (this.initializePromise) {
+      return this.initializePromise;
+    }
+    this.initializePromise = this._actuallyInitialize();
+    return this.initializePromise;
+  }
+
+  async getTools(): Promise<MCPTool[]> {
+    await this._implicitInitialize();
 
     if (!this.toolsCache) {
       const result: MCPToolsListResult = await this.sendRequest('tools/list', {});
@@ -198,9 +125,7 @@ export class MCPStdinSubprocess extends JsonRpcSubprocess {
   }
 
   async getResources(): Promise<MCPResource[]> {
-    if (!this.initialized) {
-      throw new Error('MCP not initialized. Call initialize() first.');
-    }
+    await this._implicitInitialize();
 
     if (!this.resourcesCache) {
       const result: MCPResourcesListResult = await this.sendRequest('resources/list', {});
@@ -221,9 +146,7 @@ export class MCPStdinSubprocess extends JsonRpcSubprocess {
   }
 
   async callTool(name: string, arguments_: any = {}): Promise<any> {
-    if (!this.initialized) {
-      throw new Error('MCP not initialized. Call initialize() first.');
-    }
+    await this._implicitInitialize();
 
     const response = await this.sendRequest('tools/call', {
       name,
