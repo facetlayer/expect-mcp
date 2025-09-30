@@ -1,8 +1,7 @@
 import { MCPMatchers } from './types.js';
 
 export { MCPStdinSubprocess } from './MCPStdinSubprocess.js';
-export { isMCPResponse } from './mcpUtils.js';
-export { shellCommand } from './shellCommand.js';
+export { mcpShell as shellCommand } from './mcpShellCommand.js';
 
 declare module 'vitest' {
   interface Assertion<T = any> extends MCPMatchers {}

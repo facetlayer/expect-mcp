@@ -37,16 +37,12 @@ export interface MCPMatcherResult {
 
 /** Runtime implementations that are provided to Vitest via expect.extend. */
 export interface MCPMatcherImplementations {
-  toBeValidMCPResponse(this: unknown, received: unknown): MCPMatcherResult;
-  toHaveMCPError(this: unknown, received: unknown, expectedCode?: number): MCPMatcherResult;
   toHaveTool(this: unknown, received: unknown, toolName: string): Promise<MCPMatcherResult>;
   toHaveResource(this: unknown, received: unknown, resourceName: string): Promise<MCPMatcherResult>;
 }
 
 /** Matchers surfaced on the Assertion API once installed. */
 export interface MCPMatchers {
-  toBeValidMCPResponse(): void;
-  toHaveMCPError(expectedCode?: number): void;
   toHaveTool(toolName: string): Promise<void>;
   toHaveResource(resourceName: string): Promise<void>;
 }

@@ -29,3 +29,10 @@ When a test fetches a resource with `getResource`:
 
  - Verify that the server's `capabilities` section has enabled `resources`.
  - Verify that the `resources/list` response contains the named resource.
+
+# Close/Shutdown
+
+When a test calls `close()` to shut down the server:
+
+ - Verify that closing stdin causes the server to exit gracefully with exit code 0.
+ - Verify that servers exit within a reasonable timeout (default: 5000ms).

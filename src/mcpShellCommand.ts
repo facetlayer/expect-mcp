@@ -1,7 +1,6 @@
-import { JsonRpcSubprocessOptions } from '@facetlayer/json-rpc-subprocess';
 import { MCPStdinSubprocess, MCPStdinSubprocessOptions } from './MCPStdinSubprocess.js';
 
-export function shellCommand(
+export function mcpShell(
   shellCommand: string,
   processOptions: MCPStdinSubprocessOptions = {}
 ): MCPStdinSubprocess {

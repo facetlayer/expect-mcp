@@ -283,4 +283,15 @@ export class JsonRpcSubprocess extends events.EventEmitter {
       });
     });
   }
+
+  /**
+   * Close stdin to signal the subprocess to shut down gracefully.
+   * This is typically used in conjunction with waitForExit() to implement
+   * a graceful shutdown flow.
+   */
+  closeStdin(): void {
+    if (this.subprocess && this.subprocess.stdin && !this.subprocess.stdin.destroyed) {
+      this.subprocess.stdin.end();
+    }
+  }
 }

@@ -31,32 +31,7 @@ export default defineConfig({
 });
 ```
 
-## Matchers
-
-### `toBeValidMCPResponse()`
-
-Asserts that the value under test is a JSON-RPC 2.0 response produced by an MCP tool. The matcher verifies:
-
-- `jsonrpc` equals `'2.0'`.
-- `id` is a string, number, or `null`.
-- Either `result` or `error` is present.
-- `result.content` (when provided) contains well-formed messages.
-- `error` (when provided) exposes the expected `code` and `message` fields.
-
-```ts
-expect(response).toBeValidMCPResponse();
-```
-
-### `toHaveMCPError(expectedCode?: number)`
-
-Checks that an MCP response represents an error. Optionally ensure the error code matches an expected value.
-
-```ts
-expect(response).toHaveMCPError();
-expect(response).toHaveMCPError(-32602);
-```
-
-If the value is not a valid MCP response, the matcher fails with a helpful message so you can pinpoint malformed payloads quickly.
+TODO: Add more here
 
 ### `toHaveTool(toolName: string)`
 
@@ -80,9 +55,11 @@ await expect(app).toHaveResource('config.json');
 
 ## MCP Server Testing
 
-### `shellCommand(command: string, args?: string[])`
+### `mcpShell(command: string, options?: SubprocessOptions = {})`
 
 Creates and spawns an MCP subprocess that communicates over stdin/stdout using JSON-RPC 2.0.
+
+The `command
 
 ```ts
 import { shellCommand } from 'expect-mcp';

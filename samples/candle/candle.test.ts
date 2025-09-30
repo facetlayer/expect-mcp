@@ -1,8 +1,8 @@
 import Path from 'path';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
-import { shellCommand } from 'expect-mcp';
-import type { MCPStdinSubprocess } from '../../src/MCPStdinSubprocess.js';
-import 'expect-mcp/vitest-setup';
+import { shellCommand } from '../../dist';
+import type { MCPStdinSubprocess } from '../../dist';
+import '../../dist/vitest-setup.js';
 
 const LocalBinPath = Path.join(__dirname, '..', 'node_modules', '.bin');
 const LocalProjectDir = __dirname;

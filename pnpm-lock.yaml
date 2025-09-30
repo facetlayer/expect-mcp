@@ -5,9 +5,6 @@ settings:
   excludeLinksFromLockfile: false
 
 dependencies:
-  '@facetlayer/json-rpc-subprocess':
-    specifier: 0.9.0
-    version: 0.9.0
   '@facetlayer/parse-stdout-lines':
     specifier: 1.0.0
     version: 1.0.0
@@ -483,12 +480,6 @@ packages:
     requiresBuild: true
     dev: true
     optional: true
-
-  /@facetlayer/json-rpc-subprocess@0.9.0:
-    resolution: {integrity: sha512-5qa18nev3DaVzTinxuug7M8e5SjWQQig9sGIU3PsQMikH8IVCWfXoP9L3J74S6vuscTah1BGmd1SPZL9lKWaxg==}
-    dependencies:
-      '@facetlayer/parse-stdout-lines': 1.0.0
-    dev: false
 
   /@facetlayer/parse-stdout-lines@1.0.0:
     resolution: {integrity: sha512-Ot877HS2DCTrrkj22+L+Er8tI4WYtCvKppqjBTvLCYfgCJmEKeR15ay6B1TugkHmy7MmSsXsuSGm0Q7TGy1deA==}

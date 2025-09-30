@@ -21,6 +21,7 @@ export class MCPStdinSubprocess extends JsonRpcSubprocess {
 
   private initializePromise: Promise<MCPInitializeResult> | null = null;
   private protocolError: Error | null = null;
+  private exitPromise: Promise<number> | null = null;
 
   constructor(options?: MCPStdinSubprocessOptions) {
     super(options);
@@ -43,6 +44,13 @@ export class MCPStdinSubprocess extends JsonRpcSubprocess {
 
     this.on('error:protocol-error', (error: { error: string, response: any, schemaErrors: any }) => {
       this.recordProtocolError(new ProtocolError("Protocol error in response" + error.error + " " + error.schemaErrors.message));
+    });
+
+    // Set up exit promise when the process exits
+    this.on('exit', (code: number | null) => {
+      if (!this.exitPromise) {
+        this.exitPromise = Promise.resolve(code || 0);
+      }
     });
   }
 
@@ -206,5 +214,64 @@ export class MCPStdinSubprocess extends JsonRpcSubprocess {
 
   isInitialized(): boolean {
     return this.initialized;
+  }
+
+  /**
+   * Wait for the process to exit.
+   *
+   * Returns a promise that resolves with the exit code when the process exits.
+   * If the process has already exited, returns immediately with the exit code.
+   *
+   * @returns Promise that resolves with the exit code
+   */
+  async waitForExit(): Promise<number> {
+    if (this.hasExited()) {
+      return this.exitCode() || 0;
+    }
+
+    if (!this.exitPromise) {
+      this.exitPromise = new Promise<number>((resolve) => {
+        this.once('exit', (code: number | null) => {
+          resolve(code || 0);
+        });
+      });
+    }
+
+    return this.exitPromise;
+  }
+
+  /**
+   * Close the MCP server gracefully.
+   *
+   * This closes stdin to signal the server to shut down, then waits for
+   * the process to exit. If the process doesn't exit within the timeout,
+   * an error is thrown.
+   *
+   * @param timeoutMs - Maximum time to wait for graceful shutdown (default: 5000ms)
+   * @throws Error if the process doesn't exit gracefully within the timeout
+   */
+  async close(timeoutMs: number = 5000): Promise<void> {
+    if (this.hasExited()) {
+      return;
+    }
+
+    // Close stdin to signal the server to shut down
+    this.closeStdin();
+
+    // Wait for the process to exit gracefully
+    const exitPromise = this.waitForExit();
+    const timeoutPromise = new Promise<number>((_, reject) => {
+      setTimeout(() => {
+        reject(new Error(`Server did not exit gracefully within ${timeoutMs}ms`));
+      }, timeoutMs);
+    });
+
+    try {
+      await Promise.race([exitPromise, timeoutPromise]);
+    } catch (error) {
+      // If the process didn't exit in time, kill it forcefully
+      this.kill();
+      throw error;
+    }
   }
 }
