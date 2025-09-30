@@ -6,6 +6,7 @@ export function shellCommand(
   processOptions: MCPStdinSubprocessOptions = {}
 ): MCPStdinSubprocess {
   const subprocess = new MCPStdinSubprocess(processOptions);
+
   subprocess.spawn(shellCommand, [], {
     ...processOptions,
     shell: true,

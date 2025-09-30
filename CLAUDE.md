@@ -11,8 +11,8 @@ Custom [Vitest](https://vitest.dev/) matchers to write test assertions for Model
  - ./test/failureCases - Tests that are deliberately failing to verify that assertions are working.
  - ./test/gallery - Implementing the library with various 3rd party projects.
 
-# agentspec files
+# spec files
 
-Every feature or requirement should have a doc file in ./agentspec
+Every feature or requirement should have a doc file in ./specs
 
 To work with these spec files, first run: `flpipeline --show-doc Writing-Spec-Files` to see instructions.

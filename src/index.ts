@@ -27,4 +27,4 @@ export type {
   MCPResourcesListResult,
   MCPTool,
   MCPToolsListResult,
-} from './MCPStdinSubprocess.js';
+} from './types/MCP.js';

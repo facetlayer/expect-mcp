@@ -1,13 +1,15 @@
-import { JsonRpcSubprocess, JsonRpcSubprocessOptions } from '@facetlayer/json-rpc-subprocess';
+import { JsonRpcSubprocess, JsonRpcSubprocessOptions } from './JsonRPCSubprocess.js';
 import {
   JSONRPCMessageSchema,
   LATEST_PROTOCOL_VERSION,
 } from './schemas/index.js';
 import { InitializeResultSchema } from './schemas/initialization.js';
 import { MCPInitializeParams, MCPInitializeResult, MCPResource, MCPResourcesListResult, MCPTool, MCPToolsListResult } from './types/MCP.js';
+import { ProtocolError, ToolCallError } from './errors.js';
 
 export interface MCPStdinSubprocessOptions extends JsonRpcSubprocessOptions {
-  strictMode?: boolean;
+  requestTimeout?: number;
+  allowDebugLogging?: boolean;
 }
 
 export class MCPStdinSubprocess extends JsonRpcSubprocess {
@@ -16,26 +18,48 @@ export class MCPStdinSubprocess extends JsonRpcSubprocess {
   private resourcesCache?: MCPResource[];
   private initialized = false;
   private stderrBuffer: string[] = [];
-  private strictMode: boolean;
 
   private initializePromise: Promise<MCPInitializeResult> | null = null;
-  private strictModeFailure: Error | null = null;
+  private protocolError: Error | null = null;
 
   constructor(options?: MCPStdinSubprocessOptions) {
     super(options);
-    this.strictMode = options?.strictMode ?? false;
 
     this.on('stderr', line => {
       this.stderrBuffer.push(line);
     });
 
-    if (this.strictMode) {
-      // todo
+    this.on('stdout', line => {
+    });
+
+    this.on('output:error:non-json', (line: string) => {
+      if (options?.allowDebugLogging) {
+        let processName = this.initializeResult?.serverInfo?.name || 'mcp subprocess';
+        console.log(`[${processName}]`, line);
+      } else {
+        this.recordProtocolError(new ProtocolError("Process produced non-JSON output: " + line));
+      }
+    });
+
+    this.on('error:protocol-error', (error: { error: string, response: any, schemaErrors: any }) => {
+      this.recordProtocolError(new ProtocolError("Protocol error in response" + error.error + " " + error.schemaErrors.message));
+    });
+  }
+
+  assertNoProtocolError() {
+    if (this.protocolError) {
+      throw this.protocolError;
+    }
+  }
+
+  recordProtocolError(error: Error) {
+    if (!this.protocolError) {
+      this.protocolError = error;
     }
   }
 
   async _actuallyInitialize(params?: Partial<MCPInitializeParams>): Promise<MCPInitializeResult> {
-
+    this.assertNoProtocolError();
     await this.waitForStart();
 
     const initParams: MCPInitializeParams = {
@@ -52,31 +76,25 @@ export class MCPStdinSubprocess extends JsonRpcSubprocess {
       ...params,
     };
 
-    try {
+      if (this.protocolError) {
+        throw this.protocolError;
+      }
+
       const result = await this.sendRequest('initialize', initParams);
 
-      if (this.strictMode) {
-        const validation = InitializeResultSchema.safeParse(result);
-        if (!validation.success) {
-          throw new Error(`Strict mode: Initialize response validation failed: ${validation.error.message}`);
-        }
+      const validation = InitializeResultSchema.safeParse(result);
+      if (!validation.success) {
+          throw new Error(`Response to initialize() failed schema validation: ${validation.error.message}`);
       }
 
       this.initializeResult = result;
       this.initialized = true;
 
-      return result;
-    } catch (error: any) {
-      // Show a brief error message with the stderr buffer.
-      let errorMessage = error.message;
-      if (error.getErrorMessageWithoutMethod) {
-        errorMessage = error.getErrorMessageWithoutMethod();
+      if (this.protocolError) {
+        throw this.protocolError;
       }
 
-      throw new Error(
-        'Failed to initialize MCP: ' + this.stderrBuffer.join('\n') + '\n' + errorMessage
-      );
-    }
+      return result;
   }
 
   /*
@@ -90,6 +108,8 @@ export class MCPStdinSubprocess extends JsonRpcSubprocess {
     If the initialize step was already done, then this throws an error.
   */
   async initialize(params?: Partial<MCPInitializeParams>): Promise<MCPInitializeResult> {
+    this.assertNoProtocolError();
+
     if (this.initializePromise) {
       throw new Error('initialize() already in progress');
     }
@@ -109,11 +129,14 @@ export class MCPStdinSubprocess extends JsonRpcSubprocess {
     if (this.initializePromise) {
       return this.initializePromise;
     }
+
     this.initializePromise = this._actuallyInitialize();
     return this.initializePromise;
   }
 
   async getTools(): Promise<MCPTool[]> {
+    this.assertNoProtocolError();
+
     await this._implicitInitialize();
 
     if (!this.toolsCache) {
@@ -125,6 +148,8 @@ export class MCPStdinSubprocess extends JsonRpcSubprocess {
   }
 
   async getResources(): Promise<MCPResource[]> {
+    this.assertNoProtocolError();
+
     await this._implicitInitialize();
 
     if (!this.resourcesCache) {
@@ -133,6 +158,16 @@ export class MCPStdinSubprocess extends JsonRpcSubprocess {
     }
 
     return this.resourcesCache;
+  }
+
+  async supportsTools() {
+    const capabilities = this.getInitializeResult()?.capabilities;
+    return !!(capabilities?.tools);
+  }
+
+  async supportsResources() {
+    const capabilities = this.getInitializeResult()?.capabilities;
+    return !!(capabilities?.resources);
   }
 
   async hasTool(toolName: string): Promise<boolean> {
@@ -146,7 +181,16 @@ export class MCPStdinSubprocess extends JsonRpcSubprocess {
   }
 
   async callTool(name: string, arguments_: any = {}): Promise<any> {
+
     await this._implicitInitialize();
+
+    if (!await this.supportsTools()) {
+      throw new ToolCallError(`Tools ${name} are not supported by the server (based on capabilities)`);
+    }
+
+    if (!await this.hasTool(name)) {
+      throw new ToolCallError(`Tool ${name} not declared in tools/list`);
+    }
 
     const response = await this.sendRequest('tools/call', {
       name,
@@ -162,9 +206,5 @@ export class MCPStdinSubprocess extends JsonRpcSubprocess {
 
   isInitialized(): boolean {
     return this.initialized;
-  }
-
-  isStrictModeEnabled(): boolean {
-    return this.strictMode;
   }
 }
