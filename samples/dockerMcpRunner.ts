@@ -6,17 +6,20 @@ export interface DockerMcpRunnerOptions {
   imageName: string;
   verbose?: boolean;
   allowDebugLogging?: boolean;
+  env?: Record<string, string>;
 }
 
 export class DockerMcpRunner {
   private projectDir: string;
   private imageName: string;
   private verbose: boolean;
+  private env: Record<string, string>;
 
   constructor(options: DockerMcpRunnerOptions) {
     this.projectDir = options.projectDir;
     this.imageName = options.imageName;
     this.verbose = options.verbose ?? false;
+    this.env = options.env ?? {};
   }
 
   /**
@@ -75,7 +78,18 @@ export class DockerMcpRunner {
    * Get the Docker run command for the MCP server
    */
   getDockerCommand(): string {
-    return `docker run --rm -i ${this.imageName}`;
+    const envFlags = Object.entries(this.env)
+      .map(([key, value]) => {
+        // Escape quotes in the value
+        const escapedValue = value.replace(/"/g, '\\"');
+        return `-e ${key}="${escapedValue}"`;
+      })
+      .join(' ');
+
+    const baseCommand = `docker run --rm -i`;
+    return envFlags
+      ? `${baseCommand} ${envFlags} ${this.imageName}`
+      : `${baseCommand} ${this.imageName}`;
   }
 
   /**
@@ -100,6 +114,24 @@ export class DockerMcpRunner {
   /**
    * Helper to build and launch a Docker-based MCP server
    * This combines build and launch steps for convenience
+   *
+   * @param options.projectDir - Directory containing the Dockerfile
+   * @param options.imageName - Name for the Docker image
+   * @param options.verbose - Enable verbose build output
+   * @param options.allowDebugLogging - Allow debug logging from the MCP server
+   * @param options.env - Environment variables to pass to the Docker container (e.g., { API_KEY: 'secret' })
+   *
+   * @example
+   * ```ts
+   * const app = await DockerMcpRunner.buildAndLaunch({
+   *   projectDir: __dirname,
+   *   imageName: 'my-mcp-server:latest',
+   *   env: {
+   *     API_KEY: process.env.API_KEY!,
+   *     DEBUG: 'true'
+   *   }
+   * });
+   * ```
    */
   static async buildAndLaunch(options: DockerMcpRunnerOptions): Promise<MCPStdinSubprocess> {
     const runner = new DockerMcpRunner(options);

@@ -9,6 +9,9 @@ export interface MCPCapabilities {
     prompts?: {
       listChanged?: boolean;
     };
+    roots?: {
+      listChanged?: boolean;
+    };
     logging?: {
       level?: string;
     };

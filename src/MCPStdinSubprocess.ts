@@ -75,6 +75,9 @@ export class MCPStdinSubprocess extends JsonRpcSubprocess {
         tools: {},
         resources: {},
         prompts: {},
+        roots: {
+          listChanged: true,
+        },
       },
       clientInfo: {
         name: 'expect-mcp',

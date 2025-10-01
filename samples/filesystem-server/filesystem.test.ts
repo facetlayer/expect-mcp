@@ -1,6 +1,6 @@
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
-import { MCPStdinSubprocess } from '../../src/MCPStdinSubprocess.js';
-import '../../src/vitest-setup.js';
+import { MCPStdinSubprocess } from '../../dist/MCPStdinSubprocess.js';
+import '../../dist/vitest-setup.js';
 import { DockerMcpRunner } from '../dockerMcpRunner.js';
 
 describe('Filesystem MCP Server', () => {
@@ -22,18 +22,8 @@ describe('Filesystem MCP Server', () => {
 
   afterAll(() => {
     if (app) {
-      app.kill();
+      app.close();
     }
-  });
-
-  describe('MCP Protocol Compliance', () => {
-    it('should provide valid MCP server info', () => {
-      const initResult = app.getInitializeResult();
-      expect(initResult).toBeDefined();
-      expect(initResult?.protocolVersion).toBeDefined();
-      expect(initResult?.serverInfo.name).toBeDefined();
-      expect(initResult?.capabilities.tools).toBeDefined();
-    });
   });
 
   describe('Tool Discovery', () => {

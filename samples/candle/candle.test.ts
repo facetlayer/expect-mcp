@@ -1,6 +1,6 @@
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
-import { MCPStdinSubprocess } from '../../src/MCPStdinSubprocess.js';
-import '../../src/vitest-setup.js';
+import { MCPStdinSubprocess } from '../../dist/MCPStdinSubprocess.js';
+import '../../dist/vitest-setup.js';
 import { DockerMcpRunner } from '../dockerMcpRunner.js';
 
 async function retryUntil(
