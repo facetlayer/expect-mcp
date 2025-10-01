@@ -1,7 +1,7 @@
 import { unixPipeToLines } from '@facetlayer/parse-stdout-lines';
 import { ChildProcess, spawn, SpawnOptions } from 'child_process';
 import * as events from 'events';
-import { JsonRpcRequest, JsonRpcResponse } from './types/JsonRPC.js';
+import { JsonRpcNotification, JsonRpcRequest, JsonRpcResponse } from './types/JsonRPC.js';
 import { ProcessExitWhileWaitingForResponse } from './errors.js';
 import { JSONRPCMessageSchema } from './schemas/index.js';
 
@@ -212,18 +212,46 @@ export class JsonRpcSubprocess extends events.EventEmitter {
     }
   }
 
+  sendNotification(method: string, params?: any): void {
+    if (!this.subprocess) {
+      throw new Error('Subprocess not started');
+    }
+
+    const notification: JsonRpcNotification = {
+      jsonrpc: '2.0',
+      method,
+    };
+
+    // Only include params if it's not undefined and not an empty object
+    if (params !== undefined && !(typeof params === 'object' && Object.keys(params).length === 0)) {
+      notification.params = params;
+    }
+
+    this.emit('notification', notification);
+
+    if (this._hasStarted && this.subprocess!.stdin) {
+      this.subprocess!.stdin.write(JSON.stringify(notification) + '\n');
+    }
+  }
+
   async sendRequest(method: string, params?: any): Promise<any> {
     if (!this.subprocess) {
       throw new Error('Subprocess not started');
     }
 
     const id = this.nextRequestId++;
+
+    // Build request, omitting params if it's undefined or an empty object
     const request: JsonRpcRequest = {
       jsonrpc: '2.0',
       method,
-      params,
       id,
     };
+
+    // Only include params if it's not undefined and not an empty object
+    if (params !== undefined && !(typeof params === 'object' && Object.keys(params).length === 0)) {
+      request.params = params;
+    }
 
     this.emit('request', request);
 

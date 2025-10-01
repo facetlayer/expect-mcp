@@ -98,6 +98,9 @@ export class MCPStdinSubprocess extends JsonRpcSubprocess {
       }
 
       this.initializeResult = result;
+
+      this.sendNotification('notifications/initialized');
+
       this.initialized = true;
 
       if (this.protocolError) {

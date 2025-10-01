@@ -60,7 +60,9 @@ describe('Git MCP Server', () => {
 
   describe('Git Operations', () => {
     it('should get repository status', async () => {
-      const response = await app.callTool('git_status', {});
+      const response = await app.callTool('git_status', {
+        repo_path: '/test-repo'
+      });
 
       expect(response).toBeDefined();
       expect(response.content).toBeDefined();
@@ -68,7 +70,9 @@ describe('Git MCP Server', () => {
     });
 
     it('should get git log', async () => {
-      const response = await app.callTool('git_log', {});
+      const response = await app.callTool('git_log', {
+        repo_path: '/test-repo'
+      });
 
       expect(response).toBeDefined();
       expect(response.content).toBeDefined();
@@ -81,6 +85,7 @@ describe('Git MCP Server', () => {
       // First, we would need to create a file in the repo
       // For this test, we'll add a file and commit it
       const addResponse = await app.callTool('git_add', {
+        repo_path: '/test-repo',
         files: ['README.md']
       });
 
@@ -89,6 +94,7 @@ describe('Git MCP Server', () => {
 
       // Now commit the changes
       const commitResponse = await app.callTool('git_commit', {
+        repo_path: '/test-repo',
         message: 'Test commit from expect-mcp'
       });
 
@@ -97,14 +103,18 @@ describe('Git MCP Server', () => {
     });
 
     it('should show diff for unstaged changes', async () => {
-      const response = await app.callTool('git_diff_unstaged', {});
+      const response = await app.callTool('git_diff_unstaged', {
+        repo_path: '/test-repo'
+      });
 
       expect(response).toBeDefined();
       expect(response.content).toBeDefined();
     });
 
     it('should show diff for staged changes', async () => {
-      const response = await app.callTool('git_diff_staged', {});
+      const response = await app.callTool('git_diff_staged', {
+        repo_path: '/test-repo'
+      });
 
       expect(response).toBeDefined();
       expect(response.content).toBeDefined();
@@ -113,13 +123,15 @@ describe('Git MCP Server', () => {
     it('should show specific commit', async () => {
       // Get the latest commit hash from log first
       const logResponse = await app.callTool('git_log', {
-        maxCount: 1
+        repo_path: '/test-repo',
+        max_count: 1
       });
 
       expect(logResponse).toBeDefined();
 
       // Show the commit details
       const response = await app.callTool('git_show', {
+        repo_path: '/test-repo',
         revision: 'HEAD'
       });
 
@@ -130,12 +142,13 @@ describe('Git MCP Server', () => {
     it('should reset staged changes', async () => {
       // First stage a file
       await app.callTool('git_add', {
+        repo_path: '/test-repo',
         files: ['README.md']
       });
 
       // Then reset it
       const response = await app.callTool('git_reset', {
-        files: ['README.md']
+        repo_path: '/test-repo'
       });
 
       expect(response).toBeDefined();
@@ -146,6 +159,7 @@ describe('Git MCP Server', () => {
   describe('Error Handling', () => {
     it('should handle adding non-existent files', async () => {
       const response = await app.callTool('git_add', {
+        repo_path: '/test-repo',
         files: ['nonexistent.txt']
       });
 
@@ -156,9 +170,12 @@ describe('Git MCP Server', () => {
 
     it('should handle invalid commit without staged changes', async () => {
       // Ensure nothing is staged
-      await app.callTool('git_reset', {});
+      await app.callTool('git_reset', {
+        repo_path: '/test-repo'
+      });
 
       const response = await app.callTool('git_commit', {
+        repo_path: '/test-repo',
         message: 'Empty commit'
       });
 
@@ -169,6 +186,7 @@ describe('Git MCP Server', () => {
 
     it('should handle invalid revision in git show', async () => {
       const response = await app.callTool('git_show', {
+        repo_path: '/test-repo',
         revision: 'invalid-revision-hash'
       });
 

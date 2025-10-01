@@ -16,3 +16,8 @@ export interface JsonRpcRequest {
     id: string | number | null;
   }
   
+  export interface JsonRpcNotification {
+    jsonrpc: '2.0';
+    method: string;
+    params?: any;
+  }
