@@ -1,5 +1,5 @@
 import { describe, expect, it, beforeAll } from 'vitest';
-import { MCPStdinSubprocess, shellCommand } from '../../src';
+import { MCPStdinSubprocess, mcpShell } from '../../src';
 import '../../src/vitest-setup.js';
 
 const DefaultRequestTimeout = 1000;
@@ -9,7 +9,7 @@ describe('JSON-RPC 2.0 Compliance', () => {
     let process: MCPStdinSubprocess;
 
     beforeAll(() => {
-      process = shellCommand('node test/sampleServers/server.missingJsonRpcField.ts', {
+      process = mcpShell('node test/sampleServers/server.missingJsonRpcField.ts', {
         requestTimeout: DefaultRequestTimeout,
       });
     });
@@ -23,7 +23,7 @@ describe('JSON-RPC 2.0 Compliance', () => {
     let process: MCPStdinSubprocess;
 
     beforeAll(() => {
-      process = shellCommand('node test/sampleServers/server.nullRequestId.ts', {
+      process = mcpShell('node test/sampleServers/server.nullRequestId.ts', {
         requestTimeout: DefaultRequestTimeout,
       });
     });
@@ -40,7 +40,7 @@ describe('JSON-RPC 2.0 Compliance', () => {
       let process: MCPStdinSubprocess;
 
       beforeAll(() => {
-        process = shellCommand('node test/sampleServers/server.bothResultAndError.ts', {
+        process = mcpShell('node test/sampleServers/server.bothResultAndError.ts', {
           requestTimeout: DefaultRequestTimeout,
         });
       });
@@ -54,7 +54,7 @@ describe('JSON-RPC 2.0 Compliance', () => {
       let process: MCPStdinSubprocess;
 
       beforeAll(() => {
-        process = shellCommand('node test/sampleServers/server.mismatchedResponseId.ts', {
+        process = mcpShell('node test/sampleServers/server.mismatchedResponseId.ts', {
           requestTimeout: DefaultRequestTimeout,
         });
       });
@@ -69,7 +69,7 @@ describe('JSON-RPC 2.0 Compliance', () => {
     let process: MCPStdinSubprocess;
 
     beforeAll(() => {
-      process = shellCommand('node test/sampleServers/server.noCapabilities.ts', {
+      process = mcpShell('node test/sampleServers/server.noCapabilities.ts', {
         requestTimeout: DefaultRequestTimeout,
       });
     });

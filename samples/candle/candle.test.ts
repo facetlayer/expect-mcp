@@ -1,11 +1,7 @@
-import Path from 'path';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
-import { shellCommand } from '../../dist';
-import type { MCPStdinSubprocess } from '../../dist';
-import '../../dist/vitest-setup.js';
-
-const LocalBinPath = Path.join(__dirname, '..', 'node_modules', '.bin');
-const LocalProjectDir = __dirname;
+import { MCPStdinSubprocess } from '../../src/MCPStdinSubprocess.js';
+import '../../src/vitest-setup.js';
+import { DockerMcpRunner } from '../dockerMcpRunner.js';
 
 async function retryUntil(
   condition: () => Promise<boolean>,
@@ -24,27 +20,19 @@ describe('Candle MCP Server', () => {
   let app: MCPStdinSubprocess;
 
   beforeAll(async () => {
-    // Launch candle in MCP mode
-    app = shellCommand(`${LocalBinPath}/candle --mcp`, {
-      cwd: LocalProjectDir,
+    const projectDir = __dirname;
+    const imageName = 'candle-mcp:latest';
+
+    // Build and launch the Docker container
+    app = await DockerMcpRunner.buildAndLaunch({
+      projectDir,
+      imageName,
+      verbose: false,
+      allowDebugLogging: true // Candle outputs non-JSON logs for service operations
     });
-    app.on('stdout', data => {
-      //console.log('[candle] ' + data);
-    });
-    app.on('stderr', data => {
-      //console.log('[candle] ' + data);
-    });
-    app.on('spawn', () => {
-      //console.log('[candle] spawned');
-    });
-    app.on('start', () => {
-      //console.log('[candle] started');
-    });
-    app.on('error', error => {
-      //console.log('[candle] error', error);
-    });
+
     await app.initialize();
-  });
+  }, 60000); // Increase timeout for Docker build
 
   afterAll(() => {
     if (app) {

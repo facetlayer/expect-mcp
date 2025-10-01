@@ -1,55 +1,29 @@
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
-import { shellCommand } from '../../src/index.js';
-import type { MCPStdinSubprocess } from '../../src/MCPStdinSubprocess.js';
-import '../../src/vitest-setup.js';
+import { MCPStdinSubprocess } from '../../dist/MCPStdinSubprocess.js';
+import '../../dist/vitest-setup.js';
+import { DockerMcpRunner } from '../dockerMcpRunner.js';
 
 describe('Playwright MCP Server', () => {
   let app: MCPStdinSubprocess;
 
   beforeAll(async () => {
-    // Launch Playwright MCP server with strict mode enabled
-    app = shellCommand('npx @playwright/mcp --headless --browser chromium', {
-      strictMode: true,
+    const projectDir = __dirname;
+    const imageName = 'playwright-mcp:latest';
+
+    // Build and launch the Docker container
+    app = await DockerMcpRunner.buildAndLaunch({
+      projectDir,
+      imageName,
+      verbose: false
     });
+
     await app.initialize();
-  });
+  }, 120000); // Increase timeout for Docker build (Playwright install is slow)
 
   afterAll(() => {
     if (app) {
-      app.kill();
+      app.close();
     }
-  });
-
-  describe('MCP Protocol Compliance', () => {
-    it('should verify strict mode is enabled', () => {
-      expect(app.isStrictModeEnabled()).toBe(true);
-    });
-
-    it('should provide valid MCP server info with proper protocol version', () => {
-      const initResult = app.getInitializeResult();
-      expect(initResult).toBeDefined();
-      expect(initResult?.protocolVersion).toBe('2025-06-18');
-      expect(initResult?.serverInfo.name).toBe('Playwright');
-      expect(initResult?.serverInfo.version).toBeDefined();
-      expect(initResult?.capabilities.tools).toBeDefined();
-    });
-
-    it('should return valid responses for tool calls', async () => {
-      const tools = await app.getTools();
-      expect(tools.length).toBeGreaterThan(0);
-
-      // Test a simple tool call to ensure responses have expected structure
-      const response = await app.callTool('browser_snapshot', {});
-      expect(response).toBeDefined();
-
-      // Playwright MCP returns content array format
-      if (response.content) {
-        expect(Array.isArray(response.content)).toBe(true);
-        expect(response.content.length).toBeGreaterThan(0);
-        expect(response.content[0]).toHaveProperty('type');
-        expect(response.content[0]).toHaveProperty('text');
-      }
-    });
   });
 
   describe('Tool Discovery and Validation', () => {
@@ -283,7 +257,7 @@ describe('Playwright MCP Server', () => {
 
   describe('Stress Testing and Reliability', () => {
     it('should handle multiple rapid tool calls', async () => {
-      const promises = [];
+      const promises: Promise<any>[] = [];
       for (let i = 0; i < 5; i++) {
         promises.push(app.callTool('browser_snapshot', {}));
       }

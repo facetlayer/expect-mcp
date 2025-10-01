@@ -36,3 +36,28 @@ export function resolveUtils(ctx: unknown): MatcherUtils {
 
   return hasPrinter ? utils : fallbackPrinter;
 }
+
+export type CheckMCPSubprocessResult<T> =
+  | { ok: true; subprocess: T }
+  | { ok: false; result: { pass: false; message: () => string } };
+
+export function checkCastMCPStdinSubprocess<T>(
+  received: unknown,
+  utils: MatcherUtils
+): CheckMCPSubprocessResult<T> {
+  if (!received || typeof received !== 'object' || !(received.constructor as any)._isMCPStdinSubprocess) {
+    return {
+      ok: false,
+      result: {
+        pass: false,
+        message: () =>
+          `Expected an MCPStdinSubprocess instance, but received ${utils.printReceived(received)}`,
+      },
+    };
+  }
+
+  return {
+    ok: true,
+    subprocess: received as T,
+  };
+}

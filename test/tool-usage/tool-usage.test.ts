@@ -1,5 +1,5 @@
 import { describe, expect, it, beforeAll } from 'vitest';
-import { MCPStdinSubprocess, shellCommand } from '../../src';
+import { MCPStdinSubprocess, mcpShell } from '../../src';
 import '../../src/vitest-setup.js';
 
 const DefaultRequestTimeout = 1000;
@@ -9,7 +9,7 @@ describe('Tool Usage', () => {
     let process: MCPStdinSubprocess;
 
     beforeAll(async () => {
-      process = shellCommand('node test/sampleServers/server.withTools.ts', {
+      process = mcpShell('node test/sampleServers/server.withTools.ts', {
         requestTimeout: DefaultRequestTimeout,
       });
       await process.initialize();
@@ -66,7 +66,7 @@ describe('Tool Usage', () => {
     let process: MCPStdinSubprocess;
 
     beforeAll(async () => {
-      process = shellCommand('node test/sampleServers/server.noCapabilities.ts', {
+      process = mcpShell('node test/sampleServers/server.noCapabilities.ts', {
         requestTimeout: DefaultRequestTimeout,
       });
       await process.initialize();
@@ -88,7 +88,7 @@ describe('Tool Usage', () => {
     let process: MCPStdinSubprocess;
 
     beforeAll(async () => {
-      process = shellCommand('node test/sampleServers/server.toolsNotListed.ts', {
+      process = mcpShell('node test/sampleServers/server.toolsNotListed.ts', {
         requestTimeout: DefaultRequestTimeout,
       });
       await process.initialize();
@@ -105,7 +105,7 @@ describe('Tool Usage', () => {
     let process: MCPStdinSubprocess;
 
     beforeAll(async () => {
-      process = shellCommand('node test/sampleServers/server.withTools.ts', {
+      process = mcpShell('node test/sampleServers/server.withTools.ts', {
         requestTimeout: DefaultRequestTimeout,
       });
       await process.initialize();

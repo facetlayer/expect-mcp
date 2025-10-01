@@ -3,12 +3,16 @@ import { MCPStdinSubprocess } from '../../MCPStdinSubprocess.js';
 import { toHaveResource } from '../toHaveResource.js';
 import { resolveUtils } from '../../utils.js';
 
-vi.mock('../../utils.js', () => ({
-  resolveUtils: vi.fn(() => ({
-    printReceived: vi.fn((value) => `received: ${JSON.stringify(value)}`),
-    printExpected: vi.fn((value) => `expected: ${JSON.stringify(value)}`),
-  })),
-}));
+vi.mock('../../utils.js', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('../../utils.js')>();
+  return {
+    ...actual,
+    resolveUtils: vi.fn(() => ({
+      printReceived: vi.fn((value) => `received: ${JSON.stringify(value)}`),
+      printExpected: vi.fn((value) => `expected: ${JSON.stringify(value)}`),
+    })),
+  };
+});
 
 describe('toHaveResource', () => {
   const mockContext = {};

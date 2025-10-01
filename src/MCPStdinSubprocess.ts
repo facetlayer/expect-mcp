@@ -13,6 +13,8 @@ export interface MCPStdinSubprocessOptions extends JsonRpcSubprocessOptions {
 }
 
 export class MCPStdinSubprocess extends JsonRpcSubprocess {
+  static _isMCPStdinSubprocess = true;
+
   private initializeResult?: MCPInitializeResult;
   private toolsCache?: MCPTool[];
   private resourcesCache?: MCPResource[];
@@ -28,9 +30,6 @@ export class MCPStdinSubprocess extends JsonRpcSubprocess {
 
     this.on('stderr', line => {
       this.stderrBuffer.push(line);
-    });
-
-    this.on('stdout', line => {
     });
 
     this.on('output:error:non-json', (line: string) => {

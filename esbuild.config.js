@@ -8,6 +8,10 @@ const commonConfig = {
   format: 'esm',
   outdir: 'dist',
   external: [
+    'vitest',
+    '@facetlayer/parse-stdout-lines',
+    '@modelcontextprotocol/sdk',
+    'zod'
   ]
 };
 

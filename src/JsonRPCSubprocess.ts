@@ -9,6 +9,7 @@ const VerboseLogging = false;
 const DefaultRequestTimeout = 15000;
 
 export interface JsonRpcSubprocessOptions extends SpawnOptions {
+  existingProcess?: ChildProcess;
   requestTimeout?: number;
 }
 
@@ -21,6 +22,7 @@ interface PendingRequest {
 
 export class JsonRpcSubprocess extends events.EventEmitter {
   private subprocess?: ChildProcess;
+  private _hasSetupListeners = false;
   private pendingRequests = new Map<string | number, PendingRequest>();
   private enqueuedRequests = new Map<string | number, JsonRpcRequest>();
   private nextRequestId = 1;
@@ -33,6 +35,13 @@ export class JsonRpcSubprocess extends events.EventEmitter {
 
   constructor(options: JsonRpcSubprocessOptions = {}) {
     super();
+
+    if (options.existingProcess) {
+      this.subprocess = options.existingProcess;
+      this._setupListeners();
+      this._hasStarted = true;
+    }
+
     this.options = {
       requestTimeout: DefaultRequestTimeout,
       ...options,
@@ -55,9 +64,18 @@ export class JsonRpcSubprocess extends events.EventEmitter {
     };
 
     this.subprocess = spawn(command, args, finalOptions);
+    this._setupListeners();
+  }
+
+  _setupListeners(): void {
+    if (this._hasSetupListeners) {
+      return;
+    }
+
+    this._hasSetupListeners = true;
 
     // Forward error events immediately to prevent unhandled errors
-    this.subprocess.on('error', (error: Error) => {
+    this.subprocess!.on('error', (error: Error) => {
       if (VerboseLogging) {
         console.error(`[json-rpc-subprocess] subprocess 'error' event`, error);
       }

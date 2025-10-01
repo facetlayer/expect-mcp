@@ -1,5 +1,5 @@
 import { describe, expect, it, beforeAll } from 'vitest';
-import { MCPStdinSubprocess, shellCommand } from '../../src';
+import { MCPStdinSubprocess, mcpShell } from '../../src';
 import '../../src/vitest-setup.js';
 
 const DefaultRequestTimeout = 1000;
@@ -9,7 +9,7 @@ describe('Initialize Flow', () => {
     let process: MCPStdinSubprocess;
 
     beforeAll(() => {
-      process = shellCommand('node test/sampleServers/server.noCapabilities.ts', {
+      process = mcpShell('node test/sampleServers/server.noCapabilities.ts', {
         requestTimeout: DefaultRequestTimeout,
       });
     });
@@ -30,7 +30,7 @@ describe('Initialize Flow', () => {
     let process: MCPStdinSubprocess;
 
     beforeAll(() => {
-      process = shellCommand('node test/sampleServers/server.invalidInitialize.ts', {
+      process = mcpShell('node test/sampleServers/server.invalidInitialize.ts', {
         requestTimeout: DefaultRequestTimeout,
       });
     });
@@ -46,7 +46,7 @@ describe('Initialize Flow', () => {
     let process: MCPStdinSubprocess;
 
     beforeAll(() => {
-      process = shellCommand('node test/sampleServers/server.noResponse.ts', {
+      process = mcpShell('node test/sampleServers/server.noResponse.ts', {
         requestTimeout: DefaultRequestTimeout,
       });
     });
@@ -67,7 +67,7 @@ describe('Initialize Flow', () => {
       let process: MCPStdinSubprocess;
 
       beforeAll(async () => {
-        process = shellCommand('node test/sampleServers/server.withTools.ts', {
+        process = mcpShell('node test/sampleServers/server.withTools.ts', {
           requestTimeout: DefaultRequestTimeout,
         });
         await process.initialize();
@@ -88,7 +88,7 @@ describe('Initialize Flow', () => {
       let process: MCPStdinSubprocess;
 
       beforeAll(async () => {
-        process = shellCommand('node test/sampleServers/server.withResources.ts', {
+        process = mcpShell('node test/sampleServers/server.withResources.ts', {
           requestTimeout: DefaultRequestTimeout,
         });
         await process.initialize();
@@ -109,7 +109,7 @@ describe('Initialize Flow', () => {
       let process: MCPStdinSubprocess;
 
       beforeAll(async () => {
-        process = shellCommand('node test/sampleServers/server.noCapabilities.ts', {
+        process = mcpShell('node test/sampleServers/server.noCapabilities.ts', {
           requestTimeout: DefaultRequestTimeout,
         });
         await process.initialize();
@@ -129,7 +129,7 @@ describe('Initialize Flow', () => {
     let process: MCPStdinSubprocess;
 
     beforeAll(async () => {
-      process = shellCommand('node test/sampleServers/server.noCapabilities.ts', {
+      process = mcpShell('node test/sampleServers/server.noCapabilities.ts', {
         requestTimeout: DefaultRequestTimeout,
       });
       await process.initialize();
@@ -148,7 +148,7 @@ describe('Initialize Flow', () => {
     let process: MCPStdinSubprocess;
 
     beforeAll(async () => {
-      process = shellCommand('node test/sampleServers/server.noCapabilities.ts', {
+      process = mcpShell('node test/sampleServers/server.noCapabilities.ts', {
         requestTimeout: DefaultRequestTimeout,
       });
       await process.initialize();

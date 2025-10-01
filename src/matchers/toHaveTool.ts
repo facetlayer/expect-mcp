@@ -1,6 +1,6 @@
 import { MCPStdinSubprocess } from '../MCPStdinSubprocess.js';
 import { MCPMatcherImplementations, MCPMatcherResult } from '../types.js';
-import { resolveUtils } from '../utils.js';
+import { checkCastMCPStdinSubprocess, resolveUtils } from '../utils.js';
 
 export const toHaveTool: MCPMatcherImplementations['toHaveTool'] = async function (
   this,
@@ -9,16 +9,15 @@ export const toHaveTool: MCPMatcherImplementations['toHaveTool'] = async functio
 ): Promise<MCPMatcherResult> {
   const utils = resolveUtils(this);
 
-  if (!(received instanceof MCPStdinSubprocess)) {
-    return {
-      pass: false,
-      message: () =>
-        `Expected an MCPStdinSubprocess instance, but received ${utils.printReceived(received)}`,
-    };
+  const check = checkCastMCPStdinSubprocess<MCPStdinSubprocess>(received, utils);
+  if (!check.ok) {
+    return check.result;
   }
 
+  const subprocess = check.subprocess;
+
   try {
-    const hasTool = await received.hasTool(toolName);
+    const hasTool = await subprocess.hasTool(toolName);
 
     return {
       pass: hasTool,

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { MCPStdinSubprocess, shellCommand } from '../../src';
+import { MCPStdinSubprocess, mcpShell } from '../../src';
 import '../../src/vitest-setup.js';
 
 const DefaultRequestTimeout = 1000;
@@ -8,7 +8,7 @@ const CloseTimeout = 2000;
 describe('Close Flow', () => {
   describe('graceful close', () => {
     it('should close a server gracefully after initialization', async () => {
-      const process = shellCommand('node test/sampleServers/server.noCapabilities.ts', {
+      const process = mcpShell('node test/sampleServers/server.noCapabilities.ts', {
         requestTimeout: DefaultRequestTimeout,
       });
 
@@ -25,7 +25,7 @@ describe('Close Flow', () => {
     });
 
     it('should close a server gracefully without initialization', async () => {
-      const process = shellCommand('node test/sampleServers/server.noCapabilities.ts', {
+      const process = mcpShell('node test/sampleServers/server.noCapabilities.ts', {
         requestTimeout: DefaultRequestTimeout,
       });
 
@@ -41,7 +41,7 @@ describe('Close Flow', () => {
     });
 
     it('should handle close on already exited process', async () => {
-      const process = shellCommand('node test/sampleServers/server.noCapabilities.ts', {
+      const process = mcpShell('node test/sampleServers/server.noCapabilities.ts', {
         requestTimeout: DefaultRequestTimeout,
       });
 
@@ -55,7 +55,7 @@ describe('Close Flow', () => {
 
   describe('server that does not respond to close', () => {
     it('should timeout and kill server that ignores stdin close', async () => {
-      const process = shellCommand('node test/sampleServers/server.ignoreClose.ts', {
+      const process = mcpShell('node test/sampleServers/server.ignoreClose.ts', {
         requestTimeout: DefaultRequestTimeout,
       });
 
@@ -77,7 +77,7 @@ describe('Close Flow', () => {
 
   describe('close with tools capability', () => {
     it('should close server with tools capability gracefully', async () => {
-      const process = shellCommand('node test/sampleServers/server.withTools.ts', {
+      const process = mcpShell('node test/sampleServers/server.withTools.ts', {
         requestTimeout: DefaultRequestTimeout,
       });
 
@@ -98,7 +98,7 @@ describe('Close Flow', () => {
 
   describe('close with resources capability', () => {
     it('should close server with resources capability gracefully', async () => {
-      const process = shellCommand('node test/sampleServers/server.withResources.ts', {
+      const process = mcpShell('node test/sampleServers/server.withResources.ts', {
         requestTimeout: DefaultRequestTimeout,
       });
 
