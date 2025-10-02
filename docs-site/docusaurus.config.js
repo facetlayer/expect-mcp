@@ -7,10 +7,10 @@ const config = {
   tagline: 'Custom Vitest matchers for testing Model Context Protocol (MCP) integrations',
   favicon: 'img/favicon.ico',
 
-  url: 'https://andy-fischer.github.io',
-  baseUrl: '/',
+  url: 'https://facetlayer.github.io',
+  baseUrl: '/expect-mcp/',
 
-  organizationName: 'andy-fischer',
+  organizationName: 'facetlayer',
   projectName: 'expect-mcp',
 
   onBrokenLinks: 'throw',
@@ -34,7 +34,7 @@ const config = {
         docs: {
           sidebarPath: require.resolve('./sidebars.js'),
           routeBasePath: '/',
-          editUrl: 'https://github.com/andy-fischer/expect-mcp/tree/main/docs-site/',
+          editUrl: 'https://github.com/facetlayer/expect-mcp/tree/main/docs-site/',
         },
         theme: {
           customCss: require.resolve('./src/css/custom.css'),
@@ -56,7 +56,7 @@ const config = {
             label: 'Docs',
           },
           {
-            href: 'https://github.com/andy-fischer/expect-mcp',
+            href: 'https://github.com/facetlayer/expect-mcp',
             label: 'GitHub',
             position: 'right',
           },
