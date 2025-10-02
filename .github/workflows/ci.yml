@@ -27,9 +27,9 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
-      - name: Install gallery dependencies
+      - name: Install samples dependencies
         run: pnpm install
-        working-directory: ./test/gallery
+        working-directory: ./samples
 
       - name: Build
         run: pnpm build
@@ -37,6 +37,6 @@ jobs:
       - name: Run main tests
         run: pnpm test
 
-      - name: Run gallery tests
+      - name: Run samples tests
         run: pnpm test
-        working-directory: ./test/gallery
+        working-directory: ./samples
