@@ -12,12 +12,12 @@
       "default": "./dist/index.js"
     },
     "./vitest": {
-      "types": "./dist/vitest.d.ts",
-      "default": "./dist/vitest.js"
+      "types": "./dist/vitest-setup.d.ts",
+      "default": "./dist/vitest-setup.js"
     },
     "./vitest-setup": {
-      "types": "./dist/vitest.d.ts",
-      "default": "./dist/vitest.js"
+      "types": "./dist/vitest-setup.d.ts",
+      "default": "./dist/vitest-setup.js"
     },
     "./package.json": "./package.json"
   },

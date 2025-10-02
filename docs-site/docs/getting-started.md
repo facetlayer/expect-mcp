@@ -43,7 +43,24 @@ A typical test suite can look like this:
 import { expect, beforeAll, afterAll } from 'vitest';
 import { mcpShell, MCPStdinSubprocess } from 'expect-mcp';
 
+let app: MCPStdinSubprocess;
 
+beforeAll(async () => {
+    // Set up the subprocess
+    app = mcpShell('<your shell command>', {});
+});
+
+afterAll(async () => {
+    // Clean shutdown
+    await app.close();
+});
+
+it("tests something", async () => {
+    // Test assretions here
+    await expect(app.toHaveTool('tool'));
+    const response = await app.callTool('tool', {});
+    expect(response.content).toEqual(...);
+});
 
 ```
 
