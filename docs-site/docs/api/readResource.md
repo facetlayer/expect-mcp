@@ -1,4 +1,4 @@
-# getResource
+# readResource
 
 Reads a resource from the MCP server.
 
@@ -10,7 +10,7 @@ Will throw an error if:
 ## Syntax
 
 ```ts
-app.getResource(uri: string): Promise<MCPReadResourceResult>
+app.readResource(uri: string): Promise<MCPReadResourceResult>
 ```
 
 ## Parameters
@@ -39,7 +39,7 @@ test('read a resource from the server', async () => {
   await app.initialize();
 
   // Read a text resource
-  const result = await app.getResource('file:///example.txt');
+  const result = await app.readResource('file:///example.txt');
 
   expect(result.contents).toBeDefined();
   expect(result.contents[0].text).toBeDefined();
@@ -55,7 +55,7 @@ If the resource read fails, an error will be thrown:
 
 ```ts
 try {
-  await app.getResource('file:///nonexistent.txt');
+  await app.readResource('file:///nonexistent.txt');
 } catch (error) {
   expect(error.name).toBe('ResourceCallError');
 }
@@ -70,7 +70,7 @@ const app = mcpShell('node slow-resource-server.js', {
   requestTimeout: 30000, // 30 seconds
 });
 
-const result = await app.getResource('file:///large-file.txt');
+const result = await app.readResource('file:///large-file.txt');
 ```
 
 ## See Also

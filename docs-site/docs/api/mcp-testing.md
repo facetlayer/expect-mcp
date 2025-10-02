@@ -113,12 +113,12 @@ const result = await app.callTool('read_file', {
 });
 ```
 
-#### getResource(uri: string): Promise\<MCPReadResourceResult\>
+#### readResource(uri: string): Promise\<MCPReadResourceResult\>
 
 Read a resource from the MCP server.
 
 ```ts
-const result = await app.getResource('file:///example.txt');
+const result = await app.readResource('file:///example.txt');
 console.log('Resource contents:', result.contents[0].text);
 ```
 
@@ -160,7 +160,7 @@ describe('File Server MCP', () => {
       expect(toolResult.content).toBeDefined();
 
       // Test resource reading
-      const resourceResult = await app.getResource('project://files');
+      const resourceResult = await app.readResource('project://files');
 
       expect(resourceResult.contents).toBeDefined();
       expect(resourceResult.contents[0]).toBeDefined();

@@ -4,7 +4,7 @@ import { mcpShell } from '../../src/index.js';
 
 const DefaultRequestTimeout = 2000;
 
-describe('getResource Examples', () => {
+describe('readResource Examples', () => {
   test('read a resource from the server', async () => {
     const app = mcpShell('node test/sampleServers/server.withResources.ts', {
       requestTimeout: DefaultRequestTimeout,
@@ -12,7 +12,7 @@ describe('getResource Examples', () => {
     await app.initialize();
 
     // Read a text resource
-    const result = await app.getResource('file:///example.txt');
+    const result = await app.readResource('file:///example.txt');
 
     expect(result.contents).toBeDefined();
     expect(result.contents[0].text).toBeDefined();
@@ -28,7 +28,7 @@ describe('getResource Examples', () => {
     await app.initialize();
 
     try {
-      await app.getResource('file:///nonexistent.txt');
+      await app.readResource('file:///nonexistent.txt');
     } catch (error: any) {
       expect(error.name).toBe('ResourceCallError');
     }

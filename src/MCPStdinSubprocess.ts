@@ -228,7 +228,7 @@ export class MCPStdinSubprocess extends JsonRpcSubprocess {
     return response;
   }
 
-  async getResource(uri: string): Promise<MCPReadResourceResult> {
+  async readResource(uri: string): Promise<MCPReadResourceResult> {
     await this._implicitInitialize();
 
     if (!(await this.supportsResources())) {

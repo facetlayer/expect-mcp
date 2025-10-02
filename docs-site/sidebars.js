@@ -37,8 +37,8 @@ const sidebars = {
     },
     {
       type: 'doc',
-      id: 'api/getResource',
-      label: '.getResource()',
+      id: 'api/readResource',
+      label: '.readResource()',
     },
     {
       type: 'doc',

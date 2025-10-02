@@ -4,14 +4,14 @@ import { mcpShell } from '../../src/index.js';
 
 const DefaultRequestTimeout = 2000;
 
-describe('getResource', () => {
+describe('readResource', () => {
   test('can read a text resource', async () => {
     const app = mcpShell('node test/sampleServers/server.withResources.ts', {
       requestTimeout: DefaultRequestTimeout,
     });
     await app.initialize();
 
-    const result = await app.getResource('file:///example.txt');
+    const result = await app.readResource('file:///example.txt');
 
     expect(result).toBeDefined();
     expect(result.contents).toBeDefined();
@@ -32,7 +32,7 @@ describe('getResource', () => {
     });
     await app.initialize();
 
-    const result = await app.getResource('file:///data.json');
+    const result = await app.readResource('file:///data.json');
 
     expect(result).toBeDefined();
     expect(result.contents).toBeDefined();
@@ -54,7 +54,7 @@ describe('getResource', () => {
     });
     await app.initialize();
 
-    await expect(app.getResource('file:///nonexistent.txt')).rejects.toThrow(
+    await expect(app.readResource('file:///nonexistent.txt')).rejects.toThrow(
       'Resource with URI file:///nonexistent.txt not declared in resources/list'
     );
 
@@ -67,7 +67,7 @@ describe('getResource', () => {
     });
     await app.initialize();
 
-    await expect(app.getResource('file:///example.txt')).rejects.toThrow(
+    await expect(app.readResource('file:///example.txt')).rejects.toThrow(
       'Resources are not supported by the server'
     );
 
