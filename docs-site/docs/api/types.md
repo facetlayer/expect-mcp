@@ -1,7 +1,5 @@
 # Type Definitions
 
-The expect-mcp library includes comprehensive TypeScript definitions for MCP types and matcher contracts.
-
 ## Response Types
 
 ### MCPResponse
@@ -157,45 +155,6 @@ interface MCPResourcesListResult {
 }
 ```
 
-## Matcher Types
-
-### MCPMatchers
-
-Interface defining the matchers available on Vitest assertions.
-
-```ts
-interface MCPMatchers {
-  toBeValidMCPResponse(): void;
-  toHaveMCPError(expectedCode?: number): void;
-  toHaveTool(toolName: string): Promise<void>;
-  toHaveResource(resourceName: string): Promise<void>;
-}
-```
-
-### MCPMatcherResult
-
-Structure of a single matcher result returned to Vitest.
-
-```ts
-interface MCPMatcherResult {
-  pass: boolean;
-  message(): string;
-}
-```
-
-### MCPMatcherImplementations
-
-Runtime implementations that are provided to Vitest via expect.extend.
-
-```ts
-interface MCPMatcherImplementations {
-  toBeValidMCPResponse(this: unknown, received: unknown): MCPMatcherResult;
-  toHaveMCPError(this: unknown, received: unknown, expectedCode?: number): MCPMatcherResult;
-  toHaveTool(this: unknown, received: unknown, toolName: string): Promise<MCPMatcherResult>;
-  toHaveResource(this: unknown, received: unknown, resourceName: string): Promise<MCPMatcherResult>;
-}
-```
-
 ## Configuration Types
 
 ### MCPStdinSubprocessOptions
@@ -207,59 +166,4 @@ interface MCPStdinSubprocessOptions extends JsonRpcSubprocessOptions \{
   requestTimeout?: number;
   allowDebugLogging?: boolean;
 }
-```
-
-## Usage Examples
-
-### Type-Safe Testing
-
-```ts
-import { MCPResponse, MCPTool, MCPResource } from 'expect-mcp';
-
-// Type-safe response validation
-const response: MCPResponse = {
-  jsonrpc: '2.0',
-  id: 1,
-  result: {
-    content: [
-      {
-        role: 'assistant',
-        type: 'text',
-        content: 'Hello',
-      },
-    ],
-  },
-};
-
-expect(response).toBeValidMCPResponse();
-
-// Type-safe server testing
-const tools: MCPTool[] = await app.getTools();
-const resources: MCPResource[] = await app.getResources();
-```
-
-### Module Declaration
-
-When using TypeScript, the library extends the Vitest assertion interface:
-
-```ts
-declare module 'vitest' {
-  interface Assertion\<T = any\> extends MCPMatchers \{\}
-  interface AsymmetricMatchersContaining extends MCPMatchers \{\}
-}
-```
-
-This allows TypeScript to recognize the custom matchers on `expect()` calls.
-
-### Import Patterns
-
-```ts
-// Import specific types
-import type { MCPResponse, MCPTool, MCPResource } from 'expect-mcp';
-
-// Import all types
-import type * as MCP from 'expect-mcp';
-
-// Import utilities with types
-import { shellCommand, type MCPStdinSubprocess } from 'expect-mcp';
 ```

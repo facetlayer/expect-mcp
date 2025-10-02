@@ -5,22 +5,24 @@ Custom [Vitest](https://vitest.dev/) matchers to write test assertions for Model
 ## Features
 
 - **Custom Matchers**: Adds `expect()` matchers to assert on MCP interactions.
-- **TypeScript Support**: Complete type definitions for all MCP types and matchers
+- **TypeScript Support**: Complete type definitions for all MCP types and matchers.
+- **MCP client**: Implements a special MCP client that includes strict protocol validation to catch any errors.
 
-## Support:
+## Latest support:
 
 Currently the library supports:
 
 - Testing **tools** and **resources**. Other MCP capabilities are not supported yet.
-- Testing **stdin** based servers. HTTP-based servers are not supported yet.
+- Testing **stdin** protocol servers. HTTP-based servers are not supported yet.
+- Integration with **Vitest**. Other libraries like Jest have not been tested yet.
 
 ## Quick Start
 
 ```bash
-pnpm add -D expect-mcp
+npm install -D expect-mcp
 ```
 
-Add to your Vitest setup:
+Import vitest-setup to add the custom matchers to `expect()`:
 
 ```ts
 import 'expect-mcp/vitest-setup';
@@ -29,9 +31,16 @@ import 'expect-mcp/vitest-setup';
 Start testing your MCP integrations:
 
 ```ts
-// Test MCP servers
-const app = mcpShell('node path/to/mcp-server.js');
-await app.initialize();
-await expect(app).toHaveTool('filesystem_list');
+import { mcpShell } from 'expect-mcp';
+
+// ...
+
+// Perform a test:
+const app = mcpShell('path/to/mcp-server');
+await expect(app).toHaveTool('toolName');
 await expect(app).toHaveResource('config.json');
+
+const toolResult = await app.callTool('toolName', {});
+
+await app.close();
 ```
