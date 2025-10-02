@@ -220,12 +220,14 @@ const response: MCPResponse = {
   jsonrpc: '2.0',
   id: 1,
   result: {
-    content: [{
-      role: 'assistant',
-      type: 'text',
-      content: 'Hello'
-    }]
-  }
+    content: [
+      {
+        role: 'assistant',
+        type: 'text',
+        content: 'Hello',
+      },
+    ],
+  },
 };
 
 expect(response).toBeValidMCPResponse();

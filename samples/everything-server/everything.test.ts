@@ -14,7 +14,7 @@ describe('Everything MCP Server', () => {
     app = await DockerMcpRunner.buildAndLaunch({
       projectDir,
       imageName,
-      verbose: false
+      verbose: false,
     });
 
     await app.initialize();
@@ -59,7 +59,7 @@ describe('Everything MCP Server', () => {
     it('should echo messages', async () => {
       const testMessage = 'Hello from expect-mcp!';
       const response = await app.callTool('echo', {
-        message: testMessage
+        message: testMessage,
       });
 
       expect(response).toBeDefined();
@@ -72,7 +72,7 @@ describe('Everything MCP Server', () => {
     it('should add two numbers', async () => {
       const response = await app.callTool('add', {
         a: 5,
-        b: 3
+        b: 3,
       });
 
       expect(response).toBeDefined();
@@ -85,7 +85,7 @@ describe('Everything MCP Server', () => {
     it('should perform long running operation with progress', async () => {
       const response = await app.callTool('longRunningOperation', {
         duration: 100,
-        steps: 2
+        steps: 2,
       });
 
       expect(response).toBeDefined();
@@ -109,7 +109,7 @@ describe('Everything MCP Server', () => {
     it('should call sample LLM tool', async () => {
       const response = await app.callTool('sampleLLM', {
         prompt: 'What is 2+2?',
-        maxTokens: 100
+        maxTokens: 100,
       });
 
       expect(response).toBeDefined();
@@ -196,7 +196,7 @@ describe('Everything MCP Server', () => {
     it('should handle invalid tool calls', async () => {
       const response = await app.callTool('add', {
         a: 'not-a-number',
-        b: 5
+        b: 5,
       });
 
       expect(response).toBeDefined();

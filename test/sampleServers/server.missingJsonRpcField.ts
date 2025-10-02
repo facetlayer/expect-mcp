@@ -25,10 +25,10 @@ class BrokenJSONRPCServer {
     this.rl = createInterface({
       input: process.stdin,
       output: process.stdout,
-      terminal: false
+      terminal: false,
     });
 
-    this.rl.on('line', (line) => {
+    this.rl.on('line', line => {
       this.handleMessage(line);
     });
 
@@ -71,8 +71,8 @@ class BrokenJSONRPCServer {
         serverInfo: {
           name: 'broken-jsonrpc-server',
           version: '1.0.0',
-        }
-      }
+        },
+      },
     };
 
     process.stdout.write(JSON.stringify(brokenResponse) + '\n');
@@ -86,8 +86,8 @@ class BrokenJSONRPCServer {
       error: {
         code,
         message,
-        data
-      }
+        data,
+      },
     };
     process.stdout.write(JSON.stringify(errorResponse) + '\n');
   }

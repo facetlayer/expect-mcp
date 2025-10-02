@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 
-import { Server } from "@modelcontextprotocol/sdk/server/index.js";
-import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
-import { CallToolRequestSchema, ListToolsRequestSchema } from "@modelcontextprotocol/sdk/types.js";
+import { Server } from '@modelcontextprotocol/sdk/server/index.js';
+import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
+import { CallToolRequestSchema, ListToolsRequestSchema } from '@modelcontextprotocol/sdk/types.js';
 
 /**
  * Deliberately broken MCP server that claims tools capability
@@ -14,8 +14,8 @@ class ToolsNotListedServer {
   constructor() {
     this.server = new Server(
       {
-        name: "tools-not-listed-server",
-        version: "1.0.0",
+        name: 'tools-not-listed-server',
+        version: '1.0.0',
       },
       {
         capabilities: {
@@ -36,13 +36,13 @@ class ToolsNotListedServer {
     });
 
     // But still handles tool calls (should fail validation)
-    this.server.setRequestHandler(CallToolRequestSchema, async (request) => {
+    this.server.setRequestHandler(CallToolRequestSchema, async request => {
       const { name, arguments: args } = request.params;
 
       return {
         content: [
           {
-            type: "text",
+            type: 'text',
             text: `Called undeclared tool: ${name}`,
           },
         ],
@@ -58,8 +58,8 @@ class ToolsNotListedServer {
 
 if (import.meta.url === `file://${process.argv[1]}`) {
   const server = new ToolsNotListedServer();
-  server.start().catch((error) => {
-    console.error("Server failed to start:", error);
+  server.start().catch(error => {
+    console.error('Server failed to start:', error);
     process.exit(1);
   });
 }

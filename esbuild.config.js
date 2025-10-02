@@ -1,5 +1,5 @@
-import { build } from 'esbuild';
 import { spawn } from 'child_process';
+import { build } from 'esbuild';
 
 const commonConfig = {
   bundle: true,
@@ -7,23 +7,15 @@ const commonConfig = {
   target: 'node16',
   format: 'esm',
   outdir: 'dist',
-  external: [
-    'vitest',
-    '@facetlayer/parse-stdout-lines',
-    '@modelcontextprotocol/sdk',
-    'zod'
-  ]
+  external: ['vitest', '@facetlayer/parse-stdout-lines', '@modelcontextprotocol/sdk', 'zod'],
 };
 
-const entryPoints = [
-  'src/index.ts',
-  'src/vitest-setup.ts',
-];
+const entryPoints = ['src/index.ts', 'src/vitest-setup.ts'];
 
 function runCommand(command, args = []) {
   return new Promise((resolve, reject) => {
     const process = spawn(command, args, { stdio: 'inherit' });
-    process.on('close', (code) => {
+    process.on('close', code => {
       if (code === 0) {
         resolve();
       } else {
@@ -38,7 +30,7 @@ try {
   console.log('Building JavaScript with esbuild...');
   await build({
     ...commonConfig,
-    entryPoints
+    entryPoints,
   });
   console.log('JavaScript build completed');
 

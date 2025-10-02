@@ -1,6 +1,6 @@
 {
   "name": "expect-mcp",
-  "version": "0.0.1",
+  "version": "0.7.0",
   "description": "Custom Vitest matchers for testing Model Context Protocol (MCP) integrations.",
   "type": "module",
   "main": "./dist/index.js",

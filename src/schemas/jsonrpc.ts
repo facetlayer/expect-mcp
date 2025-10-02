@@ -13,23 +13,34 @@ export const MetaSchema = z.record(z.string(), z.unknown()).optional();
 
 export const BaseRequestSchema = z.object({
   method: z.string(),
-  params: z.object({
-    _meta: z.object({
-      progressToken: ProgressTokenSchema.optional(),
-    }).passthrough().optional(),
-  }).passthrough().optional(),
+  params: z
+    .object({
+      _meta: z
+        .object({
+          progressToken: ProgressTokenSchema.optional(),
+        })
+        .passthrough()
+        .optional(),
+    })
+    .passthrough()
+    .optional(),
 });
 
 export const BaseNotificationSchema = z.object({
   method: z.string(),
-  params: z.object({
-    _meta: z.record(z.string(), z.unknown()).optional(),
-  }).passthrough().optional(),
+  params: z
+    .object({
+      _meta: z.record(z.string(), z.unknown()).optional(),
+    })
+    .passthrough()
+    .optional(),
 });
 
-export const BaseResultSchema = z.object({
-  _meta: z.record(z.string(), z.unknown()).optional(),
-}).passthrough();
+export const BaseResultSchema = z
+  .object({
+    _meta: z.record(z.string(), z.unknown()).optional(),
+  })
+  .passthrough();
 
 export const JSONRPCRequestSchema = BaseRequestSchema.extend({
   jsonrpc: z.literal(JSONRPC_VERSION),

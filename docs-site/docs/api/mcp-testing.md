@@ -44,7 +44,7 @@ interface MCPStdinSubprocessOptions {
 const app = new MCPStdinSubprocess({
   strictMode: true,
   command: 'node',
-  args: ['path/to/mcp-server.js']
+  args: ['path/to/mcp-server.js'],
 });
 ```
 
@@ -65,7 +65,10 @@ Get list of available tools from the server.
 
 ```ts
 const tools = await app.getTools();
-console.log('Available tools:', tools.map(t => t.name));
+console.log(
+  'Available tools:',
+  tools.map(t => t.name)
+);
 ```
 
 #### getResources(): Promise\<MCPResource[]\>
@@ -74,7 +77,10 @@ Get list of available resources from the server.
 
 ```ts
 const resources = await app.getResources();
-console.log('Available resources:', resources.map(r => r.name));
+console.log(
+  'Available resources:',
+  resources.map(r => r.name)
+);
 ```
 
 #### hasTool(name: string): Promise\<boolean\>
@@ -99,7 +105,7 @@ Call a tool on the MCP server.
 
 ```ts
 const result = await app.callTool('read_file', {
-  path: '/path/to/file.txt'
+  path: '/path/to/file.txt',
 });
 ```
 
@@ -141,12 +147,11 @@ describe('File Server MCP', () => {
 
       // Test tool execution
       const result = await app.callTool('read_file', {
-        path: 'package.json'
+        path: 'package.json',
       });
 
       expect(result).toBeValidMCPResponse();
       expect(result.result.content).toBeDefined();
-
     } finally {
       app.kill();
     }

@@ -40,7 +40,11 @@ export interface MCPMatcherImplementations {
   toHaveTool(this: unknown, received: unknown, toolName: string): Promise<MCPMatcherResult>;
   toHaveTools(this: unknown, received: unknown, toolNames: string[]): Promise<MCPMatcherResult>;
   toHaveResource(this: unknown, received: unknown, resourceName: string): Promise<MCPMatcherResult>;
-  toHaveResources(this: unknown, received: unknown, resourceNames: string[]): Promise<MCPMatcherResult>;
+  toHaveResources(
+    this: unknown,
+    received: unknown,
+    resourceNames: string[]
+  ): Promise<MCPMatcherResult>;
 }
 
 /** Matchers surfaced on the Assertion API once installed. */

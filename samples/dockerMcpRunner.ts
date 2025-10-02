@@ -31,29 +31,25 @@ export class DockerMcpRunner {
         console.log(`🔨 Building ${this.imageName} image...`);
       }
 
-      const buildProcess = spawn('docker', [
-        'build',
-        '-t', this.imageName,
-        '.'
-      ], {
+      const buildProcess = spawn('docker', ['build', '-t', this.imageName, '.'], {
         cwd: this.projectDir,
-        stdio: this.verbose ? ['inherit', 'inherit', 'inherit'] : ['inherit', 'pipe', 'pipe']
+        stdio: this.verbose ? ['inherit', 'inherit', 'inherit'] : ['inherit', 'pipe', 'pipe'],
       });
 
       let stderr = '';
       let stdout = '';
 
       if (!this.verbose) {
-        buildProcess.stdout?.on('data', (data) => {
+        buildProcess.stdout?.on('data', data => {
           stdout += data.toString();
         });
 
-        buildProcess.stderr?.on('data', (data) => {
+        buildProcess.stderr?.on('data', data => {
           stderr += data.toString();
         });
       }
 
-      buildProcess.on('close', (code) => {
+      buildProcess.on('close', code => {
         if (code === 0) {
           if (this.verbose) {
             console.log(`✅ ${this.imageName} image built successfully`);
@@ -68,7 +64,7 @@ export class DockerMcpRunner {
         }
       });
 
-      buildProcess.on('error', (error) => {
+      buildProcess.on('error', error => {
         reject(new Error(`Failed to start ${this.imageName} image build: ${error.message}`));
       });
     });
@@ -96,12 +92,12 @@ export class DockerMcpRunner {
    * Check if a Docker image exists
    */
   static async imageExists(imageName: string): Promise<boolean> {
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       const checkProcess = spawn('docker', ['inspect', imageName], {
-        stdio: ['ignore', 'pipe', 'pipe']
+        stdio: ['ignore', 'pipe', 'pipe'],
       });
 
-      checkProcess.on('close', (code) => {
+      checkProcess.on('close', code => {
         resolve(code === 0);
       });
 
@@ -147,7 +143,7 @@ export class DockerMcpRunner {
     // Create MCP subprocess using the Docker command
     const dockerCommand = runner.getDockerCommand();
     const subprocess = mcpShell(dockerCommand, {
-      allowDebugLogging: options.allowDebugLogging ?? false
+      allowDebugLogging: options.allowDebugLogging ?? false,
     });
 
     return subprocess;

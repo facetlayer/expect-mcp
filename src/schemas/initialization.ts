@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { BaseRequestSchema, BaseResultSchema, MetaSchema } from './jsonrpc.js';
+import { BaseRequestSchema, BaseResultSchema } from './jsonrpc.js';
 
 export const BaseMetadataSchema = z.object({
   name: z.string(),
@@ -12,9 +12,11 @@ export const ImplementationSchema = BaseMetadataSchema.extend({
 
 export const ClientCapabilitiesSchema = z.object({
   experimental: z.any().optional(),
-  roots: z.object({
-    listChanged: z.boolean().optional(),
-  }).optional(),
+  roots: z
+    .object({
+      listChanged: z.boolean().optional(),
+    })
+    .optional(),
   sampling: z.object({}).optional(),
   elicitation: z.object({}).optional(),
 });
@@ -23,34 +25,46 @@ export const ServerCapabilitiesSchema = z.object({
   experimental: z.any().optional(),
   logging: z.object({}).optional(),
   completions: z.object({}).optional(),
-  prompts: z.object({
-    listChanged: z.boolean().optional(),
-  }).optional(),
-  resources: z.object({
-    subscribe: z.boolean().optional(),
-    listChanged: z.boolean().optional(),
-  }).optional(),
-  tools: z.object({
-    listChanged: z.boolean().optional(),
-  }).optional(),
+  prompts: z
+    .object({
+      listChanged: z.boolean().optional(),
+    })
+    .optional(),
+  resources: z
+    .object({
+      subscribe: z.boolean().optional(),
+      listChanged: z.boolean().optional(),
+    })
+    .optional(),
+  tools: z
+    .object({
+      listChanged: z.boolean().optional(),
+    })
+    .optional(),
 });
 
-export const InitializeRequestSchema = BaseRequestSchema.merge(z.object({
-  method: z.literal('initialize'),
-  params: z.object({
-    protocolVersion: z.string(),
-    capabilities: ClientCapabilitiesSchema,
-    clientInfo: ImplementationSchema,
-    _meta: z.any().optional(),
-  }).passthrough(),
-}));
+export const InitializeRequestSchema = BaseRequestSchema.merge(
+  z.object({
+    method: z.literal('initialize'),
+    params: z
+      .object({
+        protocolVersion: z.string(),
+        capabilities: ClientCapabilitiesSchema,
+        clientInfo: ImplementationSchema,
+        _meta: z.any().optional(),
+      })
+      .passthrough(),
+  })
+);
 
-export const InitializeResultSchema = BaseResultSchema.merge(z.object({
-  protocolVersion: z.string(),
-  capabilities: ServerCapabilitiesSchema,
-  serverInfo: ImplementationSchema,
-  instructions: z.string().optional(),
-}));
+export const InitializeResultSchema = BaseResultSchema.merge(
+  z.object({
+    protocolVersion: z.string(),
+    capabilities: ServerCapabilitiesSchema,
+    serverInfo: ImplementationSchema,
+    instructions: z.string().optional(),
+  })
+);
 
 export const InitializedNotificationSchema = z.object({
   method: z.literal('notifications/initialized'),

@@ -29,8 +29,8 @@ const app = await DockerMcpRunner.buildAndLaunch({
   imageName: 'github-mcp:latest',
   env: {
     GITHUB_PERSONAL_ACCESS_TOKEN: process.env.GITHUB_PERSONAL_ACCESS_TOKEN!,
-    DEBUG: 'true'
-  }
+    DEBUG: 'true',
+  },
 });
 ```
 
@@ -82,6 +82,7 @@ GITHUB_PERSONAL_ACCESS_TOKEN=your_token pnpm vitest run --config samples/vitest.
 5. Write tests using the expect-mcp matchers
 
 Example structure:
+
 ```
 samples/
   your-server/

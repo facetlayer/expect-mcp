@@ -1,8 +1,11 @@
 #!/usr/bin/env node
 
-import { Server } from "@modelcontextprotocol/sdk/server/index.js";
-import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
-import { ListResourcesRequestSchema, ReadResourceRequestSchema } from "@modelcontextprotocol/sdk/types.js";
+import { Server } from '@modelcontextprotocol/sdk/server/index.js';
+import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
+import {
+  ListResourcesRequestSchema,
+  ReadResourceRequestSchema,
+} from '@modelcontextprotocol/sdk/types.js';
 
 /**
  * Deliberately broken MCP server that claims resources capability
@@ -14,8 +17,8 @@ class ResourcesNotListedServer {
   constructor() {
     this.server = new Server(
       {
-        name: "resources-not-listed-server",
-        version: "1.0.0",
+        name: 'resources-not-listed-server',
+        version: '1.0.0',
       },
       {
         capabilities: {
@@ -36,14 +39,14 @@ class ResourcesNotListedServer {
     });
 
     // But still handles resource reads (should fail validation)
-    this.server.setRequestHandler(ReadResourceRequestSchema, async (request) => {
+    this.server.setRequestHandler(ReadResourceRequestSchema, async request => {
       const { uri } = request.params;
 
       return {
         contents: [
           {
             uri,
-            mimeType: "text/plain",
+            mimeType: 'text/plain',
             text: `Content of undeclared resource: ${uri}`,
           },
         ],
@@ -59,8 +62,8 @@ class ResourcesNotListedServer {
 
 if (import.meta.url === `file://${process.argv[1]}`) {
   const server = new ResourcesNotListedServer();
-  server.start().catch((error) => {
-    console.error("Server failed to start:", error);
+  server.start().catch(error => {
+    console.error('Server failed to start:', error);
     process.exit(1);
   });
 }

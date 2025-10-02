@@ -45,7 +45,11 @@ export function checkCastMCPStdinSubprocess<T>(
   received: unknown,
   utils: MatcherUtils
 ): CheckMCPSubprocessResult<T> {
-  if (!received || typeof received !== 'object' || !(received.constructor as any)._isMCPStdinSubprocess) {
+  if (
+    !received ||
+    typeof received !== 'object' ||
+    !(received.constructor as any)._isMCPStdinSubprocess
+  ) {
     return {
       ok: false,
       result: {

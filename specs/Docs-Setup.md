@@ -47,6 +47,7 @@ The documentation is automatically deployed to GitHub Pages when changes are pus
 ## Content Sources
 
 The documentation content is derived from:
+
 - README.md (project overview)
 - Source code TypeScript interfaces and exports
 - Inline JSDoc comments (when available)

@@ -1,6 +1,6 @@
 import { z } from 'zod';
-import { BaseRequestSchema, BaseResultSchema, CursorSchema } from './jsonrpc.js';
 import { BaseMetadataSchema } from './initialization.js';
+import { BaseRequestSchema, BaseResultSchema, CursorSchema } from './jsonrpc.js';
 
 export const TextContentSchema = z.object({
   type: z.literal('text'),
@@ -45,41 +45,56 @@ export const ToolAnnotationsSchema = z.object({
   openWorldHint: z.boolean().optional(),
 });
 
-export const ToolSchema = BaseMetadataSchema.merge(z.object({
-  description: z.string().optional(),
-  inputSchema: JSONSchemaObjectSchema,
-  outputSchema: JSONSchemaObjectSchema.optional(),
-  annotations: ToolAnnotationsSchema.optional(),
-  _meta: z.record(z.string(), z.unknown()).optional(),
-}));
-
-export const ListToolsRequestSchema = BaseRequestSchema.merge(z.object({
-  method: z.literal('tools/list'),
-  params: z.object({
-    cursor: CursorSchema.optional(),
+export const ToolSchema = BaseMetadataSchema.merge(
+  z.object({
+    description: z.string().optional(),
+    inputSchema: JSONSchemaObjectSchema,
+    outputSchema: JSONSchemaObjectSchema.optional(),
+    annotations: ToolAnnotationsSchema.optional(),
     _meta: z.record(z.string(), z.unknown()).optional(),
-  }).passthrough().optional(),
-}));
+  })
+);
 
-export const ListToolsResultSchema = BaseResultSchema.merge(z.object({
-  tools: z.array(ToolSchema),
-  nextCursor: CursorSchema.optional(),
-}));
+export const ListToolsRequestSchema = BaseRequestSchema.merge(
+  z.object({
+    method: z.literal('tools/list'),
+    params: z
+      .object({
+        cursor: CursorSchema.optional(),
+        _meta: z.record(z.string(), z.unknown()).optional(),
+      })
+      .passthrough()
+      .optional(),
+  })
+);
 
-export const CallToolRequestSchema = BaseRequestSchema.merge(z.object({
-  method: z.literal('tools/call'),
-  params: z.object({
-    name: z.string(),
-    arguments: z.record(z.string(), z.unknown()).optional(),
-    _meta: z.record(z.string(), z.unknown()).optional(),
-  }).passthrough(),
-}));
+export const ListToolsResultSchema = BaseResultSchema.merge(
+  z.object({
+    tools: z.array(ToolSchema),
+    nextCursor: CursorSchema.optional(),
+  })
+);
 
-export const CallToolResultSchema = BaseResultSchema.merge(z.object({
-  content: z.array(ContentBlockSchema),
-  structuredContent: z.record(z.string(), z.unknown()).optional(),
-  isError: z.boolean().optional(),
-}));
+export const CallToolRequestSchema = BaseRequestSchema.merge(
+  z.object({
+    method: z.literal('tools/call'),
+    params: z
+      .object({
+        name: z.string(),
+        arguments: z.record(z.string(), z.unknown()).optional(),
+        _meta: z.record(z.string(), z.unknown()).optional(),
+      })
+      .passthrough(),
+  })
+);
+
+export const CallToolResultSchema = BaseResultSchema.merge(
+  z.object({
+    content: z.array(ContentBlockSchema),
+    structuredContent: z.record(z.string(), z.unknown()).optional(),
+    isError: z.boolean().optional(),
+  })
+);
 
 export const ToolListChangedNotificationSchema = z.object({
   method: z.literal('notifications/tools/list_changed'),

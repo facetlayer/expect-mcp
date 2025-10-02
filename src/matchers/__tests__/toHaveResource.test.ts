@@ -1,15 +1,15 @@
 import { describe, expect, it, vi } from 'vitest';
 import { MCPStdinSubprocess } from '../../MCPStdinSubprocess.js';
-import { toHaveResource } from '../toHaveResource.js';
 import { resolveUtils } from '../../utils.js';
+import { toHaveResource } from '../toHaveResource.js';
 
-vi.mock('../../utils.js', async (importOriginal) => {
+vi.mock('../../utils.js', async importOriginal => {
   const actual = await importOriginal<typeof import('../../utils.js')>();
   return {
     ...actual,
     resolveUtils: vi.fn(() => ({
-      printReceived: vi.fn((value) => `received: ${JSON.stringify(value)}`),
-      printExpected: vi.fn((value) => `expected: ${JSON.stringify(value)}`),
+      printReceived: vi.fn(value => `received: ${JSON.stringify(value)}`),
+      printExpected: vi.fn(value => `expected: ${JSON.stringify(value)}`),
     })),
   };
 });

@@ -28,7 +28,7 @@ describe('Candle MCP Server', () => {
       projectDir,
       imageName,
       verbose: false,
-      allowDebugLogging: true // Candle outputs non-JSON logs for service operations
+      allowDebugLogging: true, // Candle outputs non-JSON logs for service operations
     });
 
     await app.initialize();

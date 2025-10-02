@@ -14,7 +14,7 @@ describe('Filesystem MCP Server', () => {
     app = await DockerMcpRunner.buildAndLaunch({
       projectDir,
       imageName,
-      verbose: false
+      verbose: false,
     });
 
     await app.initialize();
@@ -58,7 +58,7 @@ describe('Filesystem MCP Server', () => {
   describe('Filesystem Operations', () => {
     it('should list directory contents', async () => {
       const response = await app.callTool('list_directory', {
-        path: '/app'
+        path: '/app',
       });
 
       expect(response).toBeDefined();
@@ -70,7 +70,7 @@ describe('Filesystem MCP Server', () => {
       // Write a test file
       const writeResponse = await app.callTool('write_file', {
         path: '/app/test.txt',
-        content: 'Hello from expect-mcp!'
+        content: 'Hello from expect-mcp!',
       });
 
       expect(writeResponse).toBeDefined();
@@ -78,7 +78,7 @@ describe('Filesystem MCP Server', () => {
 
       // Read the file back
       const readResponse = await app.callTool('read_file', {
-        path: '/app/test.txt'
+        path: '/app/test.txt',
       });
 
       expect(readResponse).toBeDefined();
@@ -90,7 +90,7 @@ describe('Filesystem MCP Server', () => {
 
     it('should get file info', async () => {
       const response = await app.callTool('get_file_info', {
-        path: '/app/test.txt'
+        path: '/app/test.txt',
       });
 
       expect(response).toBeDefined();
@@ -102,7 +102,7 @@ describe('Filesystem MCP Server', () => {
 
     it('should create a directory', async () => {
       const response = await app.callTool('create_directory', {
-        path: '/app/testdir'
+        path: '/app/testdir',
       });
 
       expect(response).toBeDefined();
@@ -110,7 +110,7 @@ describe('Filesystem MCP Server', () => {
 
       // Verify the directory exists by listing parent
       const listResponse = await app.callTool('list_directory', {
-        path: '/app'
+        path: '/app',
       });
 
       const content = listResponse.content.find(c => c.type === 'text');
@@ -121,13 +121,13 @@ describe('Filesystem MCP Server', () => {
       // Create a file to move
       await app.callTool('write_file', {
         path: '/app/source.txt',
-        content: 'File to move'
+        content: 'File to move',
       });
 
       // Move the file
       const moveResponse = await app.callTool('move_file', {
         source: '/app/source.txt',
-        destination: '/app/testdir/moved.txt'
+        destination: '/app/testdir/moved.txt',
       });
 
       expect(moveResponse).toBeDefined();
@@ -135,7 +135,7 @@ describe('Filesystem MCP Server', () => {
 
       // Verify the file was moved
       const readResponse = await app.callTool('read_file', {
-        path: '/app/testdir/moved.txt'
+        path: '/app/testdir/moved.txt',
       });
 
       const content = readResponse.content.find(c => c.type === 'text');
@@ -146,7 +146,7 @@ describe('Filesystem MCP Server', () => {
   describe('Error Handling', () => {
     it('should handle reading non-existent file', async () => {
       const response = await app.callTool('read_file', {
-        path: '/app/nonexistent.txt'
+        path: '/app/nonexistent.txt',
       });
 
       expect(response).toBeDefined();
@@ -155,7 +155,7 @@ describe('Filesystem MCP Server', () => {
 
     it('should handle invalid paths', async () => {
       const response = await app.callTool('list_directory', {
-        path: '/invalid/path'
+        path: '/invalid/path',
       });
 
       expect(response).toBeDefined();

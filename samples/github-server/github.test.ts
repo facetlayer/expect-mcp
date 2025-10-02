@@ -22,8 +22,8 @@ describe('GitHub MCP Server', () => {
       imageName,
       verbose: false,
       env: {
-        GITHUB_PERSONAL_ACCESS_TOKEN: process.env.GITHUB_PERSONAL_ACCESS_TOKEN!
-      }
+        GITHUB_PERSONAL_ACCESS_TOKEN: process.env.GITHUB_PERSONAL_ACCESS_TOKEN!,
+      },
     });
 
     await app.initialize();
@@ -73,7 +73,7 @@ describe('GitHub MCP Server', () => {
   describe('GitHub Operations', () => {
     it.skipIf(!hasGitHubToken)('should search repositories', async () => {
       const response = await app.callTool('search_repositories', {
-        query: 'modelcontextprotocol language:typescript stars:>100'
+        query: 'modelcontextprotocol language:typescript stars:>100',
       });
 
       expect(response).toBeDefined();
@@ -88,7 +88,7 @@ describe('GitHub MCP Server', () => {
       const response = await app.callTool('get_file_contents', {
         owner: 'modelcontextprotocol',
         repo: 'servers',
-        path: 'README.md'
+        path: 'README.md',
       });
 
       expect(response).toBeDefined();
@@ -104,7 +104,7 @@ describe('GitHub MCP Server', () => {
       // or use a test repository
       const response = await app.callTool('fork_repository', {
         owner: 'modelcontextprotocol',
-        repo: 'servers'
+        repo: 'servers',
       });
 
       expect(response).toBeDefined();
@@ -118,7 +118,7 @@ describe('GitHub MCP Server', () => {
         owner: 'modelcontextprotocol',
         repo: 'servers',
         branch: `test-branch-${Date.now()}`,
-        from: 'main'
+        from: 'main',
       });
 
       expect(response).toBeDefined();
@@ -129,7 +129,7 @@ describe('GitHub MCP Server', () => {
       const response = await app.callTool('list_issues', {
         owner: 'modelcontextprotocol',
         repo: 'servers',
-        state: 'all'
+        state: 'all',
       });
 
       expect(response).toBeDefined();
@@ -140,7 +140,7 @@ describe('GitHub MCP Server', () => {
       const response = await app.callTool('list_pull_requests', {
         owner: 'modelcontextprotocol',
         repo: 'servers',
-        state: 'all'
+        state: 'all',
       });
 
       expect(response).toBeDefined();
@@ -153,7 +153,7 @@ describe('GitHub MCP Server', () => {
       const response = await app.callTool('get_file_contents', {
         owner: 'nonexistent',
         repo: 'nonexistent-repo-12345',
-        path: 'README.md'
+        path: 'README.md',
       });
 
       expect(response).toBeDefined();
@@ -164,7 +164,7 @@ describe('GitHub MCP Server', () => {
       const response = await app.callTool('get_file_contents', {
         owner: 'modelcontextprotocol',
         repo: 'servers',
-        path: 'nonexistent-file-12345.txt'
+        path: 'nonexistent-file-12345.txt',
       });
 
       expect(response).toBeDefined();
@@ -173,7 +173,7 @@ describe('GitHub MCP Server', () => {
 
     it.skipIf(!hasGitHubToken)('should handle invalid search query', async () => {
       const response = await app.callTool('search_repositories', {
-        query: ''
+        query: '',
       });
 
       expect(response).toBeDefined();

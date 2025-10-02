@@ -1,15 +1,14 @@
-
 # Project description
 
 Custom [Vitest](https://vitest.dev/) matchers to write test assertions for Model Context Protocol (MCP) tools.
 
 # File layout
 
- - ./README.md - Public project description
- - ./src - All library source code
- - ./test - Test suite
- - ./test/failureCases - Tests that are deliberately failing to verify that assertions are working.
- - ./test/gallery - Implementing the library with various 3rd party projects.
+- ./README.md - Public project description
+- ./src - All library source code
+- ./test - Test suite
+- ./test/failureCases - Tests that are deliberately failing to verify that assertions are working.
+- ./test/gallery - Implementing the library with various 3rd party projects.
 
 # spec files
 

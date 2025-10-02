@@ -1,7 +1,7 @@
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { MCPStdinSubprocess } from '../../dist/index.js';
-import { DockerMcpRunner } from '../dockerMcpRunner.js';
 import '../../dist/vitest-setup.js';
+import { DockerMcpRunner } from '../dockerMcpRunner.js';
 
 describe('Memory MCP Server', () => {
   let app: MCPStdinSubprocess;
@@ -14,7 +14,7 @@ describe('Memory MCP Server', () => {
     app = await DockerMcpRunner.buildAndLaunch({
       projectDir,
       imageName,
-      verbose: false
+      verbose: false,
     });
 
     await app.initialize();
@@ -63,9 +63,9 @@ describe('Memory MCP Server', () => {
           {
             name: 'test-entity',
             entityType: 'concept',
-            observations: ['This is a test entity']
-          }
-        ]
+            observations: ['This is a test entity'],
+          },
+        ],
       });
 
       expect(response).toBeDefined();
@@ -75,7 +75,7 @@ describe('Memory MCP Server', () => {
 
     it('should search for nodes in the knowledge graph', async () => {
       const response = await app.callTool('search_nodes', {
-        query: 'test'
+        query: 'test',
       });
 
       expect(response).toBeDefined();
@@ -102,14 +102,14 @@ describe('Memory MCP Server', () => {
           {
             name: 'entity-a',
             entityType: 'concept',
-            observations: ['First entity']
+            observations: ['First entity'],
           },
           {
             name: 'entity-b',
             entityType: 'concept',
-            observations: ['Second entity']
-          }
-        ]
+            observations: ['Second entity'],
+          },
+        ],
       });
 
       // Create a relation between them
@@ -118,9 +118,9 @@ describe('Memory MCP Server', () => {
           {
             from: 'entity-a',
             to: 'entity-b',
-            relationType: 'related_to'
-          }
-        ]
+            relationType: 'related_to',
+          },
+        ],
       });
 
       expect(response).toBeDefined();
@@ -132,9 +132,9 @@ describe('Memory MCP Server', () => {
         observations: [
           {
             entityName: 'test-entity',
-            contents: ['Additional observation about test entity']
-          }
-        ]
+            contents: ['Additional observation about test entity'],
+          },
+        ],
       });
 
       expect(response).toBeDefined();
@@ -143,7 +143,7 @@ describe('Memory MCP Server', () => {
 
     it('should open specific nodes by name', async () => {
       const response = await app.callTool('open_nodes', {
-        names: ['test-entity']
+        names: ['test-entity'],
       });
 
       expect(response).toBeDefined();
@@ -155,7 +155,7 @@ describe('Memory MCP Server', () => {
 
     it('should delete entities', async () => {
       const response = await app.callTool('delete_entities', {
-        entityNames: ['test-entity']
+        entityNames: ['test-entity'],
       });
 
       expect(response).toBeDefined();
@@ -166,7 +166,7 @@ describe('Memory MCP Server', () => {
   describe('Error Handling', () => {
     it('should handle searching for non-existent nodes', async () => {
       const response = await app.callTool('search_nodes', {
-        query: 'nonexistent-entity-12345'
+        query: 'nonexistent-entity-12345',
       });
 
       expect(response).toBeDefined();
@@ -175,7 +175,7 @@ describe('Memory MCP Server', () => {
 
     it('should handle opening non-existent nodes', async () => {
       const response = await app.callTool('open_nodes', {
-        names: ['nonexistent-entity']
+        names: ['nonexistent-entity'],
       });
 
       expect(response).toBeDefined();
@@ -185,7 +185,7 @@ describe('Memory MCP Server', () => {
 
     it('should handle invalid entity creation', async () => {
       const response = await app.callTool('create_entities', {
-        entities: []
+        entities: [],
       });
 
       expect(response).toBeDefined();

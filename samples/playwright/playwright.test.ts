@@ -14,7 +14,7 @@ describe('Playwright MCP Server', () => {
     app = await DockerMcpRunner.buildAndLaunch({
       projectDir,
       imageName,
-      verbose: false
+      verbose: false,
     });
 
     await app.initialize();
@@ -69,7 +69,7 @@ describe('Playwright MCP Server', () => {
   describe('Browser Navigation and Basic Operations', () => {
     it('should navigate to a webpage and capture snapshot', async () => {
       const navigateResponse = await app.callTool('browser_navigate', {
-        url: 'https://example.com'
+        url: 'https://example.com',
       });
       expect(navigateResponse).toBeDefined();
 
@@ -96,7 +96,7 @@ describe('Playwright MCP Server', () => {
 
     it('should take screenshots successfully', async () => {
       const screenshotResponse = await app.callTool('browser_take_screenshot', {
-        type: 'png'
+        type: 'png',
       });
       expect(screenshotResponse).toBeDefined();
       expect(screenshotResponse.content).toBeDefined();
@@ -108,7 +108,7 @@ describe('Playwright MCP Server', () => {
 
     it('should evaluate JavaScript on the page', async () => {
       const evaluateResponse = await app.callTool('browser_evaluate', {
-        function: '() => document.title'
+        function: '() => document.title',
       });
       expect(evaluateResponse).toBeDefined();
       expect(evaluateResponse.content).toBeDefined();
@@ -123,7 +123,7 @@ describe('Playwright MCP Server', () => {
     it('should handle form interactions on a test page', async () => {
       // Navigate to a page with forms (httpbin.org has good test endpoints)
       const navigateResponse = await app.callTool('browser_navigate', {
-        url: 'https://httpbin.org/forms/post'
+        url: 'https://httpbin.org/forms/post',
       });
       expect(navigateResponse).toBeDefined();
 
@@ -140,7 +140,7 @@ describe('Playwright MCP Server', () => {
 
     it('should wait for elements to appear', async () => {
       const waitResponse = await app.callTool('browser_wait_for', {
-        time: 1
+        time: 1,
       });
       expect(waitResponse).toBeDefined();
       expect(waitResponse.content).toBeDefined();
@@ -150,7 +150,7 @@ describe('Playwright MCP Server', () => {
   describe('Error Handling and Edge Cases', () => {
     it('should handle invalid URLs gracefully', async () => {
       const response = await app.callTool('browser_navigate', {
-        url: 'invalid-url'
+        url: 'invalid-url',
       });
       expect(response).toBeDefined();
       // This should either succeed (if browser handles it) or show an error in content
@@ -169,7 +169,7 @@ describe('Playwright MCP Server', () => {
     it('should handle invalid element references', async () => {
       const response = await app.callTool('browser_click', {
         element: 'Non-existent element',
-        ref: 'invalid-ref-123'
+        ref: 'invalid-ref-123',
       });
       expect(response).toBeDefined();
       // This should show an error for invalid element reference
@@ -180,7 +180,7 @@ describe('Playwright MCP Server', () => {
   describe('Browser Management Features', () => {
     it('should handle browser tab operations', async () => {
       const listTabsResponse = await app.callTool('browser_tabs', {
-        action: 'list'
+        action: 'list',
       });
       expect(listTabsResponse).toBeDefined();
       expect(listTabsResponse.content).toBeDefined();
@@ -189,7 +189,7 @@ describe('Playwright MCP Server', () => {
     it('should resize browser window', async () => {
       const resizeResponse = await app.callTool('browser_resize', {
         width: 1024,
-        height: 768
+        height: 768,
       });
       expect(resizeResponse).toBeDefined();
       expect(resizeResponse.content).toBeDefined();
@@ -211,7 +211,7 @@ describe('Playwright MCP Server', () => {
   describe('Advanced Interaction Features', () => {
     it('should handle keyboard interactions', async () => {
       const keyResponse = await app.callTool('browser_press_key', {
-        key: 'Escape'
+        key: 'Escape',
       });
       expect(keyResponse).toBeDefined();
       expect(keyResponse.content).toBeDefined();
@@ -223,7 +223,7 @@ describe('Playwright MCP Server', () => {
         startElement: 'Source element',
         startRef: 'start-ref',
         endElement: 'Target element',
-        endRef: 'end-ref'
+        endRef: 'end-ref',
       });
       expect(dragResponse).toBeDefined();
       // Expect this to fail with invalid references
@@ -233,7 +233,7 @@ describe('Playwright MCP Server', () => {
     it('should handle hover operations', async () => {
       const hoverResponse = await app.callTool('browser_hover', {
         element: 'Some element',
-        ref: 'hover-ref'
+        ref: 'hover-ref',
       });
       expect(hoverResponse).toBeDefined();
       // Expect this to fail with invalid references
@@ -272,7 +272,7 @@ describe('Playwright MCP Server', () => {
     it('should maintain session state across multiple operations', async () => {
       // Navigate to a test page
       const navigateResponse = await app.callTool('browser_navigate', {
-        url: 'https://example.com'
+        url: 'https://example.com',
       });
       expect(navigateResponse).toBeDefined();
 
@@ -281,7 +281,7 @@ describe('Playwright MCP Server', () => {
 
       // Evaluate JavaScript to get current URL
       const evaluateResponse = await app.callTool('browser_evaluate', {
-        function: '() => window.location.href'
+        function: '() => window.location.href',
       });
       expect(evaluateResponse).toBeDefined();
       const text = evaluateResponse.content[0]?.text || '';

@@ -1,9 +1,9 @@
 import { unixPipeToLines } from '@facetlayer/parse-stdout-lines';
 import { ChildProcess, spawn, SpawnOptions } from 'child_process';
 import * as events from 'events';
-import { JsonRpcNotification, JsonRpcRequest, JsonRpcResponse } from './types/JsonRPC.js';
 import { ProcessExitWhileWaitingForResponse } from './errors.js';
 import { JSONRPCMessageSchema } from './schemas/index.js';
+import { JsonRpcNotification, JsonRpcRequest, JsonRpcResponse } from './types/JsonRPC.js';
 
 const VerboseLogging = false;
 const DefaultRequestTimeout = 15000;

@@ -25,10 +25,10 @@ class BothResultAndErrorServer {
     this.rl = createInterface({
       input: process.stdin,
       output: process.stdout,
-      terminal: false
+      terminal: false,
     });
 
-    this.rl.on('line', (line) => {
+    this.rl.on('line', line => {
       this.handleMessage(line);
     });
 
@@ -69,12 +69,12 @@ class BothResultAndErrorServer {
         serverInfo: {
           name: 'both-result-and-error-server',
           version: '1.0.0',
-        }
+        },
       },
       error: {
         code: -32000,
-        message: 'This should not be here with result!'
-      }
+        message: 'This should not be here with result!',
+      },
     };
 
     process.stdout.write(JSON.stringify(brokenResponse) + '\n');

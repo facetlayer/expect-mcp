@@ -20,10 +20,10 @@ class MismatchedIdServer {
     this.rl = createInterface({
       input: process.stdin,
       output: process.stdout,
-      terminal: false
+      terminal: false,
     });
 
-    this.rl.on('line', (line) => {
+    this.rl.on('line', line => {
       this.handleMessage(line);
     });
 
@@ -64,8 +64,8 @@ class MismatchedIdServer {
         serverInfo: {
           name: 'mismatched-id-server',
           version: '1.0.0',
-        }
-      }
+        },
+      },
     };
 
     process.stdout.write(JSON.stringify(brokenResponse) + '\n');

@@ -1,4 +1,4 @@
-import { describe, expect, it, beforeAll } from 'vitest';
+import { beforeAll, describe, expect, it } from 'vitest';
 import { MCPStdinSubprocess, mcpShell } from '../../src';
 import '../../src/vitest-setup.js';
 
@@ -15,7 +15,9 @@ describe('JSON-RPC 2.0 Compliance', () => {
     });
 
     it('should reject messages missing "jsonrpc" field', async () => {
-      await expect(process.initialize()).rejects.toThrow(/Response that does not match the JSON-RPC schema/);
+      await expect(process.initialize()).rejects.toThrow(
+        /Response that does not match the JSON-RPC schema/
+      );
     });
   });
 

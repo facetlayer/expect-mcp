@@ -28,12 +28,7 @@ const sidebars = {
     {
       type: 'category',
       label: 'API Reference',
-      items: [
-        'api/matchers',
-        'api/mcp-testing',
-        'api/strict-mode',
-        'api/types',
-      ],
+      items: ['api/matchers', 'api/mcp-testing', 'api/strict-mode', 'api/types'],
     },
   ],
 };

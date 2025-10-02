@@ -23,10 +23,10 @@ class MCPServer {
     this.rl = createInterface({
       input: process.stdin,
       output: process.stdout,
-      terminal: false
+      terminal: false,
     });
 
-    this.rl.on('line', (line) => {
+    this.rl.on('line', line => {
       this.handleMessage(line);
     });
 
@@ -76,8 +76,8 @@ class MCPServer {
           // Missing some expected capabilities structure
         },
         // Missing serverInfo - this should cause validation to fail
-        instructions: 'This is a deliberately broken MCP server for testing'
-      }
+        instructions: 'This is a deliberately broken MCP server for testing',
+      },
     };
 
     this.sendMessage(brokenResponse);
@@ -99,8 +99,8 @@ class MCPServer {
       error: {
         code,
         message,
-        data
-      }
+        data,
+      },
     };
     this.sendMessage(errorResponse);
   }
@@ -115,8 +115,7 @@ async function main() {
   server.start();
 }
 
-main()
-.catch(err => {
+main().catch(err => {
   console.error(err);
   process.exit(1);
 });

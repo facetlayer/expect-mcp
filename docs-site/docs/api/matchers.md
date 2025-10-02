@@ -13,6 +13,7 @@ expect(response).toBeValidMCPResponse();
 ### Validation Rules
 
 The matcher verifies:
+
 - `jsonrpc` equals `'2.0'`
 - `id` is a string, number, or `null`
 - Either `result` or `error` is present
@@ -29,10 +30,10 @@ const response = {
     content: [
       {
         type: 'text',
-        text: 'Hello, world!'
-      }
-    ]
-  }
+        text: 'Hello, world!',
+      },
+    ],
+  },
 };
 
 expect(response).toBeValidMCPResponse();
@@ -59,8 +60,8 @@ const errorResponse = {
   id: 1,
   error: {
     code: -32602,
-    message: 'Invalid params'
-  }
+    message: 'Invalid params',
+  },
 };
 
 expect(errorResponse).toHaveMCPError();

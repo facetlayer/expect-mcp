@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
-import { Server } from "@modelcontextprotocol/sdk/server/index.js";
-import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
+import { Server } from '@modelcontextprotocol/sdk/server/index.js';
+import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 
 /**
  * Sample MCP server using the official ModelContextProtocol SDK.
@@ -14,8 +14,8 @@ class OfficialSDKSampleServer {
   constructor() {
     this.server = new Server(
       {
-        name: "official-sdk-sample",
-        version: "1.0.0",
+        name: 'official-sdk-sample',
+        version: '1.0.0',
       },
       {
         capabilities: {
@@ -35,8 +35,8 @@ class OfficialSDKSampleServer {
 // Start the server when run directly
 if (import.meta.url === `file://${process.argv[1]}`) {
   const server = new OfficialSDKSampleServer();
-  server.start().catch((error) => {
-    console.error("Server failed to start:", error);
+  server.start().catch(error => {
+    console.error('Server failed to start:', error);
     process.exit(1);
   });
 }

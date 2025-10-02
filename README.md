@@ -96,7 +96,7 @@ import { MCPStdinSubprocess } from 'expect-mcp';
 const app = new MCPStdinSubprocess({
   strictMode: true,
   command: 'node',
-  args: ['path/to/mcp-server.js']
+  args: ['path/to/mcp-server.js'],
 });
 
 await app.initialize();
@@ -118,13 +118,13 @@ Strict mode can throw the following types of errors:
 
 ```ts
 // JSON parsing errors
-"Strict mode: Response is not valid JSON: <error details>"
+'Strict mode: Response is not valid JSON: <error details>';
 
 // JSON-RPC format errors
-"Strict mode: Invalid JSON-RPC response: <validation details>"
+'Strict mode: Invalid JSON-RPC response: <validation details>';
 
 // Schema validation errors
-"Strict mode: Initialize response validation failed: <schema errors>"
+'Strict mode: Initialize response validation failed: <schema errors>';
 ```
 
 ### Use Cases

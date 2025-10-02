@@ -7,6 +7,7 @@ Strict Mode is an optional feature in the expect-mcp library that enables enhanc
 ## Purpose
 
 Strict mode addresses the need for:
+
 - **Protocol Compliance**: Ensuring all messages conform to JSON-RPC 2.0 and MCP specifications
 - **Early Error Detection**: Catching malformed responses and invalid data structures before they cause issues
 - **Testing Reliability**: Providing more deterministic behavior in test environments
@@ -51,7 +52,7 @@ import { MCPStdinSubprocess } from 'expect-mcp';
 const mcp = new MCPStdinSubprocess({
   strictMode: true,
   command: 'my-mcp-server',
-  args: []
+  args: [],
 });
 
 // Check if strict mode is enabled
@@ -84,18 +85,19 @@ Strict mode can throw the following types of errors:
 
 ```typescript
 // JSON parsing errors
-"Strict mode: Response is not valid JSON: <error details>"
+'Strict mode: Response is not valid JSON: <error details>';
 
 // JSON-RPC format errors
-"Strict mode: Invalid JSON-RPC response: <validation details>"
+'Strict mode: Invalid JSON-RPC response: <validation details>';
 
 // Schema validation errors
-"Strict mode: Initialize response validation failed: <schema errors>"
+'Strict mode: Initialize response validation failed: <schema errors>';
 ```
 
 ### Error Context
 
 All strict mode errors include:
+
 - Clear indication that strict mode is enabled
 - Specific validation failure reason
 - Detailed error context from Zod validation
@@ -112,7 +114,7 @@ describe('MCP Server Tests', () => {
   it('should handle valid responses in strict mode', async () => {
     const mcp = new MCPStdinSubprocess({
       strictMode: true,
-      command: 'test-server'
+      command: 'test-server',
     });
 
     const result = await mcp.initialize();
@@ -124,6 +126,7 @@ describe('MCP Server Tests', () => {
 ### Validation Testing
 
 Test cases should cover:
+
 - Valid message formats
 - Invalid JSON-RPC structures
 - Schema validation failures
@@ -156,6 +159,7 @@ src/schemas/
 ### Validation Overhead
 
 Strict mode adds validation overhead:
+
 - **Schema Parsing**: Zod validation on each message
 - **Memory Usage**: Schema objects stored in memory
 - **CPU Cost**: Additional processing for validation
@@ -203,6 +207,7 @@ Strict mode adds validation overhead:
 ## Future Enhancements
 
 Potential future additions to strict mode:
+
 - **Custom Validators**: User-defined validation rules
 - **Partial Validation**: Selective validation of specific message types
 - **Performance Metrics**: Validation timing and performance tracking

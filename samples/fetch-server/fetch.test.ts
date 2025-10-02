@@ -14,7 +14,7 @@ describe('Fetch MCP Server', () => {
     app = await DockerMcpRunner.buildAndLaunch({
       projectDir,
       imageName,
-      verbose: false
+      verbose: false,
     });
 
     await app.initialize();
@@ -44,7 +44,7 @@ describe('Fetch MCP Server', () => {
   describe('Fetch Operations', () => {
     it('should fetch a simple web page', async () => {
       const response = await app.callTool('fetch', {
-        url: 'https://example.com'
+        url: 'https://example.com',
       });
 
       expect(response).toBeDefined();
@@ -58,7 +58,7 @@ describe('Fetch MCP Server', () => {
 
     it('should fetch JSON content', async () => {
       const response = await app.callTool('fetch', {
-        url: 'https://api.github.com/zen'
+        url: 'https://api.github.com/zen',
       });
 
       expect(response).toBeDefined();
@@ -71,7 +71,7 @@ describe('Fetch MCP Server', () => {
     it('should handle different content types', async () => {
       // Fetch a page with structured content
       const response = await app.callTool('fetch', {
-        url: 'https://www.ietf.org/rfc/rfc2616.txt'
+        url: 'https://www.ietf.org/rfc/rfc2616.txt',
       });
 
       expect(response).toBeDefined();
@@ -84,7 +84,7 @@ describe('Fetch MCP Server', () => {
     it('should support max_length parameter', async () => {
       const response = await app.callTool('fetch', {
         url: 'https://example.com',
-        maxLength: 500
+        maxLength: 500,
       });
 
       expect(response).toBeDefined();
@@ -97,7 +97,7 @@ describe('Fetch MCP Server', () => {
 
     it('should convert HTML to markdown', async () => {
       const response = await app.callTool('fetch', {
-        url: 'https://example.com'
+        url: 'https://example.com',
       });
 
       expect(response).toBeDefined();
@@ -111,7 +111,7 @@ describe('Fetch MCP Server', () => {
 
     it('should handle redirects', async () => {
       const response = await app.callTool('fetch', {
-        url: 'http://example.com' // Should redirect to https
+        url: 'http://example.com', // Should redirect to https
       });
 
       expect(response).toBeDefined();
@@ -126,8 +126,8 @@ describe('Fetch MCP Server', () => {
         url: 'https://httpbin.org/headers',
         headers: {
           'User-Agent': 'expect-mcp-test',
-          'Accept': 'application/json'
-        }
+          Accept: 'application/json',
+        },
       });
 
       expect(response).toBeDefined();
@@ -141,7 +141,7 @@ describe('Fetch MCP Server', () => {
   describe('Error Handling', () => {
     it('should handle invalid URLs', async () => {
       const response = await app.callTool('fetch', {
-        url: 'not-a-valid-url'
+        url: 'not-a-valid-url',
       });
 
       expect(response).toBeDefined();
@@ -150,7 +150,7 @@ describe('Fetch MCP Server', () => {
 
     it('should handle non-existent domains', async () => {
       const response = await app.callTool('fetch', {
-        url: 'https://this-domain-definitely-does-not-exist-12345.com'
+        url: 'https://this-domain-definitely-does-not-exist-12345.com',
       });
 
       expect(response).toBeDefined();
@@ -159,7 +159,7 @@ describe('Fetch MCP Server', () => {
 
     it('should handle 404 responses', async () => {
       const response = await app.callTool('fetch', {
-        url: 'https://httpbin.org/status/404'
+        url: 'https://httpbin.org/status/404',
       });
 
       expect(response).toBeDefined();
@@ -170,7 +170,7 @@ describe('Fetch MCP Server', () => {
     it('should handle timeouts', async () => {
       // httpbin.org/delay/10 will delay for 10 seconds
       const response = await app.callTool('fetch', {
-        url: 'https://httpbin.org/delay/10'
+        url: 'https://httpbin.org/delay/10',
       });
 
       expect(response).toBeDefined();
@@ -180,7 +180,7 @@ describe('Fetch MCP Server', () => {
 
     it('should handle malformed responses', async () => {
       const response = await app.callTool('fetch', {
-        url: 'https://httpbin.org/xml'
+        url: 'https://httpbin.org/xml',
       });
 
       expect(response).toBeDefined();
@@ -191,7 +191,7 @@ describe('Fetch MCP Server', () => {
   describe('Content Processing', () => {
     it('should extract text from HTML pages', async () => {
       const response = await app.callTool('fetch', {
-        url: 'https://example.com'
+        url: 'https://example.com',
       });
 
       expect(response).toBeDefined();
@@ -205,7 +205,7 @@ describe('Fetch MCP Server', () => {
 
     it('should preserve important content structure', async () => {
       const response = await app.callTool('fetch', {
-        url: 'https://example.com'
+        url: 'https://example.com',
       });
 
       expect(response).toBeDefined();

@@ -1,4 +1,4 @@
-import { describe, expect, it, beforeAll } from 'vitest';
+import { beforeAll, describe, expect, it } from 'vitest';
 import { MCPStdinSubprocess, mcpShell } from '../../src';
 import '../../src/vitest-setup.js';
 
@@ -56,7 +56,7 @@ describe('Initialize Flow', () => {
       await expect(
         Promise.race([
           process.initialize(),
-          new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout')), 1000))
+          new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout')), 1000)),
         ])
       ).rejects.toThrow('Timeout');
     }, 2000);

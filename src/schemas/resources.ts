@@ -1,6 +1,6 @@
 import { z } from 'zod';
-import { BaseRequestSchema, BaseResultSchema, CursorSchema } from './jsonrpc.js';
 import { BaseMetadataSchema } from './initialization.js';
+import { BaseRequestSchema, BaseResultSchema, CursorSchema } from './jsonrpc.js';
 
 export const AnnotationsSchema = z.object({
   audience: z.array(z.enum(['user', 'assistant'])).optional(),
@@ -50,46 +50,67 @@ export const ResourceLinkSchema = ResourceSchema.extend({
   type: z.literal('resource_link'),
 });
 
-export const ListResourcesRequestSchema = BaseRequestSchema.merge(z.object({
-  method: z.literal('resources/list'),
-  params: z.object({
-    cursor: CursorSchema.optional(),
-    _meta: z.record(z.string(), z.unknown()).optional(),
-  }).passthrough().optional(),
-}));
+export const ListResourcesRequestSchema = BaseRequestSchema.merge(
+  z.object({
+    method: z.literal('resources/list'),
+    params: z
+      .object({
+        cursor: CursorSchema.optional(),
+        _meta: z.record(z.string(), z.unknown()).optional(),
+      })
+      .passthrough()
+      .optional(),
+  })
+);
 
-export const ListResourcesResultSchema = BaseResultSchema.merge(z.object({
-  resources: z.array(ResourceSchema),
-  nextCursor: CursorSchema.optional(),
-}));
+export const ListResourcesResultSchema = BaseResultSchema.merge(
+  z.object({
+    resources: z.array(ResourceSchema),
+    nextCursor: CursorSchema.optional(),
+  })
+);
 
-export const ReadResourceRequestSchema = BaseRequestSchema.merge(z.object({
-  method: z.literal('resources/read'),
-  params: z.object({
-    uri: z.string().url(),
-    _meta: z.record(z.string(), z.unknown()).optional(),
-  }).passthrough(),
-}));
+export const ReadResourceRequestSchema = BaseRequestSchema.merge(
+  z.object({
+    method: z.literal('resources/read'),
+    params: z
+      .object({
+        uri: z.string().url(),
+        _meta: z.record(z.string(), z.unknown()).optional(),
+      })
+      .passthrough(),
+  })
+);
 
-export const ReadResourceResultSchema = BaseResultSchema.merge(z.object({
-  contents: z.array(z.union([TextResourceContentsSchema, BlobResourceContentsSchema])),
-}));
+export const ReadResourceResultSchema = BaseResultSchema.merge(
+  z.object({
+    contents: z.array(z.union([TextResourceContentsSchema, BlobResourceContentsSchema])),
+  })
+);
 
-export const SubscribeRequestSchema = BaseRequestSchema.merge(z.object({
-  method: z.literal('resources/subscribe'),
-  params: z.object({
-    uri: z.string().url(),
-    _meta: z.record(z.string(), z.unknown()).optional(),
-  }).passthrough(),
-}));
+export const SubscribeRequestSchema = BaseRequestSchema.merge(
+  z.object({
+    method: z.literal('resources/subscribe'),
+    params: z
+      .object({
+        uri: z.string().url(),
+        _meta: z.record(z.string(), z.unknown()).optional(),
+      })
+      .passthrough(),
+  })
+);
 
-export const UnsubscribeRequestSchema = BaseRequestSchema.merge(z.object({
-  method: z.literal('resources/unsubscribe'),
-  params: z.object({
-    uri: z.string().url(),
-    _meta: z.record(z.string(), z.unknown()).optional(),
-  }).passthrough(),
-}));
+export const UnsubscribeRequestSchema = BaseRequestSchema.merge(
+  z.object({
+    method: z.literal('resources/unsubscribe'),
+    params: z
+      .object({
+        uri: z.string().url(),
+        _meta: z.record(z.string(), z.unknown()).optional(),
+      })
+      .passthrough(),
+  })
+);
 
 export const ResourceUpdatedNotificationSchema = z.object({
   method: z.literal('notifications/resources/updated'),

@@ -1,8 +1,11 @@
 #!/usr/bin/env node
 
-import { Server } from "@modelcontextprotocol/sdk/server/index.js";
-import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
-import { ListResourcesRequestSchema, ReadResourceRequestSchema } from "@modelcontextprotocol/sdk/types.js";
+import { Server } from '@modelcontextprotocol/sdk/server/index.js';
+import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
+import {
+  ListResourcesRequestSchema,
+  ReadResourceRequestSchema,
+} from '@modelcontextprotocol/sdk/types.js';
 
 /**
  * Sample MCP server with resources capability
@@ -13,8 +16,8 @@ class ServerWithResources {
   constructor() {
     this.server = new Server(
       {
-        name: "server-with-resources",
-        version: "1.0.0",
+        name: 'server-with-resources',
+        version: '1.0.0',
       },
       {
         capabilities: {
@@ -32,44 +35,44 @@ class ServerWithResources {
       return {
         resources: [
           {
-            uri: "file:///example.txt",
-            name: "example.txt",
-            description: "An example text file",
-            mimeType: "text/plain",
+            uri: 'file:///example.txt',
+            name: 'example.txt',
+            description: 'An example text file',
+            mimeType: 'text/plain',
           },
           {
-            uri: "file:///data.json",
-            name: "data.json",
-            description: "Example JSON data",
-            mimeType: "application/json",
+            uri: 'file:///data.json',
+            name: 'data.json',
+            description: 'Example JSON data',
+            mimeType: 'application/json',
           },
         ],
       };
     });
 
     // Handle resources/read
-    this.server.setRequestHandler(ReadResourceRequestSchema, async (request) => {
+    this.server.setRequestHandler(ReadResourceRequestSchema, async request => {
       const { uri } = request.params;
 
       switch (uri) {
-        case "file:///example.txt":
+        case 'file:///example.txt':
           return {
             contents: [
               {
                 uri,
-                mimeType: "text/plain",
-                text: "Hello, world!",
+                mimeType: 'text/plain',
+                text: 'Hello, world!',
               },
             ],
           };
 
-        case "file:///data.json":
+        case 'file:///data.json':
           return {
             contents: [
               {
                 uri,
-                mimeType: "application/json",
-                text: JSON.stringify({ key: "value" }),
+                mimeType: 'application/json',
+                text: JSON.stringify({ key: 'value' }),
               },
             ],
           };
@@ -88,8 +91,8 @@ class ServerWithResources {
 
 if (import.meta.url === `file://${process.argv[1]}`) {
   const server = new ServerWithResources();
-  server.start().catch((error) => {
-    console.error("Server failed to start:", error);
+  server.start().catch(error => {
+    console.error('Server failed to start:', error);
     process.exit(1);
   });
 }

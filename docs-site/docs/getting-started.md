@@ -44,10 +44,10 @@ test('validates MCP response format', () => {
       content: [
         {
           type: 'text',
-          text: 'Hello, world!'
-        }
-      ]
-    }
+          text: 'Hello, world!',
+        },
+      ],
+    },
   };
 
   expect(response).toBeValidMCPResponse();

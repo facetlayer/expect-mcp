@@ -1,11 +1,15 @@
-import { JsonRpcSubprocess, JsonRpcSubprocessOptions } from './JsonRPCSubprocess.js';
-import {
-  JSONRPCMessageSchema,
-  LATEST_PROTOCOL_VERSION,
-} from './schemas/index.js';
-import { InitializeResultSchema } from './schemas/initialization.js';
-import { MCPInitializeParams, MCPInitializeResult, MCPResource, MCPResourcesListResult, MCPTool, MCPToolsListResult } from './types/MCP.js';
 import { ProtocolError, ToolCallError } from './errors.js';
+import { JsonRpcSubprocess, JsonRpcSubprocessOptions } from './JsonRPCSubprocess.js';
+import { LATEST_PROTOCOL_VERSION } from './schemas/index.js';
+import { InitializeResultSchema } from './schemas/initialization.js';
+import {
+  MCPInitializeParams,
+  MCPInitializeResult,
+  MCPResource,
+  MCPResourcesListResult,
+  MCPTool,
+  MCPToolsListResult,
+} from './types/MCP.js';
 
 export interface MCPStdinSubprocessOptions extends JsonRpcSubprocessOptions {
   requestTimeout?: number;
@@ -37,13 +41,20 @@ export class MCPStdinSubprocess extends JsonRpcSubprocess {
         let processName = this.initializeResult?.serverInfo?.name || 'mcp subprocess';
         console.log(`[${processName}]`, line);
       } else {
-        this.recordProtocolError(new ProtocolError("Process produced non-JSON output: " + line));
+        this.recordProtocolError(new ProtocolError('Process produced non-JSON output: ' + line));
       }
     });
 
-    this.on('error:protocol-error', (error: { error: string, response: any, schemaErrors: any }) => {
-      this.recordProtocolError(new ProtocolError("Protocol error in response" + error.error + " " + error.schemaErrors.message));
-    });
+    this.on(
+      'error:protocol-error',
+      (error: { error: string; response: any; schemaErrors: any }) => {
+        this.recordProtocolError(
+          new ProtocolError(
+            'Protocol error in response' + error.error + ' ' + error.schemaErrors.message
+          )
+        );
+      }
+    );
 
     // Set up exit promise when the process exits
     this.on('exit', (code: number | null) => {
@@ -86,28 +97,30 @@ export class MCPStdinSubprocess extends JsonRpcSubprocess {
       ...params,
     };
 
-      if (this.protocolError) {
-        throw this.protocolError;
-      }
+    if (this.protocolError) {
+      throw this.protocolError;
+    }
 
-      const result = await this.sendRequest('initialize', initParams);
+    const result = await this.sendRequest('initialize', initParams);
 
-      const validation = InitializeResultSchema.safeParse(result);
-      if (!validation.success) {
-          throw new Error(`Response to initialize() failed schema validation: ${validation.error.message}`);
-      }
+    const validation = InitializeResultSchema.safeParse(result);
+    if (!validation.success) {
+      throw new Error(
+        `Response to initialize() failed schema validation: ${validation.error.message}`
+      );
+    }
 
-      this.initializeResult = result;
+    this.initializeResult = result;
 
-      this.sendNotification('notifications/initialized');
+    this.sendNotification('notifications/initialized');
 
-      this.initialized = true;
+    this.initialized = true;
 
-      if (this.protocolError) {
-        throw this.protocolError;
-      }
+    if (this.protocolError) {
+      throw this.protocolError;
+    }
 
-      return result;
+    return result;
   }
 
   /*
@@ -175,12 +188,12 @@ export class MCPStdinSubprocess extends JsonRpcSubprocess {
 
   async supportsTools() {
     const capabilities = this.getInitializeResult()?.capabilities;
-    return !!(capabilities?.tools);
+    return !!capabilities?.tools;
   }
 
   async supportsResources() {
     const capabilities = this.getInitializeResult()?.capabilities;
-    return !!(capabilities?.resources);
+    return !!capabilities?.resources;
   }
 
   async hasTool(toolName: string): Promise<boolean> {
@@ -194,14 +207,15 @@ export class MCPStdinSubprocess extends JsonRpcSubprocess {
   }
 
   async callTool(name: string, arguments_: any = {}): Promise<any> {
-
     await this._implicitInitialize();
 
-    if (!await this.supportsTools()) {
-      throw new ToolCallError(`Tools ${name} are not supported by the server (based on capabilities)`);
+    if (!(await this.supportsTools())) {
+      throw new ToolCallError(
+        `Tools ${name} are not supported by the server (based on capabilities)`
+      );
     }
 
-    if (!await this.hasTool(name)) {
+    if (!(await this.hasTool(name))) {
       throw new ToolCallError(`Tool ${name} not declared in tools/list`);
     }
 
@@ -235,7 +249,7 @@ export class MCPStdinSubprocess extends JsonRpcSubprocess {
     }
 
     if (!this.exitPromise) {
-      this.exitPromise = new Promise<number>((resolve) => {
+      this.exitPromise = new Promise<number>(resolve => {
         this.once('exit', (code: number | null) => {
           resolve(code || 0);
         });

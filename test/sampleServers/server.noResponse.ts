@@ -12,10 +12,10 @@ class NoResponseServer {
     this.rl = createInterface({
       input: process.stdin,
       output: process.stdout,
-      terminal: false
+      terminal: false,
     });
 
-    this.rl.on('line', (line) => {
+    this.rl.on('line', line => {
       // Receive the message but never respond
       // This simulates a hanging server
     });

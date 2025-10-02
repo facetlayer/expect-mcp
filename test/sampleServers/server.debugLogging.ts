@@ -25,10 +25,10 @@ class DebugLoggingServer {
     this.rl = createInterface({
       input: process.stdin,
       output: process.stdout,
-      terminal: false
+      terminal: false,
     });
 
-    this.rl.on('line', (line) => {
+    this.rl.on('line', line => {
       console.log(`DEBUG: Received message: ${line}`);
       this.handleMessage(line);
     });
@@ -71,8 +71,8 @@ class DebugLoggingServer {
         serverInfo: {
           name: 'debug-logging-server',
           version: '1.0.0',
-        }
-      }
+        },
+      },
     };
 
     process.stdout.write(JSON.stringify(response) + '\n');
