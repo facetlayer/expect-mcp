@@ -31,7 +31,8 @@
     "format": "prettier --write .",
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:samples": "vitest --config samples/vitest.config.ts"
+    "test:samples": "vitest --config samples/vitest.config.ts",
+    "prepare": "npm run clean && npm run build"
   },
   "keywords": [
     "vitest",
@@ -46,7 +47,6 @@
   "engines": {
     "node": ">=18"
   },
-  "sideEffects": false,
   "peerDependencies": {
     "vitest": "^1.5.0"
   },
@@ -57,11 +57,11 @@
     "prettier": "3.6.2",
     "prettier-plugin-organize-imports": "4.3.0",
     "typescript": "^5.4.0",
+    "@modelcontextprotocol/sdk": "1.18.2",
     "vitest": "^1.5.0"
   },
   "dependencies": {
     "@facetlayer/parse-stdout-lines": "1.0.0",
-    "@modelcontextprotocol/sdk": "1.18.2",
     "zod": "4.1.11"
   }
 }

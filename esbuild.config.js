@@ -7,7 +7,7 @@ const commonConfig = {
   target: 'node16',
   format: 'esm',
   outdir: 'dist',
-  external: ['vitest', '@facetlayer/parse-stdout-lines', '@modelcontextprotocol/sdk', 'zod'],
+  external: ['vitest', '@facetlayer/parse-stdout-lines', 'zod'],
 };
 
 const entryPoints = ['src/index.ts', 'src/vitest-setup.ts'];

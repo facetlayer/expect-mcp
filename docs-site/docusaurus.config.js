@@ -64,7 +64,7 @@ const config = {
       },
       footer: {
         style: 'dark',
-        copyright: `Copyright © ${new Date().getFullYear()} expect-mcp.`,
+        copyright: `Copyright © ${new Date().getFullYear()} Andy Fischer.`,
       },
     }),
 };
