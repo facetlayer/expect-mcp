@@ -19,11 +19,15 @@ export type {
 } from './types.js';
 
 export type {
+  MCPBlobResourceContents,
   MCPCapabilities,
   MCPInitializeParams,
   MCPInitializeResult,
+  MCPReadResourceResult,
   MCPResource,
+  MCPResourceContents,
   MCPResourcesListResult,
+  MCPTextResourceContents,
   MCPTool,
   MCPToolsListResult,
 } from './types/MCP.js';

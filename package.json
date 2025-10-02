@@ -30,7 +30,8 @@
     "clean": "rm -rf dist",
     "format": "prettier --write .",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "test:samples": "vitest --config samples/vitest.config.ts"
   },
   "keywords": [
     "vitest",

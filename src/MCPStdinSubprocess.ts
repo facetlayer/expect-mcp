@@ -1,10 +1,11 @@
-import { ProtocolError, ToolCallError } from './errors.js';
+import { ProtocolError, ResourceCallError, ToolCallError } from './errors.js';
 import { JsonRpcSubprocess, JsonRpcSubprocessOptions } from './JsonRPCSubprocess.js';
 import { LATEST_PROTOCOL_VERSION } from './schemas/index.js';
 import { InitializeResultSchema } from './schemas/initialization.js';
 import {
   MCPInitializeParams,
   MCPInitializeResult,
+  MCPReadResourceResult,
   MCPResource,
   MCPResourcesListResult,
   MCPTool,
@@ -41,18 +42,18 @@ export class MCPStdinSubprocess extends JsonRpcSubprocess {
         let processName = this.initializeResult?.serverInfo?.name || 'mcp subprocess';
         console.log(`[${processName}]`, line);
       } else {
-        this.recordProtocolError(new ProtocolError('Process produced non-JSON output: ' + line));
+        this.recordProtocolError(new ProtocolError('Process produced non-JSON output: ' + JSON.stringify(line)));
       }
     });
 
     this.on(
       'error:protocol-error',
       (error: { error: string; response: any; schemaErrors: any }) => {
-        this.recordProtocolError(
-          new ProtocolError(
-            'Protocol error in response' + error.error + ' ' + error.schemaErrors.message
-          )
-        );
+        let stringMessage = 'Protocol error in response: ' + error.error;
+        if (error.schemaErrors) {
+          stringMessage += ' ' + error.schemaErrors.message;
+        }
+        this.recordProtocolError(new ProtocolError(stringMessage));
       }
     );
 
@@ -222,6 +223,29 @@ export class MCPStdinSubprocess extends JsonRpcSubprocess {
     const response = await this.sendRequest('tools/call', {
       name,
       arguments: arguments_,
+    });
+
+    return response;
+  }
+
+  async getResource(uri: string): Promise<MCPReadResourceResult> {
+    await this._implicitInitialize();
+
+    if (!(await this.supportsResources())) {
+      throw new ResourceCallError(
+        `Resources are not supported by the server (based on capabilities)`
+      );
+    }
+
+    const resources = await this.getResources();
+    const resource = resources.find(r => r.uri === uri);
+
+    if (!resource) {
+      throw new ResourceCallError(`Resource with URI ${uri} not declared in resources/list`);
+    }
+
+    const response: MCPReadResourceResult = await this.sendRequest('resources/read', {
+      uri,
     });
 
     return response;

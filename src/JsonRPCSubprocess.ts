@@ -107,12 +107,20 @@ export class JsonRpcSubprocess extends events.EventEmitter {
       const trimmedLine = line.trim();
       if (!trimmedLine) return;
 
+      let jsonMessage: JsonRpcRequest | JsonRpcResponse;
       try {
-        const jsonResponse: JsonRpcResponse = JSON.parse(trimmedLine);
-        this.handleJsonRpcResponse(jsonResponse);
+        jsonMessage = JSON.parse(trimmedLine);
       } catch (e) {
         this.emit('output:error:non-json', trimmedLine);
+        return;
       }
+
+      if ('method' in jsonMessage) {
+        // Incoming request. Not implemented yet. This is used in some cases like roots.
+        return;
+      }
+
+      this.handleIncomingMessage(jsonMessage);
     });
 
     unixPipeToLines(this.subprocess!.stderr!, (line: string | null) => {
@@ -176,7 +184,7 @@ export class JsonRpcSubprocess extends events.EventEmitter {
   /*
     handleJsonRpcResponse - Called when a JSON-RPC response is received from the subprocess.
   */
-  private handleJsonRpcResponse(response: JsonRpcResponse): void {
+  private handleIncomingMessage(response: JsonRpcResponse): void {
     this.emit('response', response);
 
     // Check schema

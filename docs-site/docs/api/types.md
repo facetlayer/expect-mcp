@@ -204,7 +204,8 @@ Configuration options for creating an MCP subprocess.
 
 ```ts
 interface MCPStdinSubprocessOptions extends JsonRpcSubprocessOptions \{
-  strictMode?: boolean;
+  requestTimeout?: number;
+  allowDebugLogging?: boolean;
 }
 ```
 

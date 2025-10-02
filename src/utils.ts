@@ -2,6 +2,7 @@ export type MatcherUtils = typeof fallbackPrinter;
 
 export type MatcherContext = {
   utils?: MatcherUtils;
+  isNot?: boolean;
 };
 
 export function isPlainObject(value: unknown): value is Record<string, unknown> {

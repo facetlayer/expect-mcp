@@ -125,4 +125,129 @@ describe('Resource Usage', () => {
       });
     });
   });
+
+  describe('custom matchers - positive cases', () => {
+    let process: MCPStdinSubprocess;
+
+    beforeAll(async () => {
+      process = mcpShell('node test/sampleServers/server.withResources.ts', {
+        requestTimeout: DefaultRequestTimeout,
+      });
+      await process.initialize();
+    });
+
+    it('should pass when checking for existing resource with toHaveResource', async () => {
+      await expect(process).toHaveResource('example.txt');
+    });
+
+    it('should pass when checking for multiple existing resources with toHaveResources', async () => {
+      await expect(process).toHaveResources(['example.txt', 'data.json']);
+    });
+
+    it('should pass when checking for single resource with toHaveResources', async () => {
+      await expect(process).toHaveResources(['example.txt']);
+    });
+  });
+
+  describe('custom matchers - negative cases', () => {
+    let process: MCPStdinSubprocess;
+
+    beforeAll(async () => {
+      process = mcpShell('node test/sampleServers/server.withResources.ts', {
+        requestTimeout: DefaultRequestTimeout,
+      });
+      await process.initialize();
+    });
+
+    it('should fail when checking for nonexistent resource with toHaveResource', async () => {
+      await expect(
+        expect(process).toHaveResource('nonexistent.txt')
+      ).rejects.toThrow();
+    });
+
+    it('should fail when checking for nonexistent resource in toHaveResources', async () => {
+      await expect(
+        expect(process).toHaveResources(['nonexistent.txt'])
+      ).rejects.toThrow();
+    });
+
+    it('should fail when one of multiple resources is missing in toHaveResources', async () => {
+      await expect(
+        expect(process).toHaveResources(['example.txt', 'nonexistent.txt'])
+      ).rejects.toThrow();
+    });
+
+    it('should fail when all resources are missing in toHaveResources', async () => {
+      await expect(
+        expect(process).toHaveResources(['missing1.txt', 'missing2.txt'])
+      ).rejects.toThrow();
+    });
+  });
+
+  describe('custom matchers - .not. modifier', () => {
+    let process: MCPStdinSubprocess;
+
+    beforeAll(async () => {
+      process = mcpShell('node test/sampleServers/server.withResources.ts', {
+        requestTimeout: DefaultRequestTimeout,
+      });
+      await process.initialize();
+    });
+
+    it('should pass when resource does not exist with .not.toHaveResource', async () => {
+      await expect(process).not.toHaveResource('nonexistent.txt');
+    });
+
+    it('should fail when existing resource is checked with .not.toHaveResource', async () => {
+      await expect(
+        expect(process).not.toHaveResource('example.txt')
+      ).rejects.toThrow();
+    });
+
+    it('should pass when resources do not exist with .not.toHaveResources', async () => {
+      await expect(process).not.toHaveResources(['nonexistent1.txt', 'nonexistent2.txt']);
+    });
+
+    it('should fail when all resources exist with .not.toHaveResources', async () => {
+      await expect(
+        expect(process).not.toHaveResources(['example.txt', 'data.json'])
+      ).rejects.toThrow();
+    });
+
+    it('should pass when at least one resource is missing with .not.toHaveResources', async () => {
+      // .not.toHaveResources means "NOT all resources exist", so passes when at least one is missing
+      await expect(process).not.toHaveResources(['example.txt', 'nonexistent.txt']);
+    });
+  });
+
+  describe('custom matchers - empty list server', () => {
+    let process: MCPStdinSubprocess;
+
+    beforeAll(async () => {
+      process = mcpShell('node test/sampleServers/server.resourcesNotListed.ts', {
+        requestTimeout: DefaultRequestTimeout,
+      });
+      await process.initialize();
+    });
+
+    it('should fail when checking for any resource on empty server', async () => {
+      await expect(
+        expect(process).toHaveResource('undeclaredResource')
+      ).rejects.toThrow();
+    });
+
+    it('should pass when using .not.toHaveResource on empty server', async () => {
+      await expect(process).not.toHaveResource('undeclaredResource');
+    });
+
+    it('should fail when checking for any resources on empty server', async () => {
+      await expect(
+        expect(process).toHaveResources(['undeclaredResource'])
+      ).rejects.toThrow();
+    });
+
+    it('should pass when using .not.toHaveResources on empty server', async () => {
+      await expect(process).not.toHaveResources(['undeclaredResource']);
+    });
+  });
 });

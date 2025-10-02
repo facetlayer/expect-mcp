@@ -127,4 +127,170 @@ describe('Tool Usage', () => {
       });
     });
   });
+
+  describe('custom matchers - positive cases', () => {
+    let process: MCPStdinSubprocess;
+
+    beforeAll(async () => {
+      process = mcpShell('node test/sampleServers/server.withTools.ts', {
+        requestTimeout: DefaultRequestTimeout,
+      });
+      await process.initialize();
+    });
+
+    it('should pass when checking for existing tool with toHaveTool', async () => {
+      await expect(process).toHaveTool('echo');
+    });
+
+    it('should pass when checking for another existing tool with toHaveTool', async () => {
+      await expect(process).toHaveTool('add');
+    });
+
+    it('should pass when checking for multiple existing tools with toHaveTools', async () => {
+      await expect(process).toHaveTools(['echo', 'add']);
+    });
+
+    it('should pass when checking for single tool with toHaveTools', async () => {
+      await expect(process).toHaveTools(['echo']);
+    });
+  });
+
+  describe('custom matchers - negative cases', () => {
+    let process: MCPStdinSubprocess;
+
+    beforeAll(async () => {
+      process = mcpShell('node test/sampleServers/server.withTools.ts', {
+        requestTimeout: DefaultRequestTimeout,
+      });
+      await process.initialize();
+    });
+
+    it('should fail when checking for nonexistent tool with toHaveTool', async () => {
+      await expect(
+        expect(process).toHaveTool('nonexistent')
+      ).rejects.toThrow();
+    });
+
+    it('should fail when checking for nonexistent tool in toHaveTools', async () => {
+      await expect(
+        expect(process).toHaveTools(['nonexistent'])
+      ).rejects.toThrow();
+    });
+
+    it('should fail when one of multiple tools is missing in toHaveTools', async () => {
+      await expect(
+        expect(process).toHaveTools(['echo', 'nonexistent'])
+      ).rejects.toThrow();
+    });
+
+    it('should fail when all tools are missing in toHaveTools', async () => {
+      await expect(
+        expect(process).toHaveTools(['missing1', 'missing2'])
+      ).rejects.toThrow();
+    });
+  });
+
+  describe('custom matchers - .not. modifier', () => {
+    let process: MCPStdinSubprocess;
+
+    beforeAll(async () => {
+      process = mcpShell('node test/sampleServers/server.withTools.ts', {
+        requestTimeout: DefaultRequestTimeout,
+      });
+      await process.initialize();
+    });
+
+    it('should pass when tool does not exist with .not.toHaveTool', async () => {
+      await expect(process).not.toHaveTool('nonexistent');
+    });
+
+    it('should fail when existing tool is checked with .not.toHaveTool', async () => {
+      await expect(
+        expect(process).not.toHaveTool('echo')
+      ).rejects.toThrow();
+    });
+
+    it('should pass when tools do not exist with .not.toHaveTools', async () => {
+      await expect(process).not.toHaveTools(['nonexistent1', 'nonexistent2']);
+    });
+
+    it('should fail when all tools exist with .not.toHaveTools', async () => {
+      await expect(
+        expect(process).not.toHaveTools(['echo', 'add'])
+      ).rejects.toThrow();
+    });
+
+    it('should pass when at least one tool is missing with .not.toHaveTools', async () => {
+      // .not.toHaveTools means "NOT all tools exist", so passes when at least one is missing
+      await expect(process).not.toHaveTools(['echo', 'nonexistent']);
+    });
+
+    it('should fail when single existing tool is checked with .not.toHaveTools', async () => {
+      await expect(
+        expect(process).not.toHaveTools(['add'])
+      ).rejects.toThrow();
+    });
+  });
+
+  describe('custom matchers - empty list server', () => {
+    let process: MCPStdinSubprocess;
+
+    beforeAll(async () => {
+      process = mcpShell('node test/sampleServers/server.toolsNotListed.ts', {
+        requestTimeout: DefaultRequestTimeout,
+      });
+      await process.initialize();
+    });
+
+    it('should fail when checking for any tool on empty server', async () => {
+      await expect(
+        expect(process).toHaveTool('undeclaredTool')
+      ).rejects.toThrow();
+    });
+
+    it('should pass when using .not.toHaveTool on empty server', async () => {
+      await expect(process).not.toHaveTool('undeclaredTool');
+    });
+
+    it('should fail when checking for any tools on empty server', async () => {
+      await expect(
+        expect(process).toHaveTools(['undeclaredTool'])
+      ).rejects.toThrow();
+    });
+
+    it('should pass when using .not.toHaveTools on empty server', async () => {
+      await expect(process).not.toHaveTools(['undeclaredTool']);
+    });
+  });
+
+  describe('custom matchers - server without capability', () => {
+    let process: MCPStdinSubprocess;
+
+    beforeAll(async () => {
+      process = mcpShell('node test/sampleServers/server.noCapabilities.ts', {
+        requestTimeout: DefaultRequestTimeout,
+      });
+      await process.initialize();
+    });
+
+    it('should fail when checking for tool on server without tools capability', async () => {
+      await expect(
+        expect(process).toHaveTool('anyTool')
+      ).rejects.toThrow();
+    });
+
+    it('should pass when using .not.toHaveTool on server without tools capability', async () => {
+      await expect(process).not.toHaveTool('anyTool');
+    });
+
+    it('should fail when checking for tools on server without tools capability', async () => {
+      await expect(
+        expect(process).toHaveTools(['anyTool'])
+      ).rejects.toThrow();
+    });
+
+    it('should pass when using .not.toHaveTools on server without tools capability', async () => {
+      await expect(process).not.toHaveTools(['anyTool']);
+    });
+  });
 });

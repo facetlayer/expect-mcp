@@ -26,9 +26,44 @@ const sidebars = {
       label: 'Getting Started',
     },
     {
-      type: 'category',
-      label: 'API Reference',
-      items: ['api/matchers', 'api/mcp-testing', 'api/strict-mode', 'api/types'],
+      type: 'doc',
+      id: 'api/mcpShell',
+      label: 'mcpShell()',
+    },
+    {
+      type: 'doc',
+      id: 'api/callTool',
+      label: '.callTool()',
+    },
+    {
+      type: 'doc',
+      id: 'api/getResource',
+      label: '.getResource()',
+    },
+    {
+      type: 'doc',
+      id: 'api/toHaveTool',
+      label: '.toHaveTool()',
+    },
+    {
+      type: 'doc',
+      id: 'api/toHaveTools',
+      label: '.toHaveTools()',
+    },
+    {
+      type: 'doc',
+      id: 'api/toHaveResource',
+      label: '.toHaveResource()',
+    },
+    {
+      type: 'doc',
+      id: 'api/toHaveResources',
+      label: '.toHaveResources()',
+    },
+    {
+      type: 'doc',
+      id: 'api/types',
+      label: 'Type Definitions',
     },
   ],
 };

@@ -60,3 +60,21 @@ export interface MCPToolsListResult {
 export interface MCPResourcesListResult {
   resources: MCPResource[];
 }
+
+export interface MCPTextResourceContents {
+  uri: string;
+  mimeType?: string;
+  text: string;
+}
+
+export interface MCPBlobResourceContents {
+  uri: string;
+  mimeType?: string;
+  blob: string;
+}
+
+export type MCPResourceContents = MCPTextResourceContents | MCPBlobResourceContents;
+
+export interface MCPReadResourceResult {
+  contents: MCPResourceContents[];
+}

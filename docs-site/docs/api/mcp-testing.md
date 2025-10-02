@@ -2,14 +2,14 @@
 
 The expect-mcp library provides utilities for testing MCP servers that communicate over stdin/stdout using JSON-RPC 2.0.
 
-## shellCommand(command: string, args?: string[])
+## mcpShell(shellCommand: string, processOptions?: MCPStdinSubprocessOptions)
 
 Creates and spawns an MCP subprocess that communicates over stdin/stdout using JSON-RPC 2.0.
 
 ```ts
-import { shellCommand } from 'expect-mcp';
+import { mcpShell } from 'expect-mcp';
 
-const app = shellCommand('node', ['path/to/mcp-server.js']);
+const app = mcpShell('node path/to/mcp-server.js');
 await app.initialize();
 
 // Test that the server provides expected tools and resources
@@ -17,13 +17,15 @@ await expect(app).toHaveTool('read_file');
 await expect(app).toHaveResource('project_files');
 
 // Clean up
-app.kill();
+app.close();
 ```
 
 ### Parameters
 
-- `command`: The shell command to execute
-- `args`: Optional array of command arguments
+- `shellCommand`: The shell command to execute (can include arguments)
+- `processOptions`: Optional configuration options:
+  - `requestTimeout`: Timeout in milliseconds for MCP requests (default: 5000)
+  - `allowDebugLogging`: Enable debug logging for MCP communications (default: false)
 
 ### Returns
 
@@ -31,18 +33,20 @@ An `MCPStdinSubprocess` instance with MCP-specific functionality.
 
 ## MCPStdinSubprocess
 
-The `shellCommand` function returns an `MCPStdinSubprocess` instance which extends the JSON-RPC subprocess with MCP-specific functionality.
+The `mcpShell` function returns an `MCPStdinSubprocess` instance which extends the JSON-RPC subprocess with MCP-specific functionality.
 
 ### Constructor Options
 
 ```ts
 interface MCPStdinSubprocessOptions {
-  strictMode?: boolean;
+  requestTimeout?: number;
+  allowDebugLogging?: boolean;
   // ... other JsonRpcSubprocessOptions
 }
 
 const app = new MCPStdinSubprocess({
-  strictMode: true,
+  requestTimeout: 10000,
+  allowDebugLogging: true,
   command: 'node',
   args: ['path/to/mcp-server.js'],
 });
@@ -109,6 +113,15 @@ const result = await app.callTool('read_file', {
 });
 ```
 
+#### getResource(uri: string): Promise\<MCPReadResourceResult\>
+
+Read a resource from the MCP server.
+
+```ts
+const result = await app.getResource('file:///example.txt');
+console.log('Resource contents:', result.contents[0].text);
+```
+
 #### isInitialized(): boolean
 
 Check if the MCP server has been initialized.
@@ -119,23 +132,16 @@ if (!app.isInitialized()) {
 }
 ```
 
-#### isStrictModeEnabled(): boolean
-
-Check if strict mode validation is enabled.
-
-```ts
-console.log('Strict mode:', app.isStrictModeEnabled());
-```
 
 ### Example Test
 
 ```ts
-import { shellCommand } from 'expect-mcp';
+import { mcpShell } from 'expect-mcp';
 import { describe, test, expect } from 'vitest';
 
 describe('File Server MCP', () => {
   test('provides file operations', async () => {
-    const app = shellCommand('node', ['file-server.js']);
+    const app = mcpShell('node file-server.js');
 
     try {
       await app.initialize();
@@ -146,14 +152,20 @@ describe('File Server MCP', () => {
       await expect(app).toHaveResource('project_files');
 
       // Test tool execution
-      const result = await app.callTool('read_file', {
+      const toolResult = await app.callTool('read_file', {
         path: 'package.json',
       });
 
-      expect(result).toBeValidMCPResponse();
-      expect(result.result.content).toBeDefined();
+      expect(toolResult).toBeDefined();
+      expect(toolResult.content).toBeDefined();
+
+      // Test resource reading
+      const resourceResult = await app.getResource('project://files');
+
+      expect(resourceResult.contents).toBeDefined();
+      expect(resourceResult.contents[0]).toBeDefined();
     } finally {
-      app.kill();
+      app.close();
     }
   });
 });
@@ -198,4 +210,26 @@ interface MCPInitializeResult {
   };
   instructions?: string;
 }
+```
+
+### MCPReadResourceResult
+
+```ts
+interface MCPReadResourceResult {
+  contents: MCPResourceContents[];
+}
+
+interface MCPTextResourceContents {
+  uri: string;
+  mimeType?: string;
+  text: string;
+}
+
+interface MCPBlobResourceContents {
+  uri: string;
+  mimeType?: string;
+  blob: string;
+}
+
+type MCPResourceContents = MCPTextResourceContents | MCPBlobResourceContents;
 ```
