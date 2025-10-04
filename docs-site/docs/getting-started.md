@@ -66,5 +66,5 @@ it("tests something", async () => {
 
 ## Next Steps
 
-- Learn about all available [matchers](./api/matchers.md)
-- Explore [MCP server testing](./api/mcp-testing.md) utilities
+- Learn about all available [matchers](./matchers.md)
+- Explore [MCP server testing](./mcp-testing.md) utilities
