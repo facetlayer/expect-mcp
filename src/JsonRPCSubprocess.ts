@@ -21,7 +21,7 @@ interface PendingRequest {
 }
 
 export class JsonRpcSubprocess extends events.EventEmitter {
-  private subprocess?: ChildProcess;
+  private subprocess: ChildProcess | null = null;
   private _hasSetupListeners = false;
   private pendingRequests = new Map<string | number, PendingRequest>();
   private enqueuedRequests = new Map<string | number, JsonRpcRequest>();
@@ -80,6 +80,13 @@ export class JsonRpcSubprocess extends events.EventEmitter {
         console.error(`[json-rpc-subprocess] subprocess 'error' event`, error);
       }
       this.emit('error', error);
+    });
+
+    this.subprocess!.on('exit', (code: number | null, signal: string | null) => {
+      this._hasExited = true;
+      this._exitCode = code;
+      this.emit('exit', code, signal);
+      this.subprocess = null;
     });
 
     this.startPromise = new Promise<void>((resolve, reject) => {
@@ -301,13 +308,14 @@ export class JsonRpcSubprocess extends events.EventEmitter {
 
     if (this.subprocess) {
       this.subprocess.kill();
+      this.subprocess = null;
     }
 
     this.emit('killed');
   }
 
   isRunning(): boolean {
-    return this.subprocess !== undefined && !this.subprocess.killed;
+    return this.subprocess != null && !this.subprocess.killed;
   }
 
   hasStarted(): boolean {

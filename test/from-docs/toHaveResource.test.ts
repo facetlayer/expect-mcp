@@ -1,3 +1,4 @@
+import '../../src/vitest-setup.js';
 import { describe, expect, test } from 'vitest';
 import { mcpShell } from '../../src/index.js';
 

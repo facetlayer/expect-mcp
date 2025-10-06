@@ -1,3 +1,4 @@
+import '../../src/vitest-setup.js';
 import { beforeAll, describe, expect, it } from 'vitest';
 import { MCPStdinSubprocess, mcpShell } from '../../src';
 
