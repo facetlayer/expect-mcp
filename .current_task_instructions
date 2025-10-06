@@ -1,0 +1,12 @@
+
+# Task: support-cjs
+
+Add support for a common JS build.
+
+Once working, the clients will be able to import with `const expectMCP = require('expect-mcp/cjs')`
+
+Update the ESBuild for this entry and make sure it saves as index.cjs
+
+Update package.json for this import path
+
+Set up a simple script to make sure it works

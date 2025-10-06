@@ -11,6 +11,10 @@
       "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
     },
+    "./cjs": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/cjs/index.cjs"
+    },
     "./vitest": {
       "types": "./dist/vitest-setup.d.ts",
       "default": "./dist/vitest-setup.js"
