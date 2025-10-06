@@ -12,6 +12,7 @@ on:
 jobs:
   vitest:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
 
     steps:
       - name: Checkout code
@@ -46,6 +47,7 @@ jobs:
 
   jest:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
 
     steps:
       - name: Checkout code
@@ -66,9 +68,6 @@ jobs:
 
       - name: Build
         run: pnpm build
-
-      - name: Update Jest test files
-        run: pnpm update-jest-tests
 
       - name: Run Jest tests
         run: pnpm test:jest
