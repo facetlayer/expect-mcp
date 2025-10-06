@@ -70,6 +70,10 @@ describe('Close Flow', () => {
 
       // Verify the server was killed forcefully
       expect(process.hasExited()).toBe(true);
+
+      // Cleanup just in case
+      await process.close();
+
     }, 5000);
   });
 
