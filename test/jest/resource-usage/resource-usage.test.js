@@ -13,6 +13,10 @@ describe('Resource Usage', () => {
       await process.initialize();
     });
 
+    afterAll(async () => {
+      await process.close();
+    });
+
     it('should verify that the server capabilities section has enabled resources', async () => {
       const supportsResources = await process.supportsResources();
       expect(supportsResources).toBe(true);
@@ -56,6 +60,10 @@ describe('Resource Usage', () => {
       await process.initialize();
     });
 
+    afterAll(async () => {
+      await process.close();
+    });
+
     it('should verify that resources are not supported', async () => {
       const supportsResources = await process.supportsResources();
       expect(supportsResources).toBe(false);
@@ -70,6 +78,10 @@ describe('Resource Usage', () => {
         requestTimeout: DefaultRequestTimeout,
       });
       await process.initialize();
+    });
+
+    afterAll(async () => {
+      await process.close();
     });
 
     it('should have resources capability enabled', async () => {
@@ -134,6 +146,10 @@ describe('Resource Usage', () => {
       await process.initialize();
     });
 
+    afterAll(async () => {
+      await process.close();
+    });
+
     it('should pass when checking for existing resource with toHaveResource', async () => {
       await expect(process).toHaveResource('example.txt');
     });
@@ -155,6 +171,10 @@ describe('Resource Usage', () => {
         requestTimeout: DefaultRequestTimeout,
       });
       await process.initialize();
+    });
+
+    afterAll(async () => {
+      await process.close();
     });
 
     it('should fail when checking for nonexistent resource with toHaveResource', async () => {
@@ -192,6 +212,10 @@ describe('Resource Usage', () => {
       await process.initialize();
     });
 
+    afterAll(async () => {
+      await process.close();
+    });
+
     it('should pass when resource does not exist with .not.toHaveResource', async () => {
       await expect(process).not.toHaveResource('nonexistent.txt');
     });
@@ -226,6 +250,10 @@ describe('Resource Usage', () => {
         requestTimeout: DefaultRequestTimeout,
       });
       await process.initialize();
+    });
+
+    afterAll(async () => {
+      await process.close();
     });
 
     it('should fail when checking for any resource on empty server', async () => {

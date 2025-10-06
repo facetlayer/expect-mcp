@@ -41,8 +41,7 @@
     "test:watch": "vitest",
     "test:samples": "vitest --config samples/vitest.config.ts",
     "update-jest-tests": "node --experimental-strip-types bin/update-jest-tests.ts",
-    "test:jest": "jest --maxWorkers=1 --no-cache",
-    "test:jest:watch": "NODE_OPTIONS=\"--experimental-vm-modules\" jest --watch --maxWorkers=1",
+    "test:jest": "jest --detectOpenHandles --maxWorkers=1 --no-cache",
     "test:all": "npm run test && npm run test:jest",
     "prepare": "npm run clean && npm run build"
   },

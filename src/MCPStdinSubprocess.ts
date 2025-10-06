@@ -57,7 +57,6 @@ export class MCPStdinSubprocess extends JsonRpcSubprocess {
       }
     );
 
-    // Set up exit promise when the process exits
     this.on('exit', (code: number | null) => {
       if (!this.exitPromise) {
         this.exitPromise = Promise.resolve(code || 0);

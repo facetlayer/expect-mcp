@@ -82,13 +82,6 @@ export class JsonRpcSubprocess extends events.EventEmitter {
       this.emit('error', error);
     });
 
-    this.subprocess!.on('exit', (code: number | null, signal: string | null) => {
-      this._hasExited = true;
-      this._exitCode = code;
-      this.emit('exit', code, signal);
-      this.subprocess = null;
-    });
-
     this.startPromise = new Promise<void>((resolve, reject) => {
       this.subprocess!.on('spawn', () => {
         this.emit('spawn');
@@ -102,10 +95,6 @@ export class JsonRpcSubprocess extends events.EventEmitter {
       });
     });
 
-    this.setupListeners();
-  }
-
-  private setupListeners(): void {
     unixPipeToLines(this.subprocess!.stdout!, (line: string | null) => {
       if (line === null) return;
 
@@ -157,6 +146,8 @@ export class JsonRpcSubprocess extends events.EventEmitter {
         }
         this.pendingRequests.clear();
       }
+
+      this.subprocess = null;
     });
   }
 
