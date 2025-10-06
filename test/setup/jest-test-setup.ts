@@ -1,1 +1,1 @@
-import '../../dist/jest-setup.js';
+require('../../dist/cjs/jest-setup.cjs');

@@ -1,10 +1,10 @@
-import { MCPStdinSubprocess, mcpShell } from '../../../dist/index.js';
+const {  MCPStdinSubprocess, mcpShell  } = require('../../../dist/cjs/index.cjs');
 
 const DefaultRequestTimeout = 1000;
 
 describe('JSON-RPC 2.0 Compliance', () => {
   describe('jsonrpc field validation', () => {
-    let process: MCPStdinSubprocess;
+    let process;
 
     beforeAll(() => {
       process = mcpShell('node test/sampleServers/server.missingJsonRpcField.ts', {
@@ -20,7 +20,7 @@ describe('JSON-RPC 2.0 Compliance', () => {
   });
 
   describe('request ID validation', () => {
-    let process: MCPStdinSubprocess;
+    let process;
 
     beforeAll(() => {
       process = mcpShell('node test/sampleServers/server.nullRequestId.ts', {
@@ -37,7 +37,7 @@ describe('JSON-RPC 2.0 Compliance', () => {
 
   describe('response validation', () => {
     describe('result XOR error', () => {
-      let process: MCPStdinSubprocess;
+      let process;
 
       beforeAll(() => {
         process = mcpShell('node test/sampleServers/server.bothResultAndError.ts', {
@@ -51,7 +51,7 @@ describe('JSON-RPC 2.0 Compliance', () => {
     });
 
     describe('response ID matching', () => {
-      let process: MCPStdinSubprocess;
+      let process;
 
       beforeAll(() => {
         process = mcpShell('node test/sampleServers/server.mismatchedResponseId.ts', {
@@ -66,7 +66,7 @@ describe('JSON-RPC 2.0 Compliance', () => {
   });
 
   describe('valid JSON-RPC server', () => {
-    let process: MCPStdinSubprocess;
+    let process;
 
     beforeAll(() => {
       process = mcpShell('node test/sampleServers/server.noCapabilities.ts', {

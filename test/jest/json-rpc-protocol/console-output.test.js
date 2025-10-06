@@ -1,4 +1,4 @@
-import { mcpShell } from '../../../dist/index.js';
+const {  mcpShell  } = require('../../../dist/cjs/index.cjs');
 
 it('should reject servers that output non-JSON-RPC debug logs to stdout', async () => {
   let process = mcpShell('node test/sampleServers/server.debugLogging.ts', {});

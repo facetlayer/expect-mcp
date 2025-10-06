@@ -1,10 +1,10 @@
-import { MCPStdinSubprocess, mcpShell } from '../../../dist/index.js';
+const {  MCPStdinSubprocess, mcpShell  } = require('../../../dist/cjs/index.cjs');
 
 const DefaultRequestTimeout = 1000;
 
 describe('Resource Usage', () => {
   describe('server with resources capability', () => {
-    let process: MCPStdinSubprocess;
+    let process;
 
     beforeAll(async () => {
       process = mcpShell('node test/sampleServers/server.withResources.ts', {
@@ -47,7 +47,7 @@ describe('Resource Usage', () => {
   });
 
   describe('server without resources capability', () => {
-    let process: MCPStdinSubprocess;
+    let process;
 
     beforeAll(async () => {
       process = mcpShell('node test/sampleServers/server.noCapabilities.ts', {
@@ -63,7 +63,7 @@ describe('Resource Usage', () => {
   });
 
   describe('resource not in list', () => {
-    let process: MCPStdinSubprocess;
+    let process;
 
     beforeAll(async () => {
       process = mcpShell('node test/sampleServers/server.resourcesNotListed.ts', {
@@ -90,7 +90,7 @@ describe('Resource Usage', () => {
   });
 
   describe('resource validation', () => {
-    let process: MCPStdinSubprocess;
+    let process;
 
     beforeAll(async () => {
       process = mcpShell('node test/sampleServers/server.withResources.ts', {
@@ -125,7 +125,7 @@ describe('Resource Usage', () => {
   });
 
   describe('custom matchers - positive cases', () => {
-    let process: MCPStdinSubprocess;
+    let process;
 
     beforeAll(async () => {
       process = mcpShell('node test/sampleServers/server.withResources.ts', {
@@ -148,7 +148,7 @@ describe('Resource Usage', () => {
   });
 
   describe('custom matchers - negative cases', () => {
-    let process: MCPStdinSubprocess;
+    let process;
 
     beforeAll(async () => {
       process = mcpShell('node test/sampleServers/server.withResources.ts', {
@@ -183,7 +183,7 @@ describe('Resource Usage', () => {
   });
 
   describe('custom matchers - .not. modifier', () => {
-    let process: MCPStdinSubprocess;
+    let process;
 
     beforeAll(async () => {
       process = mcpShell('node test/sampleServers/server.withResources.ts', {
@@ -219,7 +219,7 @@ describe('Resource Usage', () => {
   });
 
   describe('custom matchers - empty list server', () => {
-    let process: MCPStdinSubprocess;
+    let process;
 
     beforeAll(async () => {
       process = mcpShell('node test/sampleServers/server.resourcesNotListed.ts', {

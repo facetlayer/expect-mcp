@@ -1,4 +1,4 @@
-const {  mcpShell } = require('../../../dist');
+const {  MCPStdinSubprocess, mcpShell  } = require('../../../dist/cjs/index.cjs');
 
 const DefaultRequestTimeout = 1000;
 

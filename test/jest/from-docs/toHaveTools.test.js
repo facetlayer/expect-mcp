@@ -1,28 +1,27 @@
-import { mcpShell } from '../../../dist/index.js';
+const {  mcpShell  } = require('../../../dist/cjs/index.cjs');
 
 const DefaultRequestTimeout = 2000;
 
-describe('toHaveTool Examples', () => {
+describe('toHaveTools Examples', () => {
   test('server provides file operations', async () => {
     const app = mcpShell('node test/sampleServers/server.fileOperations.ts', {
       requestTimeout: DefaultRequestTimeout,
     });
     await app.initialize();
 
-    await expect(app).toHaveTool('read_file');
-    await expect(app).toHaveTool('write_file');
+    await expect(app).toHaveTools(['read_file', 'write_file']);
 
     app.close();
   });
 
-  test('error messages when tool does not exist', async () => {
+  test('error messages when any tool does not exist', async () => {
     const app = mcpShell('node test/sampleServers/server.fileOperations.ts', {
       requestTimeout: DefaultRequestTimeout,
     });
     await app.initialize();
 
     // This should fail because the tool doesn't exist
-    await expect(expect(app).toHaveTool('nonexistent_tool')).rejects.toThrow();
+    await expect(expect(app).toHaveTools(['read_file', 'nonexistent_tool'])).rejects.toThrow();
 
     app.close();
   });

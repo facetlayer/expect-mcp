@@ -1,4 +1,4 @@
-import { mcpShell } from '../../../dist/index.js';
+const {  mcpShell  } = require('../../../dist/cjs/index.cjs');
 
 const DefaultRequestTimeout = 1000;
 const CloseTimeout = 2000;

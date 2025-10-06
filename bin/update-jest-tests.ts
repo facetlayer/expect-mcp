@@ -5,7 +5,7 @@
  * This script:
  * - Copies all test files from test/ to test/jest/
  * - Removes vitest imports (Jest uses globals)
- * - Changes src/ imports to dist/ imports (compiled code)
+ * - Changes src/ imports to dist/cjs/ imports (CJS version for Jest)
  */
 
 import * as fs from 'fs';
@@ -31,17 +31,26 @@ function transformTestFile(content: string): string {
   // Remove vitest imports completely
   transformed = transformed.replace(/import\s+\{[^}]+\}\s+from\s+['"]vitest['"];?\s*\n/g, '');
 
-  // Change src/ imports to dist/ imports and add extra ../ since we're going deeper
-  // Match patterns like '../../src/' and replace with '../../../dist/'
-  transformed = transformed.replace(/from\s+['"]((\.\.\/)+)src\//g, (match, dots) => {
-    // Add one more ../ level since we're now in test/jest/ instead of test/
-    return `from '${dots}../dist/`;
+  // Convert import statements to require for CJS FIRST (before removing type annotations)
+
+  // Handle imports from src/ directory
+  transformed = transformed.replace(/import\s+\{([^}]+)\}\s+from\s+['"]((\.\.\/)+)src\/index\.js['"]/g, (match, imports, dots) => {
+    return `const { ${imports} } = require('${dots}../dist/cjs/index.cjs')`;
+  });
+  transformed = transformed.replace(/import\s+\{([^}]+)\}\s+from\s+['"]((\.\.\/)+)src['"]/g, (match, imports, dots) => {
+    return `const { ${imports} } = require('${dots}../dist/cjs/index.cjs')`;
   });
 
-  // Also handle imports without trailing slash, like "from '../../src'"
-  transformed = transformed.replace(/from\s+['"]((\.\.\/)+)src['"]/g, (match, dots) => {
-    return `from '${dots}../dist/index.js'`;
+  // Handle imports from dist/ directory (for tests that already reference dist)
+  transformed = transformed.replace(/import\s+\{([^}]+)\}\s+from\s+['"]((\.\.\/)+)dist['"]/g, (match, imports, dots) => {
+    // Add one more ../ level since we're now in test/jest/ instead of test/
+    return `const { ${imports} } = require('${dots}../dist/cjs/index.cjs')`;
   });
+
+  // Remove type annotations from variable declarations (e.g., "let process: MCPStdinSubprocess;" -> "let process;")
+  // Only match after variable declarations, not object properties
+  // Match patterns like "let x: Type" or "const x: Type" but not "property: Value"
+  transformed = transformed.replace(/(\b(?:let|const|var)\s+\w+)\s*:\s*[A-Z][a-zA-Z0-9_<>[\],\s|&]*(?=\s*[;,\n=])/g, '$1');
 
   return transformed;
 }
@@ -62,11 +71,12 @@ function copyDirectory(source: string, target: string) {
       }
       copyDirectory(sourcePath, targetPath);
     } else if (entry.isFile() && entry.name.endsWith('.test.ts')) {
-      // Transform and copy test files
+      // Transform and copy test files, converting .ts to .js
       const content = fs.readFileSync(sourcePath, 'utf-8');
       const transformed = transformTestFile(content);
-      fs.writeFileSync(targetPath, transformed, 'utf-8');
-      console.log(`Copied: ${path.relative(rootDir, sourcePath)} -> ${path.relative(rootDir, targetPath)}`);
+      const jsTargetPath = targetPath.replace(/\.test\.ts$/, '.test.js');
+      fs.writeFileSync(jsTargetPath, transformed, 'utf-8');
+      console.log(`Copied: ${path.relative(rootDir, sourcePath)} -> ${path.relative(rootDir, jsTargetPath)}`);
     } else if (entry.isFile() && entry.name.endsWith('.ts')) {
       // Copy other TypeScript files (like sample servers) as-is
       fs.copyFileSync(sourcePath, targetPath);

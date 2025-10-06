@@ -1,10 +1,10 @@
-import { MCPStdinSubprocess, mcpShell } from '../../../dist/index.js';
+const {  MCPStdinSubprocess, mcpShell  } = require('../../../dist/cjs/index.cjs');
 
 const DefaultRequestTimeout = 1000;
 
 describe('Initialize Flow', () => {
   describe('basic initialize', () => {
-    let process: MCPStdinSubprocess;
+    let process;
 
     beforeAll(() => {
       process = mcpShell('node test/sampleServers/server.noCapabilities.ts', {
@@ -25,7 +25,7 @@ describe('Initialize Flow', () => {
   });
 
   describe('invalid initialize response', () => {
-    let process: MCPStdinSubprocess;
+    let process;
 
     beforeAll(() => {
       process = mcpShell('node test/sampleServers/server.invalidInitialize.ts', {
@@ -41,7 +41,7 @@ describe('Initialize Flow', () => {
   });
 
   describe('no response from server', () => {
-    let process: MCPStdinSubprocess;
+    let process;
 
     beforeAll(() => {
       process = mcpShell('node test/sampleServers/server.noResponse.ts', {
@@ -62,7 +62,7 @@ describe('Initialize Flow', () => {
 
   describe('capability discovery', () => {
     describe('server with tools capability', () => {
-      let process: MCPStdinSubprocess;
+      let process;
 
       beforeAll(async () => {
         process = mcpShell('node test/sampleServers/server.withTools.ts', {
@@ -83,7 +83,7 @@ describe('Initialize Flow', () => {
     });
 
     describe('server with resources capability', () => {
-      let process: MCPStdinSubprocess;
+      let process;
 
       beforeAll(async () => {
         process = mcpShell('node test/sampleServers/server.withResources.ts', {
@@ -104,7 +104,7 @@ describe('Initialize Flow', () => {
     });
 
     describe('server with no capabilities', () => {
-      let process: MCPStdinSubprocess;
+      let process;
 
       beforeAll(async () => {
         process = mcpShell('node test/sampleServers/server.noCapabilities.ts', {
@@ -124,7 +124,7 @@ describe('Initialize Flow', () => {
   });
 
   describe('protocol version', () => {
-    let process: MCPStdinSubprocess;
+    let process;
 
     beforeAll(async () => {
       process = mcpShell('node test/sampleServers/server.noCapabilities.ts', {
@@ -143,7 +143,7 @@ describe('Initialize Flow', () => {
   });
 
   describe('server info', () => {
-    let process: MCPStdinSubprocess;
+    let process;
 
     beforeAll(async () => {
       process = mcpShell('node test/sampleServers/server.noCapabilities.ts', {

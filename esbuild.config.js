@@ -44,7 +44,7 @@ try {
     ...commonConfig,
     format: 'cjs',
     outdir: 'dist/cjs',
-    entryPoints: ['src/index.ts'],
+    entryPoints: ['src/index.ts', 'src/jest-setup.ts'],
     outExtension: { '.js': '.cjs' },
   });
   console.log('CommonJS build completed');

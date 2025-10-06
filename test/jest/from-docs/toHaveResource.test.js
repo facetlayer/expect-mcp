@@ -1,27 +1,28 @@
-import { mcpShell } from '../../../dist/index.js';
+const {  mcpShell  } = require('../../../dist/cjs/index.cjs');
 
 const DefaultRequestTimeout = 2000;
 
-describe('toHaveResources Examples', () => {
+describe('toHaveResource Examples', () => {
   test('server provides configuration resources', async () => {
     const app = mcpShell('node test/sampleServers/server.configResources.ts', {
       requestTimeout: DefaultRequestTimeout,
     });
     await app.initialize();
 
-    await expect(app).toHaveResources(['app_config', 'user_settings']);
+    await expect(app).toHaveResource('app_config');
+    await expect(app).toHaveResource('user_settings');
 
     app.close();
   });
 
-  test('error messages when any resource does not exist', async () => {
+  test('error messages when resource does not exist', async () => {
     const app = mcpShell('node test/sampleServers/server.configResources.ts', {
       requestTimeout: DefaultRequestTimeout,
     });
     await app.initialize();
 
     // This should fail because the resource doesn't exist
-    await expect(expect(app).toHaveResources(['app_config', 'nonexistent_resource'])).rejects.toThrow();
+    await expect(expect(app).toHaveResource('nonexistent_resource')).rejects.toThrow();
 
     app.close();
   });
