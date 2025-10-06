@@ -14,7 +14,7 @@ describe('MCP Testing Examples', () => {
     await expect(app).toHaveResource('project_files');
 
     // Clean up
-    app.close();
+    await app.close();
   });
 
   test('File Server MCP provides file operations', async () => {
@@ -37,7 +37,7 @@ describe('MCP Testing Examples', () => {
       expect(result).toBeDefined();
       expect(result.content).toBeDefined();
     } finally {
-      app.close();
+      await app.close();
     }
   });
 });

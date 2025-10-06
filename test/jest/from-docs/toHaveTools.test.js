@@ -11,7 +11,7 @@ describe('toHaveTools Examples', () => {
 
     await expect(app).toHaveTools(['read_file', 'write_file']);
 
-    app.close();
+    await app.close();
   });
 
   test('error messages when any tool does not exist', async () => {
@@ -23,6 +23,6 @@ describe('toHaveTools Examples', () => {
     // This should fail because the tool doesn't exist
     await expect(expect(app).toHaveTools(['read_file', 'nonexistent_tool'])).rejects.toThrow();
 
-    app.close();
+    await app.close();
   });
 });

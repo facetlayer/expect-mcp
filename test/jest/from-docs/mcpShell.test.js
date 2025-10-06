@@ -12,7 +12,7 @@ describe('mcpShell Examples', () => {
     await expect(app).toHaveTool('filesystem_list');
     await expect(app).toHaveResource('project_files');
 
-    app.close();
+    await app.close();
   });
 
   test('with options - requestTimeout and allowDebugLogging', async () => {
@@ -22,7 +22,7 @@ describe('mcpShell Examples', () => {
     });
 
     await app.initialize();
-    app.close();
+    await app.close();
   });
 
   test('getTools method', async () => {
@@ -35,7 +35,7 @@ describe('mcpShell Examples', () => {
     expect(tools.map(t => t.name)).toContain('echo');
     expect(tools.map(t => t.name)).toContain('add');
 
-    app.close();
+    await app.close();
   });
 
   test('getResources method', async () => {
@@ -47,7 +47,7 @@ describe('mcpShell Examples', () => {
     const resources = await app.getResources();
     expect(resources.map(r => r.name)).toContain('example.txt');
 
-    app.close();
+    await app.close();
   });
 
   test('hasTool method', async () => {
@@ -59,7 +59,7 @@ describe('mcpShell Examples', () => {
     const hasReadFile = await app.hasTool('read_file');
     expect(hasReadFile).toBe(true);
 
-    app.close();
+    await app.close();
   });
 
   test('hasResource method', async () => {
@@ -71,7 +71,7 @@ describe('mcpShell Examples', () => {
     const hasConfig = await app.hasResource('app_config');
     expect(hasConfig).toBe(true);
 
-    app.close();
+    await app.close();
   });
 
   test('callTool method', async () => {
@@ -86,7 +86,7 @@ describe('mcpShell Examples', () => {
 
     expect(result.content).toBeDefined();
 
-    app.close();
+    await app.close();
   });
 
   test('isInitialized method', async () => {
@@ -100,6 +100,6 @@ describe('mcpShell Examples', () => {
 
     expect(app.isInitialized()).toBe(true);
 
-    app.close();
+    await app.close();
   });
 });

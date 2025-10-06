@@ -12,7 +12,7 @@ describe('Matchers Examples', () => {
     await expect(app).toHaveTool('read_file');
     await expect(app).toHaveTool('write_file');
 
-    app.close();
+    await app.close();
   });
 
   test('toHaveResource example - configuration resources', async () => {
@@ -24,6 +24,6 @@ describe('Matchers Examples', () => {
     await expect(app).toHaveResource('app_config');
     await expect(app).toHaveResource('user_settings');
 
-    app.close();
+    await app.close();
   });
 });

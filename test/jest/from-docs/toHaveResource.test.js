@@ -12,7 +12,7 @@ describe('toHaveResource Examples', () => {
     await expect(app).toHaveResource('app_config');
     await expect(app).toHaveResource('user_settings');
 
-    app.close();
+    await app.close();
   });
 
   test('error messages when resource does not exist', async () => {
@@ -24,6 +24,6 @@ describe('toHaveResource Examples', () => {
     // This should fail because the resource doesn't exist
     await expect(expect(app).toHaveResource('nonexistent_resource')).rejects.toThrow();
 
-    app.close();
+    await app.close();
   });
 });

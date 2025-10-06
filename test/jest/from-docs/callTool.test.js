@@ -17,7 +17,7 @@ describe('callTool Examples', () => {
     expect(result).toBeDefined();
     expect(result.content).toBeDefined();
 
-    app.close();
+    await app.close();
   });
 
   test('error handling - tool call fails', async () => {
@@ -29,7 +29,7 @@ describe('callTool Examples', () => {
     // Trying to call a tool on a server without tools capability
     await expect(app.callTool('nonexistent_tool', {})).rejects.toThrow();
 
-    app.close();
+    await app.close();
   });
 
   test('timeout configuration', async () => {
@@ -42,7 +42,7 @@ describe('callTool Examples', () => {
     const result = await app.callTool('echo', { message: 'test' });
     expect(result.content).toBeDefined();
 
-    app.close();
+    await app.close();
   });
 
   test('debug logging enabled', async () => {
@@ -55,6 +55,6 @@ describe('callTool Examples', () => {
     const result = await app.callTool('echo', { message: 'test' });
     expect(result.content).toBeDefined();
 
-    app.close();
+    await app.close();
   });
 });

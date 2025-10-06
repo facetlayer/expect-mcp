@@ -21,7 +21,7 @@ describe('readResource', () => {
       expect(result.contents[0].text).toBe('Hello, world!');
     }
 
-    app.close();
+    await app.close();
   });
 
   test('can read a JSON resource', async () => {
@@ -43,7 +43,7 @@ describe('readResource', () => {
       expect(data).toEqual({ key: 'value' });
     }
 
-    app.close();
+    await app.close();
   });
 
   test('throws error when resource does not exist', async () => {
@@ -56,7 +56,7 @@ describe('readResource', () => {
       'Resource with URI file:///nonexistent.txt not declared in resources/list'
     );
 
-    app.close();
+    await app.close();
   });
 
   test('throws error when server does not support resources', async () => {
@@ -69,6 +69,6 @@ describe('readResource', () => {
       'Resources are not supported by the server'
     );
 
-    app.close();
+    await app.close();
   });
 });

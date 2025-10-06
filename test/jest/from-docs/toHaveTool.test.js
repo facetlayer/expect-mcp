@@ -12,7 +12,7 @@ describe('toHaveTool Examples', () => {
     await expect(app).toHaveTool('read_file');
     await expect(app).toHaveTool('write_file');
 
-    app.close();
+    await app.close();
   });
 
   test('error messages when tool does not exist', async () => {
@@ -24,6 +24,6 @@ describe('toHaveTool Examples', () => {
     // This should fail because the tool doesn't exist
     await expect(expect(app).toHaveTool('nonexistent_tool')).rejects.toThrow();
 
-    app.close();
+    await app.close();
   });
 });

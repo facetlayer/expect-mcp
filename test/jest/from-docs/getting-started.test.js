@@ -12,6 +12,6 @@ describe('Getting Started Examples', () => {
     await expect(app).toHaveTool('filesystem_list');
     await expect(app).toHaveResource('config.json');
 
-    app.close();
+    await app.close();
   });
 });

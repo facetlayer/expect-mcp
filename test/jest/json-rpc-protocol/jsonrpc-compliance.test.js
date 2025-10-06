@@ -12,6 +12,13 @@ describe('JSON-RPC 2.0 Compliance', () => {
       });
     });
 
+    afterAll(async () => {
+      if (!process.hasExited()) {
+        process.kill();
+        await process.waitForExit();
+      }
+    });
+
     it('should reject messages missing "jsonrpc" field', async () => {
       await expect(process.initialize()).rejects.toThrow(
         /Response that does not match the JSON-RPC schema/
@@ -26,6 +33,13 @@ describe('JSON-RPC 2.0 Compliance', () => {
       process = mcpShell('node test/sampleServers/server.nullRequestId.ts', {
         requestTimeout: DefaultRequestTimeout,
       });
+    });
+
+    afterAll(async () => {
+      if (!process.hasExited()) {
+        process.kill();
+        await process.waitForExit();
+      }
     });
 
     it('should reject requests with null ID', async () => {
@@ -45,6 +59,13 @@ describe('JSON-RPC 2.0 Compliance', () => {
         });
       });
 
+      afterAll(async () => {
+        if (!process.hasExited()) {
+          process.kill();
+          await process.waitForExit();
+        }
+      });
+
       it('should reject response with both result and error', async () => {
         await expect(process.initialize()).rejects.toThrow();
       });
@@ -57,6 +78,13 @@ describe('JSON-RPC 2.0 Compliance', () => {
         process = mcpShell('node test/sampleServers/server.mismatchedResponseId.ts', {
           requestTimeout: DefaultRequestTimeout,
         });
+      });
+
+      afterAll(async () => {
+        if (!process.hasExited()) {
+          process.kill();
+          await process.waitForExit();
+        }
       });
 
       it('should reject response with mismatched ID', async () => {
@@ -72,6 +100,13 @@ describe('JSON-RPC 2.0 Compliance', () => {
       process = mcpShell('node test/sampleServers/server.noCapabilities.ts', {
         requestTimeout: DefaultRequestTimeout,
       });
+    });
+
+    afterAll(async () => {
+      if (!process.hasExited()) {
+        process.kill();
+        await process.waitForExit();
+      }
     });
 
     it('should accept properly formatted JSON-RPC messages', async () => {

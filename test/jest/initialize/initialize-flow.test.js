@@ -12,6 +12,10 @@ describe('Initialize Flow', () => {
       });
     });
 
+    afterAll(async () => {
+      await process.close();
+    });
+
     it('should verify that the initialize response correctly follows the schema', async () => {
       const result = await process.initialize();
 
@@ -33,6 +37,10 @@ describe('Initialize Flow', () => {
       });
     });
 
+    afterAll(async () => {
+      await process.close();
+    });
+
     it('should reject initialize response missing required fields', async () => {
       await expect(process.initialize()).rejects.toThrow(
         /Response to initialize\(\) failed schema validation/
@@ -47,6 +55,10 @@ describe('Initialize Flow', () => {
       process = mcpShell('node test/sampleServers/server.noResponse.ts', {
         requestTimeout: DefaultRequestTimeout,
       });
+    });
+
+    afterAll(async () => {
+      await process.close();
     });
 
     it('should timeout if server does not respond to initialize', async () => {
@@ -71,6 +83,10 @@ describe('Initialize Flow', () => {
         await process.initialize();
       });
 
+      afterAll(async () => {
+        await process.close();
+      });
+
       it('should discover tools capability', async () => {
         const result = process.getInitializeResult();
         expect(result?.capabilities.tools).toBeDefined();
@@ -90,6 +106,10 @@ describe('Initialize Flow', () => {
           requestTimeout: DefaultRequestTimeout,
         });
         await process.initialize();
+      });
+
+      afterAll(async () => {
+        await process.close();
       });
 
       it('should discover resources capability', async () => {
@@ -113,6 +133,10 @@ describe('Initialize Flow', () => {
         await process.initialize();
       });
 
+      afterAll(async () => {
+        await process.close();
+      });
+
       it('should have empty capabilities', async () => {
         const result = process.getInitializeResult();
         expect(result?.capabilities).toBeDefined();
@@ -133,6 +157,10 @@ describe('Initialize Flow', () => {
       await process.initialize();
     });
 
+    afterAll(async () => {
+      await process.close();
+    });
+
     it('should return a valid protocol version', async () => {
       const result = process.getInitializeResult();
       expect(result?.protocolVersion).toBeDefined();
@@ -150,6 +178,10 @@ describe('Initialize Flow', () => {
         requestTimeout: DefaultRequestTimeout,
       });
       await process.initialize();
+    });
+
+    afterAll(async () => {
+      await process.close();
     });
 
     it('should return server name and version', async () => {

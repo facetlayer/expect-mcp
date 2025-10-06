@@ -13,6 +13,10 @@ describe('Tool Usage', () => {
       await process.initialize();
     });
 
+    afterAll(async () => {
+      await process.close();
+    });
+
     it('should verify that the server capabilities section has enabled tools', async () => {
       const supportsTools = await process.supportsTools();
       expect(supportsTools).toBe(true);
@@ -70,6 +74,10 @@ describe('Tool Usage', () => {
       await process.initialize();
     });
 
+    afterAll(async () => {
+      await process.close();
+    });
+
     it('should verify that tools are not supported', async () => {
       const supportsTools = await process.supportsTools();
       expect(supportsTools).toBe(false);
@@ -92,6 +100,10 @@ describe('Tool Usage', () => {
       await process.initialize();
     });
 
+    afterAll(async () => {
+      await process.close();
+    });
+
     it('should reject calling a tool that is not declared in tools/list', async () => {
       await expect(process.callTool('undeclaredTool', {})).rejects.toThrow(
         'Tool undeclaredTool not declared in tools/list'
@@ -107,6 +119,10 @@ describe('Tool Usage', () => {
         requestTimeout: DefaultRequestTimeout,
       });
       await process.initialize();
+    });
+
+    afterAll(async () => {
+      await process.close();
     });
 
     it('should verify tool has name field', async () => {
@@ -136,6 +152,10 @@ describe('Tool Usage', () => {
       await process.initialize();
     });
 
+    afterAll(async () => {
+      await process.close();
+    });
+
     it('should pass when checking for existing tool with toHaveTool', async () => {
       await expect(process).toHaveTool('echo');
     });
@@ -161,6 +181,10 @@ describe('Tool Usage', () => {
         requestTimeout: DefaultRequestTimeout,
       });
       await process.initialize();
+    });
+
+    afterAll(async () => {
+      await process.close();
     });
 
     it('should fail when checking for nonexistent tool with toHaveTool', async () => {
@@ -196,6 +220,10 @@ describe('Tool Usage', () => {
         requestTimeout: DefaultRequestTimeout,
       });
       await process.initialize();
+    });
+
+    afterAll(async () => {
+      await process.close();
     });
 
     it('should pass when tool does not exist with .not.toHaveTool', async () => {
@@ -240,6 +268,10 @@ describe('Tool Usage', () => {
       await process.initialize();
     });
 
+    afterAll(async () => {
+      await process.close();
+    });
+
     it('should fail when checking for any tool on empty server', async () => {
       await expect(
         expect(process).toHaveTool('undeclaredTool')
@@ -269,6 +301,10 @@ describe('Tool Usage', () => {
         requestTimeout: DefaultRequestTimeout,
       });
       await process.initialize();
+    });
+
+    afterAll(async () => {
+      await process.close();
     });
 
     it('should fail when checking for tool on server without tools capability', async () => {

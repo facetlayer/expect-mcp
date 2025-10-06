@@ -111,6 +111,10 @@ describe('Resource Usage', () => {
       await process.initialize();
     });
 
+    afterAll(async () => {
+      await process.close();
+    });
+
     it('should verify resource has name field', async () => {
       const resources = await process.getResources();
       resources.forEach(resource => {
