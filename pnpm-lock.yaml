@@ -6,8 +6,8 @@ settings:
 
 dependencies:
   '@facetlayer/parse-stdout-lines':
-    specifier: 1.0.0
-    version: 1.0.0
+    specifier: 1.1.0
+    version: 1.1.0
   zod:
     specifier: 4.1.11
     version: 4.1.11
@@ -812,8 +812,8 @@ packages:
     dev: true
     optional: true
 
-  /@facetlayer/parse-stdout-lines@1.0.0:
-    resolution: {integrity: sha512-Ot877HS2DCTrrkj22+L+Er8tI4WYtCvKppqjBTvLCYfgCJmEKeR15ay6B1TugkHmy7MmSsXsuSGm0Q7TGy1deA==}
+  /@facetlayer/parse-stdout-lines@1.1.0:
+    resolution: {integrity: sha512-FjoSb3VDDoWAymXtfrRAGKaHMVHTx+4f8Jf58NUEFItmZ3qpOvrMl4MQM7cz9gyoI579iaKKRRQjfnsmzdXRbg==}
 
   /@facetlayer/streams@1.0.0:
     resolution: {integrity: sha512-ickAKFy1XDodcl1lNOjLiOTMYC+TyY1YDUfmgD/bz2DSPBsyxExTfq1/BOyHcZ2Yp5zOeLfFP2RLV74xOIFxqQ==}
@@ -822,7 +822,7 @@ packages:
   /@facetlayer/subprocess-wrapper@1.1.0:
     resolution: {integrity: sha512-WPqR7AwVluyvgFMPYKXjg5S7tORCDZGXWEivJIOoHBfSXJoBafC0rb8+YTboxSpNfvuCaGMEVaXv0rZHQFRRqg==}
     dependencies:
-      '@facetlayer/parse-stdout-lines': 1.0.0
+      '@facetlayer/parse-stdout-lines': 1.1.0
       '@facetlayer/streams': 1.0.0
     dev: true
 
