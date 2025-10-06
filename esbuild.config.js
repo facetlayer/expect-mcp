@@ -5,8 +5,6 @@ const commonConfig = {
   bundle: true,
   platform: 'node',
   target: 'node16',
-  format: 'esm',
-  outdir: 'dist',
   external: ['vitest', '@facetlayer/parse-stdout-lines', 'zod'],
 };
 
@@ -26,13 +24,26 @@ function runCommand(command, args = []) {
 }
 
 try {
-  // Build JavaScript with esbuild
-  console.log('Building JavaScript with esbuild...');
+  // Build ESM JavaScript with esbuild
+  console.log('Building ESM JavaScript with esbuild...');
   await build({
     ...commonConfig,
+    format: 'esm',
+    outdir: 'dist',
     entryPoints,
   });
-  console.log('JavaScript build completed');
+  console.log('ESM build completed');
+
+  // Build CommonJS JavaScript with esbuild
+  console.log('Building CommonJS JavaScript with esbuild...');
+  await build({
+    ...commonConfig,
+    format: 'cjs',
+    outdir: 'dist/cjs',
+    entryPoints: ['src/index.ts'],
+    outExtension: { '.js': '.cjs' },
+  });
+  console.log('CommonJS build completed');
 
   // Generate TypeScript declaration files
   console.log('Generating TypeScript declaration files...');
