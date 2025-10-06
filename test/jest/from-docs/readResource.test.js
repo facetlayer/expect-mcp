@@ -16,7 +16,7 @@ describe('readResource Examples', () => {
     expect(result.contents[0].text).toBeDefined();
     expect(result.contents[0].mimeType).toBe('text/plain');
 
-    app.close();
+    await app.close();
   });
 
   test('error handling', async () => {
@@ -27,10 +27,10 @@ describe('readResource Examples', () => {
 
     try {
       await app.readResource('file:///nonexistent.txt');
-    } catch (error: any) {
+    } catch (error) {
       expect(error.name).toBe('ResourceCallError');
     }
 
-    app.close();
+    await app.close();
   });
 });
