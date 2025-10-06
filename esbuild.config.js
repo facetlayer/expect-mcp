@@ -8,7 +8,11 @@ const commonConfig = {
   external: ['vitest', '@facetlayer/parse-stdout-lines', 'zod'],
 };
 
-const entryPoints = ['src/index.ts', 'src/vitest-setup.ts'];
+const entryPoints = [
+    'src/index.ts',
+    'src/vitest-setup.ts',
+    'src/jest-setup.ts',
+];
 
 function runCommand(command, args = []) {
   return new Promise((resolve, reject) => {

@@ -34,8 +34,14 @@ jobs:
       - name: Build
         run: pnpm build
 
-      - name: Run main tests
+      - name: Update Jest test files
+        run: pnpm update-jest-tests
+
+      - name: Run Vitest tests
         run: pnpm test
+
+      - name: Run Jest tests
+        run: pnpm test:jest
 
       - name: Run samples tests
         run: pnpm test

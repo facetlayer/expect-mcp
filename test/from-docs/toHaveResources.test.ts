@@ -1,5 +1,4 @@
 import { describe, expect, test } from 'vitest';
-import '../../src/vitest-setup.js';
 import { mcpShell } from '../../src/index.js';
 
 const DefaultRequestTimeout = 2000;
