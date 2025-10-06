@@ -298,11 +298,12 @@ export class JsonRpcSubprocess extends events.EventEmitter {
     this.pendingRequests.clear();
 
     if (this.subprocess) {
-      this.subprocess.kill();
+      if (!this.subprocess.kill()) {
+          console.warn("child_process.kill() failed");
+      }
       this.subprocess = null;
+      this.emit('killed');
     }
-
-    this.emit('killed');
   }
 
   isRunning(): boolean {

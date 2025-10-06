@@ -3,7 +3,6 @@ const {  mcpShell  } = require('../../../dist/cjs/index.cjs');
 const DefaultRequestTimeout = 1000;
 const CloseTimeout = 2000;
 
-describe('Close Flow', () => {
   describe('graceful close', () => {
     it('should close a server gracefully after initialization', async () => {
       const process = mcpShell('node test/sampleServers/server.noCapabilities.ts', {
@@ -118,4 +117,3 @@ describe('Close Flow', () => {
       expect(process.exitCode()).toBe(0);
     });
   });
-});
