@@ -7,7 +7,7 @@ on:
     branches: [main]
 
 jobs:
-  test:
+  vitest:
     runs-on: ubuntu-latest
 
     steps:
@@ -34,15 +34,38 @@ jobs:
       - name: Build
         run: pnpm build
 
-      - name: Update Jest test files
-        run: pnpm update-jest-tests
-
       - name: Run Vitest tests
         run: pnpm test
-
-      - name: Run Jest tests
-        run: pnpm test:jest
 
       - name: Run samples tests
         run: pnpm test
         working-directory: ./samples
+
+  jest:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Build
+        run: pnpm build
+
+      - name: Update Jest test files
+        run: pnpm update-jest-tests
+
+      - name: Run Jest tests
+        run: pnpm test:jest

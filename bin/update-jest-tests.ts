@@ -28,6 +28,9 @@ function ensureDirectoryExists(dir: string) {
 function transformTestFile(content: string): string {
   let transformed = content;
 
+  // Remove vitest-setup imports
+  transformed = transformed.replace(/import\s+['"][^'"]*vitest-setup[^'"]*['"];?\s*\n/g, '');
+
   // Remove vitest imports completely
   transformed = transformed.replace(/import\s+\{[^}]+\}\s+from\s+['"]vitest['"];?\s*\n/g, '');
 
