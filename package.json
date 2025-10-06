@@ -36,6 +36,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:samples": "vitest --config samples/vitest.config.ts",
+    "test:jest": "jest",
     "prepare": "npm run clean && npm run build"
   },
   "keywords": [

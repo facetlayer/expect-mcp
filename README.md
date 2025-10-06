@@ -6,6 +6,8 @@
 
 Custom [Vitest](https://vitest.dev/) matchers to write automated test assertions for Model Context Protocol (MCP) tools.
 
+[Documemtation](https://facetlayer.github.io/expect-mcp/)
+
 ## Features
 
 - **Custom Matchers**: Adds `expect()` matchers to assert on MCP interactions.
@@ -73,7 +75,7 @@ MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## Author
 
-[andyfischer](https://github.com/facetlayer)
+[andyfischer](https://github.com/andyfischer)
 
 ## Related Projects
 

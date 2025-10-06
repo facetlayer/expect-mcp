@@ -1,4 +1,8 @@
 
+(unreleased)
+ - Add support for Jest
+
+
 0.7.0
  - Initial public version
  - Supports stdin, supports tools and resources
