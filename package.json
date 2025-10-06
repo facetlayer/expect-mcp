@@ -73,6 +73,7 @@
   "devDependencies": {
     "@facetlayer/subprocess-wrapper": "1.1.0",
     "@jest/globals": "^29.7.0",
+    "@modelcontextprotocol/sdk": "1.18.2",
     "@types/jest": "^29.5.0",
     "@types/node": "^20.11.0",
     "esbuild": "0.25.9",
@@ -81,11 +82,10 @@
     "prettier-plugin-organize-imports": "4.3.0",
     "ts-jest": "^29.2.0",
     "typescript": "^5.4.0",
-    "@modelcontextprotocol/sdk": "1.18.2",
     "vitest": "^1.5.0"
   },
   "dependencies": {
-    "@facetlayer/parse-stdout-lines": "1.0.0",
+    "@facetlayer/parse-stdout-lines": "1.1.0",
     "zod": "4.1.11"
   }
 }

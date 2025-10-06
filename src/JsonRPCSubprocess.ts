@@ -30,6 +30,8 @@ export class JsonRpcSubprocess extends events.EventEmitter {
   private _hasExited = false;
   private _exitCode: number | null = null;
   private startPromise?: Promise<void>;
+  private stdoutCleanup?: () => void;
+  private stderrCleanup?: () => void;
 
   options: JsonRpcSubprocessOptions;
 
@@ -95,7 +97,7 @@ export class JsonRpcSubprocess extends events.EventEmitter {
       });
     });
 
-    unixPipeToLines(this.subprocess!.stdout!, (line: string | null) => {
+    this.stdoutCleanup = unixPipeToLines(this.subprocess!.stdout!, (line: string | null) => {
       if (line === null) return;
 
       this.emit('stdout', line);
@@ -119,7 +121,7 @@ export class JsonRpcSubprocess extends events.EventEmitter {
       this.handleIncomingMessage(jsonMessage);
     });
 
-    unixPipeToLines(this.subprocess!.stderr!, (line: string | null) => {
+    this.stderrCleanup = unixPipeToLines(this.subprocess!.stderr!, (line: string | null) => {
       if (line === null) return;
 
       this.emit('stderr', line);
@@ -298,6 +300,27 @@ export class JsonRpcSubprocess extends events.EventEmitter {
     this.pendingRequests.clear();
 
     if (this.subprocess) {
+      // Clean up event listeners first
+      if (this.stdoutCleanup) {
+        this.stdoutCleanup();
+        this.stdoutCleanup = undefined;
+      }
+      if (this.stderrCleanup) {
+        this.stderrCleanup();
+        this.stderrCleanup = undefined;
+      }
+
+      // Destroy streams to ensure proper cleanup and prevent open handles
+      if (this.subprocess.stdin && !this.subprocess.stdin.destroyed) {
+        this.subprocess.stdin.destroy();
+      }
+      if (this.subprocess.stdout && !this.subprocess.stdout.destroyed) {
+        this.subprocess.stdout.destroy();
+      }
+      if (this.subprocess.stderr && !this.subprocess.stderr.destroyed) {
+        this.subprocess.stderr.destroy();
+      }
+
       if (!this.subprocess.kill()) {
           console.warn("child_process.kill() failed");
       }
