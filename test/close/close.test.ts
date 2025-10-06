@@ -1,6 +1,6 @@
+import '../../src/vitest-setup.js';
 import { describe, expect, it } from 'vitest';
 import { mcpShell } from '../../src';
-import '../../src/vitest-setup.js';
 
 const DefaultRequestTimeout = 1000;
 const CloseTimeout = 2000;

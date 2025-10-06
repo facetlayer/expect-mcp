@@ -57,7 +57,6 @@ export class MCPStdinSubprocess extends JsonRpcSubprocess {
       }
     );
 
-    // Set up exit promise when the process exits
     this.on('exit', (code: number | null) => {
       if (!this.exitPromise) {
         this.exitPromise = Promise.resolve(code || 0);
@@ -314,6 +313,10 @@ export class MCPStdinSubprocess extends JsonRpcSubprocess {
     } catch (error) {
       // If the process didn't exit in time, kill it forcefully
       this.kill();
+
+      // Small delay to allow .kill() to work, this helps avoid a false 'detectOpenHandles' error on Jest.
+      await new Promise(resolve => setTimeout(resolve, 1000));
+
       throw error;
     }
   }

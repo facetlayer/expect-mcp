@@ -1,6 +1,6 @@
+import '../../src/vitest-setup.js';
 import { beforeAll, describe, expect, it } from 'vitest';
 import { MCPStdinSubprocess, mcpShell } from '../../src';
-import '../../src/vitest-setup.js';
 
 const DefaultRequestTimeout = 1000;
 

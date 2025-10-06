@@ -1,5 +1,8 @@
 name: CI
 
+permissions:
+  contents: read
+
 on:
   push:
     branches: [main, dev]
@@ -7,8 +10,9 @@ on:
     branches: [main]
 
 jobs:
-  test:
+  vitest:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
 
     steps:
       - name: Checkout code
@@ -34,9 +38,36 @@ jobs:
       - name: Build
         run: pnpm build
 
-      - name: Run main tests
+      - name: Run Vitest tests
         run: pnpm test
 
       - name: Run samples tests
         run: pnpm test
         working-directory: ./samples
+
+  jest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Build
+        run: pnpm build
+
+      - name: Run Jest tests
+        run: pnpm test:jest

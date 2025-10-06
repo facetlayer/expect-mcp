@@ -1,7 +1,7 @@
 {
   "name": "expect-mcp",
   "version": "0.7.0",
-  "description": "Custom Vitest matchers for testing Model Context Protocol (MCP) integrations.",
+  "description": "Custom matchers for testing Model Context Protocol (MCP) integrations with Vitest and Jest.",
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -23,6 +23,10 @@
       "types": "./dist/vitest-setup.d.ts",
       "default": "./dist/vitest-setup.js"
     },
+    "./jest-setup": {
+      "types": "./dist/jest-setup.d.ts",
+      "default": "./dist/jest-setup.js"
+    },
     "./package.json": "./package.json"
   },
   "files": [
@@ -36,11 +40,14 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:samples": "vitest --config samples/vitest.config.ts",
-    "test:jest": "jest",
+    "update-jest-tests": "node --experimental-strip-types bin/update-jest-tests.ts",
+    "test:jest": "jest --detectOpenHandles --maxWorkers=1 --no-cache",
+    "test:all": "npm run test && npm run test:jest",
     "prepare": "npm run clean && npm run build"
   },
   "keywords": [
     "vitest",
+    "jest",
     "expect",
     "matchers",
     "mcp",
@@ -55,18 +62,30 @@
   "peerDependencies": {
     "vitest": "^1.5.0"
   },
+  "peerDependenciesMeta": {
+    "vitest": {
+      "optional": true
+    },
+    "jest": {
+      "optional": true
+    }
+  },
   "devDependencies": {
     "@facetlayer/subprocess-wrapper": "1.1.0",
+    "@jest/globals": "^29.7.0",
+    "@modelcontextprotocol/sdk": "1.18.2",
+    "@types/jest": "^29.5.0",
     "@types/node": "^20.11.0",
     "esbuild": "0.25.9",
+    "jest": "^29.7.0",
     "prettier": "3.6.2",
     "prettier-plugin-organize-imports": "4.3.0",
+    "ts-jest": "^29.2.0",
     "typescript": "^5.4.0",
-    "@modelcontextprotocol/sdk": "1.18.2",
     "vitest": "^1.5.0"
   },
   "dependencies": {
-    "@facetlayer/parse-stdout-lines": "1.0.0",
+    "@facetlayer/parse-stdout-lines": "1.1.0",
     "zod": "4.1.11"
   }
 }

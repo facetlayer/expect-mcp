@@ -8,7 +8,11 @@ const commonConfig = {
   external: ['vitest', '@facetlayer/parse-stdout-lines', 'zod'],
 };
 
-const entryPoints = ['src/index.ts', 'src/vitest-setup.ts'];
+const entryPoints = [
+    'src/index.ts',
+    'src/vitest-setup.ts',
+    'src/jest-setup.ts',
+];
 
 function runCommand(command, args = []) {
   return new Promise((resolve, reject) => {
@@ -40,7 +44,7 @@ try {
     ...commonConfig,
     format: 'cjs',
     outdir: 'dist/cjs',
-    entryPoints: ['src/index.ts'],
+    entryPoints: ['src/index.ts', 'src/jest-setup.ts'],
     outExtension: { '.js': '.cjs' },
   });
   console.log('CommonJS build completed');
