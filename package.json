@@ -6,6 +6,9 @@
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "packageManager": "pnpm@8.15.4",
+  "bin": {
+    "expect-mcp": "./dist/main-cli.js"
+  },
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",

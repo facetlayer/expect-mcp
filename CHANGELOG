@@ -1,5 +1,6 @@
 
 (unreleased)
+ - Add CLI tool with 'how-to-use'
  - Add support for Jest
  - Add a CJS build
 

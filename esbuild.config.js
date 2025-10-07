@@ -1,5 +1,6 @@
 import { spawn } from 'child_process';
 import { build } from 'esbuild';
+import { cpSync, existsSync, mkdirSync } from 'fs';
 
 const commonConfig = {
   bundle: true,
@@ -12,6 +13,7 @@ const entryPoints = [
     'src/index.ts',
     'src/vitest-setup.ts',
     'src/jest-setup.ts',
+    'src/main-cli.ts',
 ];
 
 function runCommand(command, args = []) {
@@ -53,6 +55,17 @@ try {
   console.log('Generating TypeScript declaration files...');
   await runCommand('npx', ['tsc']);
   console.log('TypeScript declaration files generated');
+
+  // Copy docs folder to dist
+  console.log('Copying docs folder to dist...');
+  if (existsSync('src/docs')) {
+    const distDocsDir = 'dist/docs';
+    if (!existsSync(distDocsDir)) {
+      mkdirSync(distDocsDir, { recursive: true });
+    }
+    cpSync('src/docs', distDocsDir, { recursive: true });
+    console.log('Docs folder copied');
+  }
 
   console.log('Build completed successfully');
 } catch (error) {
