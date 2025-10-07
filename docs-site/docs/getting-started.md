@@ -2,7 +2,7 @@
 
 ## Installation
 
-This package expects Vitest to be available in the consumer project. Make sure you have it installed as either a dependency or devDependency.
+This package supports both Vitest and Jest. Make sure you have one of them installed as either a dependency or devDependency.
 
 ```bash
 pnpm add -D expect-mcp
@@ -10,10 +10,19 @@ pnpm add -D expect-mcp
 
 ## Setup
 
-Add a single import to your Vitest setup file (or the top of an individual test) to register the matchers automatically:
+Add a single import to your Vitest or Jest setup file (or the top of an individual test) to register the matchers automatically:
 
 ```ts
 import 'expect-mcp/vitest-setup';
+```
+
+### ESM vs CommonJS
+
+The main import is ESM-based. If you need CommonJS support, use:
+
+```javascript
+const { mcpShell } = require('expect-mcp/cjs');
+require('expect-mcp/cjs/vitest-setup');
 ```
 
 ## Basic Usage

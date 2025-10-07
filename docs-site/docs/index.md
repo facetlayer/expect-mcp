@@ -1,6 +1,6 @@
 # expect-mcp
 
-Custom [Vitest](https://vitest.dev/) matchers to write test assertions for Model Context Protocol (MCP) tools.
+Custom test matchers for [Vitest](https://vitest.dev/) and [Jest](https://jestjs.io/) to write test assertions for Model Context Protocol (MCP) tools.
 
 ## Features
 
@@ -14,7 +14,7 @@ Currently the library supports:
 
 - Testing **tools** and **resources**. Other MCP capabilities are not supported yet.
 - Testing **stdin** protocol servers. HTTP-based servers are not supported yet.
-- Integration with **Vitest**. Other libraries like Jest have not been tested yet.
+- Integration with **Vitest** and **Jest**.
 
 ## Quick Start
 

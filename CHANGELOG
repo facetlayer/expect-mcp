@@ -1,6 +1,7 @@
 
 (unreleased)
  - Add support for Jest
+ - Add a CJS build
 
 
 0.7.0

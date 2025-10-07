@@ -4,7 +4,7 @@
 [![npm version](https://badge.fury.io/js/expect-mcp.svg)](https://badge.fury.io/js/expect-mcp)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-Custom [Vitest](https://vitest.dev/) matchers to write automated test assertions for Model Context Protocol (MCP) tools.
+Custom test matchers for [Vitest](https://vitest.dev/) and [Jest](https://jestjs.io/) to write automated test assertions for Model Context Protocol (MCP) tools.
 
 [Documemtation](https://facetlayer.github.io/expect-mcp/)
 
@@ -20,7 +20,7 @@ Currently the library supports:
 
 - Testing **tools** and **resources**. Other MCP capabilities are not supported yet.
 - Testing **stdin** protocol servers. HTTP-based servers are not supported yet.
-- Integration with **Vitest**. Other libraries like Jest have not been tested yet.
+- Integration with **Vitest** and **Jest**.
 
 ## Installation
 
@@ -58,12 +58,19 @@ it("the test", async () => {
 });
 ```
 
+The main import is ESM-based. If you need CommonJS support, use:
+
+```javascript
+const { mcpShell } = require('expect-mcp/cjs');
+require('expect-mcp/cjs/vitest-setup');
+```
+
 See the [Documentation](https://facetlayer.github.io/expect-mcp/) for the full API and more examples.
 
 ## Requirements
 
 - Node.js >= 18
-- Vitest ^1.5.0
+- Vitest ^1.5.0 or Jest ^29.0.0
 
 ## Feedback
 
@@ -80,4 +87,5 @@ MIT License - see the [LICENSE](LICENSE) file for details.
 ## Related Projects
 
 - [Model Context Protocol](https://modelcontextprotocol.io/) - Learn more about MCP
-- [Vitest](https://vitest.dev/) - The testing framework this library extends
+- [Vitest](https://vitest.dev/) - Testing framework supported by this library
+- [Jest](https://jestjs.io/) - Testing framework supported by this library
