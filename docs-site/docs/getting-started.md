@@ -39,7 +39,7 @@ test('server provides expected tools', async () => {
   await expect(app).toHaveTool('filesystem_list');
   await expect(app).toHaveResource('config.json');
 
-  app.close();
+  await app.close();
 });
 ```
 
@@ -47,8 +47,7 @@ test('server provides expected tools', async () => {
 
 A typical test suite can look like this:
 
-```
-
+```ts
 import { expect, beforeAll, afterAll } from 'vitest';
 import { mcpShell, MCPStdinSubprocess } from 'expect-mcp';
 
@@ -65,12 +64,11 @@ afterAll(async () => {
 });
 
 it("tests something", async () => {
-    // Test assretions here
-    await expect(app.toHaveTool('tool'));
+    // Test assertions here
+    await expect(app).toHaveTool('tool');
     const response = await app.callTool('tool', {});
     expect(response.content).toEqual(...);
 });
-
 ```
 
 ## Next Steps

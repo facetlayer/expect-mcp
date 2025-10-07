@@ -28,7 +28,7 @@ test('server provides file operations', async () => {
   await expect(app).toHaveTool('read_file');
   await expect(app).toHaveTool('write_file');
 
-  app.close();
+  await app.close();
 });
 ```
 
@@ -58,6 +58,6 @@ test('server provides configuration resources', async () => {
   await expect(app).toHaveResource('app_config');
   await expect(app).toHaveResource('user_settings');
 
-  app.close();
+  await app.close();
 });
 ```

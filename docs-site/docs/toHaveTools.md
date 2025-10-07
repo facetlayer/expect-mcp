@@ -24,7 +24,7 @@ test('server provides file operations', async () => {
 
   await expect(app).toHaveTools(['read_file', 'write_file']);
 
-  app.close();
+  await app.close();
 });
 ```
 

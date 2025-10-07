@@ -51,7 +51,7 @@ test('server provides expected tools', async () => {
   await expect(app).toHaveTool('read_file');
   await expect(app).toHaveResource('project_files');
 
-  app.close();
+  await app.close();
 });
 ```
 
@@ -134,7 +134,7 @@ Close the stdin pipe and wait for the process to cleanly exit. Throws an error o
 process has a non-zero exit code.
 
 ```ts
-app.close();
+await app.close();
 ```
 
 ## See Also

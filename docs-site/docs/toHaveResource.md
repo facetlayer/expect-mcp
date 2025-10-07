@@ -25,7 +25,7 @@ test('server provides configuration resources', async () => {
   await expect(app).toHaveResource('app_config');
   await expect(app).toHaveResource('user_settings');
 
-  app.close();
+  await app.close();
 });
 ```
 

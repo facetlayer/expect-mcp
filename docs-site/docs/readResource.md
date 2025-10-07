@@ -45,7 +45,7 @@ test('read a resource from the server', async () => {
   expect(result.contents[0].text).toBeDefined();
   expect(result.contents[0].mimeType).toBe('text/plain');
 
-  app.close();
+  await app.close();
 });
 ```
 

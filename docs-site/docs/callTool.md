@@ -40,18 +40,8 @@ test('call a tool on the server', async () => {
   expect(result).toBeDefined();
   expect(result.content).toBeDefined();
 
-  app.close();
+  await app.close();
 });
-```
-
-## Error Handling
-
-If the tool call fails, the server will return an error response:
-
-```ts
-const result = await app.callTool('nonexistent_tool', {});
-
-expect(result).toHaveMCPError();
 ```
 
 ## Timeout Configuration

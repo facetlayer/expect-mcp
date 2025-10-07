@@ -6,13 +6,13 @@
 
 Custom test matchers for [Vitest](https://vitest.dev/) and [Jest](https://jestjs.io/) to write automated test assertions for Model Context Protocol (MCP) tools.
 
-[Documemtation](https://facetlayer.github.io/expect-mcp/)
+[Documentation](https://facetlayer.github.io/expect-mcp/)
 
 ## Features
 
 - **Custom Matchers**: Adds `expect()` matchers to assert on MCP interactions.
 - **TypeScript Support**: Complete type definitions for all MCP types and matchers.
-- **MCP client**: Implements a special MCP client that includes strict protocol validation to catch any errors.
+- **MCP client**: Implements a special MCP client that includes strict protocol validation.
 
 ## Latest support:
 
@@ -58,14 +58,19 @@ it("the test", async () => {
 });
 ```
 
-The main import is ESM-based. If you need CommonJS support, use:
+### ESM / CommonJS Support
+
+By default the library is ESM but we also include a CJS build.
+If your tests need to use CommonJS then import from `expect-mcp/cjs`. Example:
 
 ```javascript
 const { mcpShell } = require('expect-mcp/cjs');
 require('expect-mcp/cjs/vitest-setup');
 ```
 
-See the [Documentation](https://facetlayer.github.io/expect-mcp/) for the full API and more examples.
+## Documentation
+
+See the [Documentation](https://facetlayer.github.io/expect-mcp/) site for the full API and more examples.
 
 ## Requirements
 

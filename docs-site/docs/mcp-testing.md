@@ -17,7 +17,7 @@ await expect(app).toHaveTool('read_file');
 await expect(app).toHaveResource('project_files');
 
 // Clean up
-app.close();
+await app.close();
 ```
 
 ### Parameters
@@ -132,6 +132,63 @@ if (!app.isInitialized()) {
 }
 ```
 
+#### getInitializeResult(): MCPInitializeResult | undefined
+
+Get the result from the MCP initialization, including server info and capabilities.
+
+```ts
+const result = app.getInitializeResult();
+if (result) {
+  console.log('Server name:', result.serverInfo.name);
+  console.log('Capabilities:', result.capabilities);
+}
+```
+
+#### supportsTools(): Promise\<boolean\>
+
+Check if the server supports tools based on its declared capabilities.
+
+```ts
+const canCallTools = await app.supportsTools();
+if (canCallTools) {
+  await app.callTool('some_tool', {});
+}
+```
+
+#### supportsResources(): Promise\<boolean\>
+
+Check if the server supports resources based on its declared capabilities.
+
+```ts
+const canReadResources = await app.supportsResources();
+if (canReadResources) {
+  await app.readResource('file:///example.txt');
+}
+```
+
+#### waitForExit(): Promise\<number\>
+
+Wait for the process to exit and return the exit code.
+
+```ts
+const exitCode = await app.waitForExit();
+console.log('Process exited with code:', exitCode);
+```
+
+#### close(timeoutMs?: number): Promise\<void\>
+
+Close the MCP server gracefully by closing stdin and waiting for the process to exit.
+
+Throws an error if the process doesn't exit within the timeout (default: 5000ms) or if the process exits with a non-zero code.
+
+```ts
+// Use default 5 second timeout
+await app.close();
+
+// Use custom timeout
+await app.close(10000); // 10 seconds
+```
+
 
 ### Example Test
 
@@ -165,8 +222,46 @@ describe('File Server MCP', () => {
       expect(resourceResult.contents).toBeDefined();
       expect(resourceResult.contents[0]).toBeDefined();
     } finally {
-      app.close();
+      await app.close();
     }
+  });
+});
+```
+
+### Example Test with beforeAll/afterAll
+
+For test suites with multiple tests, you can set up the MCP server once and reuse it:
+
+```ts
+import { mcpShell, MCPStdinSubprocess } from 'expect-mcp';
+import { describe, test, expect, beforeAll, afterAll } from 'vitest';
+
+describe('File Server MCP', () => {
+  let app: MCPStdinSubprocess;
+
+  beforeAll(async () => {
+    app = mcpShell('node file-server.js');
+    await app.initialize();
+  });
+
+  afterAll(async () => {
+    await app.close();
+  });
+
+  test('provides expected tools', async () => {
+    await expect(app).toHaveTool('read_file');
+    await expect(app).toHaveTool('write_file');
+  });
+
+  test('can read files', async () => {
+    const result = await app.callTool('read_file', {
+      path: 'package.json',
+    });
+    expect(result).toBeDefined();
+  });
+
+  test('provides expected resources', async () => {
+    await expect(app).toHaveResource('project_files');
   });
 });
 ```
