@@ -2,183 +2,64 @@
 
 The expect-mcp library provides custom Vitest matchers specifically designed for testing Model Context Protocol (MCP) integrations.
 
+## MCP Server Matchers
+
+These matchers work with `MCPStdinSubprocess` instances to test server capabilities.
+
+- **[toHaveTool](toHaveTool)** - Check if server provides a specific tool
+- **[toHaveTools](toHaveTools)** - Check if server provides multiple tools
+- **[toHaveResource](toHaveResource)** - Check if server provides a specific resource
+- **[toHaveResources](toHaveResources)** - Check if server provides multiple resources
+
 ## Tool Result Matchers
 
 These matchers work with `ToolCallResult` instances returned by `app.callTool()`.
 
-### toBeSuccessful()
-
-Checks that a tool call result is successful (does not have `isError` set to `true`).
-
-```ts
-const result = await app.callTool('write_file', {
-  path: '/tmp/test.txt',
-  content: 'Hello'
-});
-await expect(result).toBeSuccessful();
-```
-
-### toHaveTextContent(expectedText: string)
-
-Checks that a tool call result contains text content matching the expected string exactly.
-
-```ts
-const result = await app.callTool('read_file', {
-  path: '/tmp/test.txt'
-});
-await expect(result).toHaveTextContent('Hello world');
-```
-
-**Parameters:**
-- `expectedText`: The exact text content to match
-
-### toMatchTextContent(pattern: RegExp)
-
-Checks that a tool call result contains text content matching the given regular expression pattern.
-
-```ts
-const result = await app.callTool('get_status', {});
-await expect(result).toMatchTextContent(/Status: \w+/);
-```
-
-**Parameters:**
-- `pattern`: A regular expression to match against the text content
-
-**Example:**
-
-```ts
-import { mcpShell } from 'expect-mcp';
-
-test('validate tool result content', async () => {
-  const app = mcpShell('node file-server.js');
-  await app.initialize();
-
-  const result = await app.callTool('read_file', {
-    path: '/tmp/log.txt'
-  });
-
-  // Check that the tool call succeeded
-  await expect(result).toBeSuccessful();
-
-  // Check exact text match
-  await expect(result).toHaveTextContent('Log entry 1\nLog entry 2');
-
-  // Check pattern match
-  await expect(result).toMatchTextContent(/Log entry \d+/);
-
-  await app.close();
-});
-```
+- **[toBeSuccessful](toBeSuccessful)** - Check that a tool call succeeded
+- **[toHaveTextContent](toHaveTextContent)** - Check tool result contains exact text
+- **[toMatchTextContent](toMatchTextContent)** - Check tool result matches a regex pattern
 
 ## Resource Result Matchers
 
 These matchers work with `ReadResourceResult` instances returned by `app.readResource()`.
 
-### toHaveResourceContent(uri: string)
+- **[toHaveResourceContent](toHaveResourceContent)** - Check resource has content for a URI
+- **[toHaveTextResource](toHaveTextResource)** - Check resource contains exact text
 
-Checks that a resource result contains content for a specific URI.
-
-```ts
-const result = await app.readResource('file:///app/config.json');
-await expect(result).toHaveResourceContent('file:///app/config.json');
-```
-
-**Parameters:**
-- `uri`: The URI to check for in the resource contents
-
-### toHaveTextResource(expectedText: string)
-
-Checks that a resource result contains text content matching the expected string exactly.
-
-```ts
-const result = await app.readResource('file:///app/test.txt');
-await expect(result).toHaveTextResource('Hello world');
-```
-
-**Parameters:**
-- `expectedText`: The exact text content to match
-
-**Example:**
+## Example
 
 ```ts
 import { mcpShell } from 'expect-mcp';
+import { test, expect } from 'vitest';
 
-test('validate resource content', async () => {
+test('complete matcher example', async () => {
   const app = mcpShell('node file-server.js');
   await app.initialize();
 
-  const result = await app.readResource('file:///app/config.json');
-
-  // Check that the resource has content for the URI
-  await expect(result).toHaveResourceContent('file:///app/config.json');
-
-  // Check exact text match
-  await expect(result).toHaveTextResource('{"key": "value"}');
-
-  await app.close();
-});
-```
-
-## MCP Server Matchers
-
-These matchers work with `MCPStdinSubprocess` instances.
-
-## toHaveTool(toolName: string)
-
-Checks that an MCP server provides a tool with the specified name. This matcher works with `MCPStdinSubprocess` instances.
-
-```ts
-const app = mcpShell('node path/to/mcp-server.js');
-await app.initialize();
-await expect(app).toHaveTool('filesystem_list');
-```
-
-### Parameters
-
-- `toolName`: The name of the tool to check for
-
-### Example
-
-```ts
-import { mcpShell } from 'expect-mcp';
-
-test('server provides file operations', async () => {
-  const app = mcpShell('node file-server.js');
-  await app.initialize();
-
+  // Server matchers
   await expect(app).toHaveTool('read_file');
-  await expect(app).toHaveTool('write_file');
+  await expect(app).toHaveTools(['read_file', 'write_file']);
+  await expect(app).toHaveResource('config.json');
+
+  // Tool result matchers
+  const toolResult = await app.callTool('read_file', {
+    path: '/tmp/test.txt'
+  });
+  await expect(toolResult).toBeSuccessful();
+  await expect(toolResult).toHaveTextContent('Hello world');
+  await expect(toolResult).toMatchTextContent(/Hello \w+/);
+
+  // Resource result matchers
+  const resourceResult = await app.readResource('file:///app/config.json');
+  await expect(resourceResult).toHaveResourceContent('file:///app/config.json');
+  await expect(resourceResult).toHaveTextResource('{"key": "value"}');
 
   await app.close();
 });
 ```
 
-## toHaveResource(resourceName: string)
+## See Also
 
-Checks that an MCP server provides a resource with the specified name. This matcher works with `MCPStdinSubprocess` instances.
-
-```ts
-const app = mcpShell('node path/to/mcp-server.js');
-await app.initialize();
-await expect(app).toHaveResource('config.json');
-```
-
-### Parameters
-
-- `resourceName`: The name of the resource to check for
-
-### Example
-
-```ts
-import { mcpShell } from 'expect-mcp';
-
-test('server provides configuration resources', async () => {
-  const app = mcpShell('node config-server.js');
-  await app.initialize();
-
-  await expect(app).toHaveResource('app_config');
-  await expect(app).toHaveResource('user_settings');
-
-  await app.close();
-});
-```
+- [ToolCallResult](ToolCallResult) - Helper class for tool call results
+- [ReadResourceResult](ReadResourceResult) - Helper class for resource read results
+- [MCP Server Testing](mcp-testing) - Guide to testing MCP servers

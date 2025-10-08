@@ -45,8 +45,9 @@
     "test:samples": "vitest --config samples/vitest.config.ts",
     "update-jest-tests": "node --experimental-strip-types bin/update-jest-tests.ts",
     "test:jest": "jest --detectOpenHandles --maxWorkers=1 --no-cache",
-    "test:all": "npm run test && npm run test:jest",
-    "prepare": "npm run clean && npm run build"
+    "test:all": "pnpm run test && pnpm run test:jest",
+    "prepare": "pnpm run clean && pnpm run build",
+    "start:docs": "cd docs-site && pnpm run start"
   },
   "keywords": [
     "vitest",

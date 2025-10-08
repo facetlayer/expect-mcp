@@ -1,6 +1,9 @@
 
 (unreleased)
- - Add CLI tool with 'how-to-use'
+ - Add matchers: toBeSuccessful, toHaveResourceContent, toHaveTextContent,
+   toHaveTextResource, toMatchTextContent
+ - Add classes ToolCallResult and ReadResourceResult
+ - Add CLI tool with 'how-to-use' document
  - Add support for Jest
  - Add a CJS build
 

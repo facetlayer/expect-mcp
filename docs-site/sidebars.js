@@ -27,18 +27,38 @@ const sidebars = {
     },
     {
       type: 'doc',
+      id: 'matchers',
+      label: 'Matchers',
+    },
+    {
+      type: 'doc',
+      id: 'types',
+      label: 'Types',
+    },
+    {
+      type: 'doc',
       id: 'mcpShell',
       label: 'mcpShell()',
     },
     {
       type: 'doc',
       id: 'callTool',
-      label: '.callTool()',
+      label: 'app.callTool()',
     },
     {
       type: 'doc',
       id: 'readResource',
-      label: '.readResource()',
+      label: 'app.readResource()',
+    },
+    {
+      type: 'doc',
+      id: 'ToolCallResult',
+      label: 'ToolCallResult',
+    },
+    {
+      type: 'doc',
+      id: 'ReadResourceResult',
+      label: 'ReadResourceResult',
     },
     {
       type: 'doc',
@@ -62,8 +82,28 @@ const sidebars = {
     },
     {
       type: 'doc',
-      id: 'types',
-      label: 'Type Definitions',
+      id: 'toBeSuccessful',
+      label: '.toBeSuccessful()',
+    },
+    {
+      type: 'doc',
+      id: 'toHaveTextContent',
+      label: '.toHaveTextContent()',
+    },
+    {
+      type: 'doc',
+      id: 'toMatchTextContent',
+      label: '.toMatchTextContent()',
+    },
+    {
+      type: 'doc',
+      id: 'toHaveResourceContent',
+      label: '.toHaveResourceContent()',
+    },
+    {
+      type: 'doc',
+      id: 'toHaveTextResource',
+      label: '.toHaveTextResource()',
     },
   ],
 };

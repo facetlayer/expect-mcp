@@ -1,0 +1,10 @@
+{
+  "services": [
+    {
+      "name": "docs",
+      "shell": "pnpm start",
+      "root": "docs-site"
+    }
+  ]
+}
+

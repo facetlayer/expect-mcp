@@ -23,15 +23,6 @@ pnpm --dir docs-site build
 
 The built site will be in the `docs-site/build/` directory.
 
-## Documentation Structure
-
-- `/` - Introduction and overview (from intro.md)
-- `/getting-started` - Setup and basic usage guide
-- `/api/matchers` - Custom Vitest matchers documentation
-- `/api/mcp-testing` - MCP server testing utilities
-- `/api/strict-mode` - Strict mode validation features
-- `/api/types` - TypeScript type definitions
-
 ## GitHub Pages Deployment
 
 The documentation is automatically deployed to GitHub Pages when changes are pushed to the main branch. The deployment is handled by the GitHub Actions workflow at `.github/workflows/docs.yml`.

@@ -1,7 +1,9 @@
 
+package-lock.json
 node_modules
 dist
 *.tsbuildinfo
 docs-site/build
 docs-site/.docusaurus
 docs-site/node_modules
+.current*
