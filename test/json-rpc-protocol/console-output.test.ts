@@ -1,6 +1,6 @@
-import '../../src/vitest-setup.js';
+import 'expect-mcp/vitest-setup';
 import { expect, it } from 'vitest';
-import { mcpShell } from '../../src';
+import { mcpShell } from 'expect-mcp';
 
 it('should reject servers that output non-JSON-RPC debug logs to stdout', async () => {
   let process = mcpShell('node test/sampleServers/server.debugLogging.ts', {});

@@ -31,6 +31,9 @@ devDependencies:
   esbuild:
     specifier: 0.25.9
     version: 0.25.9
+  expect-mcp:
+    specifier: file:.
+    version: file:(jest@29.7.0)(vitest@1.6.1)
   jest:
     specifier: ^29.7.0
     version: 29.7.0(@types/node@20.19.17)
@@ -4046,4 +4049,24 @@ packages:
 
   /zod@4.1.11:
     resolution: {integrity: sha512-WPsqwxITS2tzx1bzhIKsEs19ABD5vmCVa4xBo2tq/SrV4RNZtfws1EnCWQXM6yh8bD08a1idvkB5MZSBiZsjwg==}
-    dev: false
+
+  file:(jest@29.7.0)(vitest@1.6.1):
+    resolution: {directory: '', type: directory}
+    id: 'file:'
+    name: expect-mcp
+    engines: {node: '>=18'}
+    hasBin: true
+    peerDependencies:
+      jest: '*'
+      vitest: ^1.5.0
+    peerDependenciesMeta:
+      jest:
+        optional: true
+      vitest:
+        optional: true
+    dependencies:
+      '@facetlayer/parse-stdout-lines': 1.1.0
+      jest: 29.7.0(@types/node@20.19.17)
+      vitest: 1.6.1(@types/node@20.19.17)
+      zod: 4.1.11
+    dev: true

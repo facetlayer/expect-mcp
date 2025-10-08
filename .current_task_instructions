@@ -1,0 +1,20 @@
+
+# Task: setup-local-imports
+
+
+Right now the test files in test/ all import the local 'expect-mcp' library like this:
+
+import '../../src/vitest-setup.js';
+import { MCPStdinSubprocess, mcpShell } from '../../src';
+
+Change this so that they are imported accurately from the dist code. The test files should look like:
+
+import 'expect-mcp/vitest-setup';
+import { MCPStdinSubprocess, mcpShell } from 'expect-mcp';
+
+This will use the 'dist' files instead of 'src' so we will need to run the build first.
+
+I think we can make this work with a 'file:' reference inside devDependencies in package.json,
+but I'm open to alternate approaches that accomplish the above goal.
+
+Make sure the CI tests pass. See the defs inside ./.github and fix as needed.
