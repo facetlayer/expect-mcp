@@ -70,6 +70,55 @@ test('validate tool result content', async () => {
 });
 ```
 
+## Resource Result Matchers
+
+These matchers work with `ReadResourceResult` instances returned by `app.readResource()`.
+
+### toHaveResourceContent(uri: string)
+
+Checks that a resource result contains content for a specific URI.
+
+```ts
+const result = await app.readResource('file:///app/config.json');
+await expect(result).toHaveResourceContent('file:///app/config.json');
+```
+
+**Parameters:**
+- `uri`: The URI to check for in the resource contents
+
+### toHaveTextResource(expectedText: string)
+
+Checks that a resource result contains text content matching the expected string exactly.
+
+```ts
+const result = await app.readResource('file:///app/test.txt');
+await expect(result).toHaveTextResource('Hello world');
+```
+
+**Parameters:**
+- `expectedText`: The exact text content to match
+
+**Example:**
+
+```ts
+import { mcpShell } from 'expect-mcp';
+
+test('validate resource content', async () => {
+  const app = mcpShell('node file-server.js');
+  await app.initialize();
+
+  const result = await app.readResource('file:///app/config.json');
+
+  // Check that the resource has content for the URI
+  await expect(result).toHaveResourceContent('file:///app/config.json');
+
+  // Check exact text match
+  await expect(result).toHaveTextResource('{"key": "value"}');
+
+  await app.close();
+});
+```
+
 ## MCP Server Matchers
 
 These matchers work with `MCPStdinSubprocess` instances.
