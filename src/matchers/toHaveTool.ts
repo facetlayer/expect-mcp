@@ -19,12 +19,26 @@ export const toHaveTool: MCPMatcherImplementations['toHaveTool'] = async functio
   try {
     const hasTool = await subprocess.hasTool(toolName);
 
+    if (hasTool) {
+      return {
+        pass: true,
+        message: () =>
+          `Expected MCP server not to have tool ${utils.printExpected(toolName)}, but it does`,
+      };
+    }
+
+    // When the tool is not found, get the list of available tools for better error message
+    const tools = await subprocess.getTools();
+    const availableToolNames = tools.map(tool => tool.name).sort();
+
+    const availableToolsMessage = availableToolNames.length > 0
+      ? `\n\nAvailable tools: ${availableToolNames.map(name => utils.printReceived(name)).join(', ')}`
+      : '\n\nNo tools are available from this server';
+
     return {
-      pass: hasTool,
+      pass: false,
       message: () =>
-        hasTool
-          ? `Expected MCP server not to have tool ${utils.printExpected(toolName)}, but it does`
-          : `Expected MCP server to have tool ${utils.printExpected(toolName)}, but it doesn't`,
+        `Expected MCP server to have tool ${utils.printExpected(toolName)}, but it doesn't${availableToolsMessage}`,
     };
   } catch (error) {
     return {

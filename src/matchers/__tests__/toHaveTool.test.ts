@@ -34,13 +34,38 @@ describe('toHaveTool', () => {
   it('should fail when MCP server does not have the tool', async () => {
     const mockMCPServer = Object.create(MCPStdinSubprocess.prototype);
     mockMCPServer.hasTool = vi.fn().mockResolvedValue(false);
+    mockMCPServer.getTools = vi.fn().mockResolvedValue([
+      { name: 'tool1' },
+      { name: 'tool2' },
+      { name: 'tool3' },
+    ]);
 
     const result = await toHaveTool.call(mockContext, mockMCPServer, 'nonExistentTool');
 
     expect(result.pass).toBe(false);
     expect(result.message()).toContain('Expected MCP server to have tool');
     expect(result.message()).toContain('nonExistentTool');
+    expect(result.message()).toContain('Available tools:');
+    expect(result.message()).toContain('tool1');
+    expect(result.message()).toContain('tool2');
+    expect(result.message()).toContain('tool3');
     expect(mockMCPServer.hasTool).toHaveBeenCalledWith('nonExistentTool');
+    expect(mockMCPServer.getTools).toHaveBeenCalled();
+  });
+
+  it('should fail when MCP server has no tools available', async () => {
+    const mockMCPServer = Object.create(MCPStdinSubprocess.prototype);
+    mockMCPServer.hasTool = vi.fn().mockResolvedValue(false);
+    mockMCPServer.getTools = vi.fn().mockResolvedValue([]);
+
+    const result = await toHaveTool.call(mockContext, mockMCPServer, 'anyTool');
+
+    expect(result.pass).toBe(false);
+    expect(result.message()).toContain('Expected MCP server to have tool');
+    expect(result.message()).toContain('anyTool');
+    expect(result.message()).toContain('No tools are available from this server');
+    expect(mockMCPServer.hasTool).toHaveBeenCalledWith('anyTool');
+    expect(mockMCPServer.getTools).toHaveBeenCalled();
   });
 
   it('should fail when received is not an MCPStdinSubprocess instance', async () => {
