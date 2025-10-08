@@ -45,6 +45,11 @@ export interface MCPMatcherImplementations {
     received: unknown,
     resourceNames: string[]
   ): Promise<MCPMatcherResult>;
+  toBeSuccessful(this: unknown, received: unknown): Promise<MCPMatcherResult>;
+  toHaveTextContent(this: unknown, received: unknown, expectedText: string): Promise<MCPMatcherResult>;
+  toMatchTextContent(this: unknown, received: unknown, pattern: RegExp): Promise<MCPMatcherResult>;
+  toHaveResourceContent(this: unknown, received: unknown, uri: string): Promise<MCPMatcherResult>;
+  toHaveTextResource(this: unknown, received: unknown, expectedText: string): Promise<MCPMatcherResult>;
 }
 
 /** Matchers surfaced on the Assertion API once installed. */
@@ -53,4 +58,9 @@ export interface MCPMatchers {
   toHaveTools(toolNames: string[]): Promise<void>;
   toHaveResource(resourceName: string): Promise<void>;
   toHaveResources(resourceNames: string[]): Promise<void>;
+  toBeSuccessful(): Promise<void>;
+  toHaveTextContent(expectedText: string): Promise<void>;
+  toMatchTextContent(pattern: RegExp): Promise<void>;
+  toHaveResourceContent(uri: string): Promise<void>;
+  toHaveTextResource(expectedText: string): Promise<void>;
 }

@@ -10,7 +10,7 @@ Will throw an error if:
 ## Syntax
 
 ```ts
-app.callTool(name: string, arguments?: any): Promise<any>
+app.callTool(name: string, arguments?: any): Promise<ToolCallResult>
 ```
 
 ## Parameters
@@ -20,7 +20,7 @@ app.callTool(name: string, arguments?: any): Promise<any>
 
 ## Returns
 
-A Promise that resolves to the tool's response.
+A Promise that resolves to a [`ToolCallResult`](ToolCallResult) instance containing the tool's response.
 
 ## Example
 
@@ -37,8 +37,16 @@ test('call a tool on the server', async () => {
     path: '/path/to/file.txt',
   });
 
+  // result is a ToolCallResult instance
   expect(result).toBeDefined();
   expect(result.content).toBeDefined();
+
+  // Use helper methods
+  const text = result.getTextContent();
+  expect(text).toBeDefined();
+
+  // Or use matchers
+  await expect(result).toBeSuccessful();
 
   await app.close();
 });
@@ -58,5 +66,7 @@ const result = await app.callTool('slow_operation', {});
 
 ## See Also
 
+- [ToolCallResult](ToolCallResult) - The class returned by callTool
 - [mcpShell](mcpShell) - Create an MCP subprocess
 - [toHaveTool](toHaveTool) - Assert that a tool exists
+- [Matchers](matchers) - Custom matchers for validating tool results

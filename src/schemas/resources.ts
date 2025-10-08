@@ -27,7 +27,10 @@ export const ResourceTemplateSchema = BaseMetadataSchema.extend({
 
 export const ResourceContentsSchema = z.object({
   uri: z.string().url(),
+  name: z.string().optional(),
+  title: z.string().optional(),
   mimeType: z.string().optional(),
+  annotations: AnnotationsSchema.optional(),
   _meta: z.record(z.string(), z.unknown()).optional(),
 });
 
@@ -124,9 +127,12 @@ export const ResourceListChangedNotificationSchema = z.object({
   params: z.object({}).optional(),
 });
 
+export const ResourceReadResultSchema = ReadResourceResultSchema;
+
 export type Annotations = z.infer<typeof AnnotationsSchema>;
 export type Resource = z.infer<typeof ResourceSchema>;
 export type ResourceTemplate = z.infer<typeof ResourceTemplateSchema>;
+export type ResourceContents = z.infer<typeof ResourceContentsSchema>;
 export type TextResourceContents = z.infer<typeof TextResourceContentsSchema>;
 export type BlobResourceContents = z.infer<typeof BlobResourceContentsSchema>;
 export type EmbeddedResource = z.infer<typeof EmbeddedResourceSchema>;
@@ -135,3 +141,4 @@ export type ListResourcesRequest = z.infer<typeof ListResourcesRequestSchema>;
 export type ListResourcesResult = z.infer<typeof ListResourcesResultSchema>;
 export type ReadResourceRequest = z.infer<typeof ReadResourceRequestSchema>;
 export type ReadResourceResult = z.infer<typeof ReadResourceResultSchema>;
+export type ResourceReadResult = z.infer<typeof ResourceReadResultSchema>;

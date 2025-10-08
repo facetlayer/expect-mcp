@@ -25,10 +25,35 @@ export const AudioContentSchema = z.object({
   _meta: z.record(z.string(), z.unknown()).optional(),
 });
 
+export const ResourceLinkContentSchema = z.object({
+  type: z.literal('resource_link'),
+  uri: z.string(),
+  name: z.string().optional(),
+  description: z.string().optional(),
+  mimeType: z.string().optional(),
+  annotations: z.record(z.string(), z.unknown()).optional(),
+  _meta: z.record(z.string(), z.unknown()).optional(),
+});
+
+export const EmbeddedResourceContentSchema = z.object({
+  type: z.literal('resource'),
+  resource: z.object({
+    uri: z.string(),
+    title: z.string().optional(),
+    mimeType: z.string().optional(),
+    text: z.string().optional(),
+    blob: z.string().optional(),
+    annotations: z.record(z.string(), z.unknown()).optional(),
+  }),
+  _meta: z.record(z.string(), z.unknown()).optional(),
+});
+
 export const ContentBlockSchema = z.union([
   TextContentSchema,
   ImageContentSchema,
   AudioContentSchema,
+  ResourceLinkContentSchema,
+  EmbeddedResourceContentSchema,
 ]);
 
 export const JSONSchemaObjectSchema = z.object({
@@ -101,9 +126,13 @@ export const ToolListChangedNotificationSchema = z.object({
   params: z.object({}).optional(),
 });
 
+export const ToolCallResultSchema = CallToolResultSchema;
+
 export type TextContent = z.infer<typeof TextContentSchema>;
 export type ImageContent = z.infer<typeof ImageContentSchema>;
 export type AudioContent = z.infer<typeof AudioContentSchema>;
+export type ResourceLinkContent = z.infer<typeof ResourceLinkContentSchema>;
+export type EmbeddedResourceContent = z.infer<typeof EmbeddedResourceContentSchema>;
 export type ContentBlock = z.infer<typeof ContentBlockSchema>;
 export type JSONSchemaObject = z.infer<typeof JSONSchemaObjectSchema>;
 export type ToolAnnotations = z.infer<typeof ToolAnnotationsSchema>;
@@ -112,3 +141,4 @@ export type ListToolsRequest = z.infer<typeof ListToolsRequestSchema>;
 export type ListToolsResult = z.infer<typeof ListToolsResultSchema>;
 export type CallToolRequest = z.infer<typeof CallToolRequestSchema>;
 export type CallToolResult = z.infer<typeof CallToolResultSchema>;
+export type ToolCallResult = z.infer<typeof ToolCallResultSchema>;

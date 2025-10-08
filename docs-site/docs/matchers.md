@@ -2,6 +2,127 @@
 
 The expect-mcp library provides custom Vitest matchers specifically designed for testing Model Context Protocol (MCP) integrations.
 
+## Tool Result Matchers
+
+These matchers work with `ToolCallResult` instances returned by `app.callTool()`.
+
+### toBeSuccessful()
+
+Checks that a tool call result is successful (does not have `isError` set to `true`).
+
+```ts
+const result = await app.callTool('write_file', {
+  path: '/tmp/test.txt',
+  content: 'Hello'
+});
+await expect(result).toBeSuccessful();
+```
+
+### toHaveTextContent(expectedText: string)
+
+Checks that a tool call result contains text content matching the expected string exactly.
+
+```ts
+const result = await app.callTool('read_file', {
+  path: '/tmp/test.txt'
+});
+await expect(result).toHaveTextContent('Hello world');
+```
+
+**Parameters:**
+- `expectedText`: The exact text content to match
+
+### toMatchTextContent(pattern: RegExp)
+
+Checks that a tool call result contains text content matching the given regular expression pattern.
+
+```ts
+const result = await app.callTool('get_status', {});
+await expect(result).toMatchTextContent(/Status: \w+/);
+```
+
+**Parameters:**
+- `pattern`: A regular expression to match against the text content
+
+**Example:**
+
+```ts
+import { mcpShell } from 'expect-mcp';
+
+test('validate tool result content', async () => {
+  const app = mcpShell('node file-server.js');
+  await app.initialize();
+
+  const result = await app.callTool('read_file', {
+    path: '/tmp/log.txt'
+  });
+
+  // Check that the tool call succeeded
+  await expect(result).toBeSuccessful();
+
+  // Check exact text match
+  await expect(result).toHaveTextContent('Log entry 1\nLog entry 2');
+
+  // Check pattern match
+  await expect(result).toMatchTextContent(/Log entry \d+/);
+
+  await app.close();
+});
+```
+
+## Resource Result Matchers
+
+These matchers work with `ReadResourceResult` instances returned by `app.readResource()`.
+
+### toHaveResourceContent(uri: string)
+
+Checks that a resource result contains content for a specific URI.
+
+```ts
+const result = await app.readResource('file:///app/config.json');
+await expect(result).toHaveResourceContent('file:///app/config.json');
+```
+
+**Parameters:**
+- `uri`: The URI to check for in the resource contents
+
+### toHaveTextResource(expectedText: string)
+
+Checks that a resource result contains text content matching the expected string exactly.
+
+```ts
+const result = await app.readResource('file:///app/test.txt');
+await expect(result).toHaveTextResource('Hello world');
+```
+
+**Parameters:**
+- `expectedText`: The exact text content to match
+
+**Example:**
+
+```ts
+import { mcpShell } from 'expect-mcp';
+
+test('validate resource content', async () => {
+  const app = mcpShell('node file-server.js');
+  await app.initialize();
+
+  const result = await app.readResource('file:///app/config.json');
+
+  // Check that the resource has content for the URI
+  await expect(result).toHaveResourceContent('file:///app/config.json');
+
+  // Check exact text match
+  await expect(result).toHaveTextResource('{"key": "value"}');
+
+  await app.close();
+});
+```
+
+## MCP Server Matchers
+
+These matchers work with `MCPStdinSubprocess` instances.
+
 ## toHaveTool(toolName: string)
 
 Checks that an MCP server provides a tool with the specified name. This matcher works with `MCPStdinSubprocess` instances.

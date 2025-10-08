@@ -10,7 +10,7 @@ Will throw an error if:
 ## Syntax
 
 ```ts
-app.readResource(uri: string): Promise<MCPReadResourceResult>
+app.readResource(uri: string): Promise<ReadResourceResult>
 ```
 
 ## Parameters
@@ -19,14 +19,13 @@ app.readResource(uri: string): Promise<MCPReadResourceResult>
 
 ## Returns
 
-A Promise that resolves to an object containing:
-- `contents`: An array of resource contents (text or blob)
+A Promise that resolves to a [`ReadResourceResult`](ReadResourceResult) instance containing the resource contents.
 
-Each content item has:
-- `uri`: The URI of the resource
-- `mimeType`: Optional MIME type of the content
-- `text`: The text content (for text resources)
-- `blob`: The base64-encoded blob content (for binary resources)
+The result provides helper methods for accessing content:
+- `.getTextContent()`: Get text from the first text resource
+- `.getBlobContent()`: Get blob from the first blob resource
+- `.findByUri(uri)`: Find a resource by its URI
+- `.contents`: Access the raw contents array
 
 ## Example
 
@@ -41,9 +40,16 @@ test('read a resource from the server', async () => {
   // Read a text resource
   const result = await app.readResource('file:///example.txt');
 
+  // result is a ReadResourceResult instance
   expect(result.contents).toBeDefined();
-  expect(result.contents[0].text).toBeDefined();
-  expect(result.contents[0].mimeType).toBe('text/plain');
+
+  // Use helper methods
+  const text = result.getTextContent();
+  expect(text).toBeDefined();
+
+  // Or use matchers
+  await expect(result).toHaveResourceContent('file:///example.txt');
+  await expect(result).toHaveTextResource('expected content');
 
   await app.close();
 });
@@ -75,6 +81,8 @@ const result = await app.readResource('file:///large-file.txt');
 
 ## See Also
 
+- [ReadResourceResult](ReadResourceResult) - The class returned by readResource
 - [mcpShell](mcpShell) - Create an MCP subprocess
 - [toHaveResource](toHaveResource) - Assert that a resource exists
 - [toHaveResources](toHaveResources) - Assert that multiple resources exist
+- [Matchers](matchers) - Custom matchers for validating resource results

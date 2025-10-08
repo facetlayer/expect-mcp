@@ -1,11 +1,14 @@
 import { ProtocolError, ResourceCallError, ToolCallError } from './errors.js';
 import { JsonRpcSubprocess, JsonRpcSubprocessOptions } from './JsonRPCSubprocess.js';
+import { ReadResourceResult } from './ReadResourceResult.js';
 import { LATEST_PROTOCOL_VERSION } from './schemas/index.js';
 import { InitializeResultSchema } from './schemas/initialization.js';
+import { ReadResourceResultSchema } from './schemas/resources.js';
+import { CallToolResultSchema } from './schemas/tools.js';
+import { ToolCallResult } from './ToolCallResult.js';
 import {
   MCPInitializeParams,
   MCPInitializeResult,
-  MCPReadResourceResult,
   MCPResource,
   MCPResourcesListResult,
   MCPTool,
@@ -206,7 +209,7 @@ export class MCPStdinSubprocess extends JsonRpcSubprocess {
     return resources.some(resource => resource.name === resourceName);
   }
 
-  async callTool(name: string, arguments_: any = {}): Promise<any> {
+  async callTool(name: string, arguments_: any = {}): Promise<ToolCallResult> {
     await this._implicitInitialize();
 
     if (!(await this.supportsTools())) {
@@ -224,10 +227,18 @@ export class MCPStdinSubprocess extends JsonRpcSubprocess {
       arguments: arguments_,
     });
 
-    return response;
+    // Validate the response against the schema
+    const validation = CallToolResultSchema.safeParse(response);
+    if (!validation.success) {
+      throw new ProtocolError(
+        `Response to tools/call failed schema validation: ${validation.error.message}`
+      );
+    }
+
+    return new ToolCallResult(validation.data);
   }
 
-  async readResource(uri: string): Promise<MCPReadResourceResult> {
+  async readResource(uri: string): Promise<ReadResourceResult> {
     await this._implicitInitialize();
 
     if (!(await this.supportsResources())) {
@@ -243,11 +254,19 @@ export class MCPStdinSubprocess extends JsonRpcSubprocess {
       throw new ResourceCallError(`Resource with URI ${uri} not declared in resources/list`);
     }
 
-    const response: MCPReadResourceResult = await this.sendRequest('resources/read', {
+    const response = await this.sendRequest('resources/read', {
       uri,
     });
 
-    return response;
+    // Validate the response against the schema
+    const validation = ReadResourceResultSchema.safeParse(response);
+    if (!validation.success) {
+      throw new ProtocolError(
+        `Response to resources/read failed schema validation: ${validation.error.message}`
+      );
+    }
+
+    return new ReadResourceResult(validation.data);
   }
 
   getInitializeResult(): MCPInitializeResult | undefined {
