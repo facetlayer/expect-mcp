@@ -5,7 +5,7 @@ const srcDir = fileURLToPath(new URL('../../src', import.meta.url));
 
 export default defineConfig({
   test: {
-      include: ['samples/**'],
+      include: ['samples/**/*.test.ts'],
   },
   resolve: {
     alias: [
