@@ -12,9 +12,9 @@ describe('readResource Examples', () => {
     // Read a text resource
     const result = await app.readResource('file:///example.txt');
 
-    expect(result.contents).toBeDefined();
-    expect(result.contents[0].text).toBeDefined();
-    expect(result.contents[0].mimeType).toBe('text/plain');
+    expect(result.content).toBeDefined();
+    expect(result.content[0].text).toBeDefined();
+    expect(result.content[0].mimeType).toBe('text/plain');
 
     await app.close();
   });

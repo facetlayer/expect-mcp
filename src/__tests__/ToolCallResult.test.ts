@@ -18,8 +18,7 @@ describe('ToolCallResult', () => {
 
       const toolResult = new ToolCallResult(result);
       expect(toolResult).toBeInstanceOf(ToolCallResult);
-      expect(toolResult.raw).toBe(result);
-      expect(toolResult.content).toBe(result.content);
+      expect(toolResult.content).toEqual(result.content);
       expect(toolResult.isError).toBe(false);
     });
 
@@ -308,13 +307,13 @@ describe('ToolCallResult', () => {
       expect(toolResult.isError).toBe(false);
     });
 
-    it('should return false when isError is undefined', () => {
+    it('should return undefined when isError is undefined', () => {
       const result: CallToolResult = {
         content: [],
       };
 
       const toolResult = new ToolCallResult(result);
-      expect(toolResult.isError).toBe(false);
+      expect(toolResult.isError).toBeUndefined();
     });
   });
 });

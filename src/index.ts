@@ -4,6 +4,7 @@ export { mcpShell } from './mcpShellCommand.js';
 export { MCPStdinSubprocess } from './MCPStdinSubprocess.js';
 export { ToolCallResult } from './ToolCallResult.js';
 export { ReadResourceResult } from './ReadResourceResult.js';
+export { GetPromptResult } from './GetPromptResult.js';
 
 declare module 'vitest' {
   interface Assertion<T = any> extends MCPMatchers {}
@@ -23,8 +24,13 @@ export type {
 export type {
   MCPBlobResourceContents,
   MCPCapabilities,
+  MCPGetPromptResult,
   MCPInitializeParams,
   MCPInitializeResult,
+  MCPPrompt,
+  MCPPromptArgument,
+  MCPPromptMessage,
+  MCPPromptsListResult,
   MCPReadResourceResult,
   MCPResource,
   MCPResourceContents,
@@ -56,3 +62,18 @@ export type {
   ResourceContents,
   TextResourceContents,
 } from './schemas/resources.js';
+
+export type {
+  GetPromptRequest,
+  GetPromptResult as GetPromptResultType,
+  ListPromptsRequest,
+  ListPromptsResult,
+  Prompt,
+  PromptArgument,
+  PromptAudioContent,
+  PromptContent,
+  PromptEmbeddedResource,
+  PromptImageContent,
+  PromptMessage,
+  PromptTextContent,
+} from './schemas/prompts.js';

@@ -8,24 +8,10 @@ import type {
  * Wraps the result of a resource read with helper methods for accessing content.
  */
 export class ReadResourceResult {
-  private _result: ReadResourceResultType;
+  content: (TextResourceContents | BlobResourceContents)[] = [];
 
   constructor(result: ReadResourceResultType) {
-    this._result = result;
-  }
-
-  /**
-   * Get the raw result object.
-   */
-  get raw(): ReadResourceResultType {
-    return this._result;
-  }
-
-  /**
-   * Get the contents array.
-   */
-  get contents(): (TextResourceContents | BlobResourceContents)[] {
-    return this._result.contents;
+    this.content = result.contents;
   }
 
   /**
@@ -40,7 +26,7 @@ export class ReadResourceResult {
    * ```
    */
   getTextContent(): string | undefined {
-    const textResource = this._result.contents.find(
+    const textResource = this.content.find(
       (content): content is TextResourceContents => 'text' in content
     );
     return textResource?.text;
@@ -58,7 +44,7 @@ export class ReadResourceResult {
    * ```
    */
   getBlobContent(): string | undefined {
-    const blobResource = this._result.contents.find(
+    const blobResource = this.content.find(
       (content): content is BlobResourceContents => 'blob' in content
     );
     return blobResource?.blob;
@@ -77,7 +63,7 @@ export class ReadResourceResult {
    * ```
    */
   findByUri(uri: string): TextResourceContents | BlobResourceContents | undefined {
-    return this._result.contents.find(content => content.uri === uri);
+    return this.content.find(content => content.uri === uri);
   }
 
   /**
@@ -86,7 +72,7 @@ export class ReadResourceResult {
    * @returns An array of text resources.
    */
   getAllTextResources(): TextResourceContents[] {
-    return this._result.contents.filter(
+    return this.content.filter(
       (content): content is TextResourceContents => 'text' in content
     );
   }
@@ -97,7 +83,7 @@ export class ReadResourceResult {
    * @returns An array of blob resources.
    */
   getAllBlobResources(): BlobResourceContents[] {
-    return this._result.contents.filter(
+    return this.content.filter(
       (content): content is BlobResourceContents => 'blob' in content
     );
   }
@@ -108,7 +94,7 @@ export class ReadResourceResult {
    * @returns True if at least one text resource exists.
    */
   hasTextContent(): boolean {
-    return this._result.contents.some(content => 'text' in content);
+    return this.content.some(content => 'text' in content);
   }
 
   /**
@@ -117,6 +103,6 @@ export class ReadResourceResult {
    * @returns True if at least one blob resource exists.
    */
   hasBlobContent(): boolean {
-    return this._result.contents.some(content => 'blob' in content);
+    return this.content.some(content => 'blob' in content);
   }
 }

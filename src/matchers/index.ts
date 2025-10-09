@@ -3,6 +3,7 @@ import { toBeSuccessful } from './toBeSuccessful.js';
 import { toHaveResource } from './toHaveResource.js';
 import { toHaveResourceContent } from './toHaveResourceContent.js';
 import { toHaveResources } from './toHaveResources.js';
+import { toHavePrompts } from './toHavePrompts.js';
 import { toHaveTextContent } from './toHaveTextContent.js';
 import { toHaveTextResource } from './toHaveTextResource.js';
 import { toHaveTool } from './toHaveTool.js';
@@ -14,6 +15,7 @@ export const mcpMatchers: MCPMatcherImplementations = {
   toHaveTools,
   toHaveResource,
   toHaveResources,
+  toHavePrompts,
   toBeSuccessful,
   toHaveTextContent,
   toMatchTextContent,
