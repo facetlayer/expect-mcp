@@ -19,6 +19,13 @@ export class ResourceCallError extends Error {
   }
 }
 
+export class PromptCallError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = 'PromptCallError';
+  }
+}
+
 export interface ProcessExitWhileWaitingForResponseOptions {
   exitCode: number;
   exitSignal: string | null;

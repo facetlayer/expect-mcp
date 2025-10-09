@@ -1,14 +1,18 @@
-import { ProtocolError, ResourceCallError, ToolCallError } from './errors.js';
+import { PromptCallError, ProtocolError, ResourceCallError, ToolCallError } from './errors.js';
+import { GetPromptResult } from './GetPromptResult.js';
 import { JsonRpcSubprocess, JsonRpcSubprocessOptions } from './JsonRPCSubprocess.js';
 import { ReadResourceResult } from './ReadResourceResult.js';
 import { LATEST_PROTOCOL_VERSION } from './schemas/index.js';
 import { InitializeResultSchema } from './schemas/initialization.js';
+import { GetPromptResultSchema } from './schemas/prompts.js';
 import { ReadResourceResultSchema } from './schemas/resources.js';
 import { CallToolResultSchema } from './schemas/tools.js';
 import { ToolCallResult } from './ToolCallResult.js';
 import {
   MCPInitializeParams,
   MCPInitializeResult,
+  MCPPrompt,
+  MCPPromptsListResult,
   MCPResource,
   MCPResourcesListResult,
   MCPTool,
@@ -26,6 +30,7 @@ export class MCPStdinSubprocess extends JsonRpcSubprocess {
   private initializeResult?: MCPInitializeResult;
   private toolsCache?: MCPTool[];
   private resourcesCache?: MCPResource[];
+  private promptsCache?: MCPPrompt[];
   private initialized = false;
   private stderrBuffer: string[] = [];
 
@@ -189,6 +194,19 @@ export class MCPStdinSubprocess extends JsonRpcSubprocess {
     return this.resourcesCache;
   }
 
+  async getPrompts(): Promise<MCPPrompt[]> {
+    this.assertNoProtocolError();
+
+    await this._implicitInitialize();
+
+    if (!this.promptsCache) {
+      const result: MCPPromptsListResult = await this.sendRequest('prompts/list', {});
+      this.promptsCache = result.prompts;
+    }
+
+    return this.promptsCache;
+  }
+
   async supportsTools() {
     const capabilities = this.getInitializeResult()?.capabilities;
     return !!capabilities?.tools;
@@ -199,6 +217,11 @@ export class MCPStdinSubprocess extends JsonRpcSubprocess {
     return !!capabilities?.resources;
   }
 
+  async supportsPrompts() {
+    const capabilities = this.getInitializeResult()?.capabilities;
+    return !!capabilities?.prompts;
+  }
+
   async hasTool(toolName: string): Promise<boolean> {
     const tools = await this.getTools();
     return tools.some(tool => tool.name === toolName);
@@ -207,6 +230,11 @@ export class MCPStdinSubprocess extends JsonRpcSubprocess {
   async hasResource(resourceName: string): Promise<boolean> {
     const resources = await this.getResources();
     return resources.some(resource => resource.name === resourceName);
+  }
+
+  async hasPrompt(promptName: string): Promise<boolean> {
+    const prompts = await this.getPrompts();
+    return prompts.some(prompt => prompt.name === promptName);
   }
 
   async callTool(name: string, arguments_: any = {}): Promise<ToolCallResult> {
@@ -267,6 +295,38 @@ export class MCPStdinSubprocess extends JsonRpcSubprocess {
     }
 
     return new ReadResourceResult(validation.data);
+  }
+
+  async getPrompt(name: string, arguments_: any = {}): Promise<GetPromptResult> {
+    await this._implicitInitialize();
+
+    if (!(await this.supportsPrompts())) {
+      throw new PromptCallError(
+        `Prompts are not supported by the server (based on capabilities)`
+      );
+    }
+
+    const prompts = await this.getPrompts();
+    const prompt = prompts.find(p => p.name === name);
+
+    if (!prompt) {
+      throw new PromptCallError(`Prompt ${name} not declared in prompts/list`);
+    }
+
+    const response = await this.sendRequest('prompts/get', {
+      name,
+      arguments: arguments_,
+    });
+
+    // Validate the response against the schema
+    const validation = GetPromptResultSchema.safeParse(response);
+    if (!validation.success) {
+      throw new ProtocolError(
+        `Response to prompts/get failed schema validation: ${validation.error.message}`
+      );
+    }
+
+    return new GetPromptResult(validation.data);
   }
 
   getInitializeResult(): MCPInitializeResult | undefined {

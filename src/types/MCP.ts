@@ -78,3 +78,33 @@ export type MCPResourceContents = MCPTextResourceContents | MCPBlobResourceConte
 export interface MCPReadResourceResult {
   contents: MCPResourceContents[];
 }
+
+export interface MCPPromptArgument {
+  name: string;
+  description?: string;
+  required?: boolean;
+}
+
+export interface MCPPrompt {
+  name: string;
+  title?: string;
+  description?: string;
+  arguments?: MCPPromptArgument[];
+}
+
+export interface MCPPromptsListResult {
+  prompts: MCPPrompt[];
+}
+
+export interface MCPPromptMessage {
+  role: 'user' | 'assistant';
+  content: {
+    type: string;
+    [key: string]: any;
+  };
+}
+
+export interface MCPGetPromptResult {
+  description?: string;
+  messages: MCPPromptMessage[];
+}

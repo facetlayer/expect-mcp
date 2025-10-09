@@ -45,6 +45,11 @@ export interface MCPMatcherImplementations {
     received: unknown,
     resourceNames: string[]
   ): Promise<MCPMatcherResult>;
+  toHavePrompts(
+    this: unknown,
+    received: unknown,
+    promptNames: string[]
+  ): Promise<MCPMatcherResult>;
   toBeSuccessful(this: unknown, received: unknown): Promise<MCPMatcherResult>;
   toHaveTextContent(this: unknown, received: unknown, expectedText: string): Promise<MCPMatcherResult>;
   toMatchTextContent(this: unknown, received: unknown, pattern: RegExp): Promise<MCPMatcherResult>;
@@ -58,6 +63,7 @@ export interface MCPMatchers {
   toHaveTools(toolNames: string[]): Promise<void>;
   toHaveResource(resourceName: string): Promise<void>;
   toHaveResources(resourceNames: string[]): Promise<void>;
+  toHavePrompts(promptNames: string[]): Promise<void>;
   toBeSuccessful(): Promise<void>;
   toHaveTextContent(expectedText: string): Promise<void>;
   toMatchTextContent(pattern: RegExp): Promise<void>;
