@@ -68,7 +68,7 @@ describe('Prompt usage', () => {
       length: '100',
     });
     expect(result.messages).toHaveLength(1);
-    expect(result.getFirstUserMessage()).toBeDefined();
+    expect(result.messages[0].role).toBe('user');
 
     await app.close();
   });

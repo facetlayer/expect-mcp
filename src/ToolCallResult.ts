@@ -5,38 +5,14 @@ import type { CallToolResult, ContentBlock, TextContent } from './schemas/tools.
  * Wraps the result of a tool call with helper methods for accessing content.
  */
 export class ToolCallResult {
-  private _result: CallToolResult;
+  content: ContentBlock[] = [];
+  structuredContent: Record<string, unknown> | undefined = undefined;
+  isError: boolean | undefined = undefined;
 
   constructor(result: CallToolResult) {
-    this._result = result;
-  }
-
-  /**
-   * Get the raw result object.
-   */
-  get raw(): CallToolResult {
-    return this._result;
-  }
-
-  /**
-   * Get the content array.
-   */
-  get content(): ContentBlock[] {
-    return this._result.content;
-  }
-
-  /**
-   * Get the structured content if present.
-   */
-  get structuredContent(): Record<string, unknown> | undefined {
-    return this._result.structuredContent;
-  }
-
-  /**
-   * Check if the result is an error.
-   */
-  get isError(): boolean {
-    return this._result.isError === true;
+    this.content = result.content;
+    this.structuredContent = result.structuredContent;
+    this.isError = result.isError;
   }
 
   /**
@@ -51,7 +27,7 @@ export class ToolCallResult {
    * ```
    */
   getTextContent(): string | undefined {
-    const textBlock = this._result.content.find(
+    const textBlock = this.content.find(
       (block): block is TextContent => block.type === 'text'
     );
     return textBlock?.text;
@@ -70,7 +46,7 @@ export class ToolCallResult {
    * ```
    */
   expectSuccess(): this {
-    if (this._result.isError) {
+    if (this.isError) {
       const textContent = this.getTextContent();
       const errorMessage = textContent
         ? `Tool call failed with error: ${textContent}`
@@ -89,7 +65,7 @@ export class ToolCallResult {
   getContentByType<T extends ContentBlock['type']>(
     type: T
   ): Extract<ContentBlock, { type: T }>[] {
-    return this._result.content.filter(
+    return this.content.filter(
       (block): block is Extract<ContentBlock, { type: T }> => block.type === type
     );
   }
@@ -103,7 +79,7 @@ export class ToolCallResult {
   findContentByType<T extends ContentBlock['type']>(
     type: T
   ): Extract<ContentBlock, { type: T }> | undefined {
-    return this._result.content.find(
+    return this.content.find(
       (block): block is Extract<ContentBlock, { type: T }> => block.type === type
     );
   }

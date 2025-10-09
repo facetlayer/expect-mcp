@@ -16,8 +16,7 @@ describe('ReadResourceResult', () => {
 
       const resourceResult = new ReadResourceResult(result);
       expect(resourceResult).toBeInstanceOf(ReadResourceResult);
-      expect(resourceResult.raw).toBe(result);
-      expect(resourceResult.contents).toBe(result.contents);
+      expect(resourceResult.content).toEqual(result.contents);
     });
 
     it('should handle resources with metadata', () => {
@@ -38,9 +37,9 @@ describe('ReadResourceResult', () => {
       };
 
       const resourceResult = new ReadResourceResult(result);
-      expect(resourceResult.contents[0].name).toBe('test.txt');
-      expect(resourceResult.contents[0].title).toBe('Test File');
-      expect(resourceResult.contents[0].annotations?.priority).toBe(0.8);
+      expect(resourceResult.content[0].name).toBe('test.txt');
+      expect(resourceResult.content[0].title).toBe('Test File');
+      expect(resourceResult.content[0].annotations?.priority).toBe(0.8);
     });
   });
 
