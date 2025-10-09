@@ -14,13 +14,13 @@ describe('readResource', () => {
     const result = await app.readResource('file:///example.txt');
 
     expect(result).toBeDefined();
-    expect(result.contents).toBeDefined();
-    expect(result.contents.length).toBe(1);
-    expect(result.contents[0].uri).toBe('file:///example.txt');
-    expect(result.contents[0].mimeType).toBe('text/plain');
-    expect('text' in result.contents[0]).toBe(true);
-    if ('text' in result.contents[0]) {
-      expect(result.contents[0].text).toBe('Hello, world!');
+    expect(result.content).toBeDefined();
+    expect(result.content.length).toBe(1);
+    expect(result.content[0].uri).toBe('file:///example.txt');
+    expect(result.content[0].mimeType).toBe('text/plain');
+    expect('text' in result.content[0]).toBe(true);
+    if ('text' in result.content[0]) {
+      expect(result.content[0].text).toBe('Hello, world!');
     }
 
     app.close();
@@ -35,13 +35,13 @@ describe('readResource', () => {
     const result = await app.readResource('file:///data.json');
 
     expect(result).toBeDefined();
-    expect(result.contents).toBeDefined();
-    expect(result.contents.length).toBe(1);
-    expect(result.contents[0].uri).toBe('file:///data.json');
-    expect(result.contents[0].mimeType).toBe('application/json');
-    expect('text' in result.contents[0]).toBe(true);
-    if ('text' in result.contents[0]) {
-      const data = JSON.parse(result.contents[0].text);
+    expect(result.content).toBeDefined();
+    expect(result.content.length).toBe(1);
+    expect(result.content[0].uri).toBe('file:///data.json');
+    expect(result.content[0].mimeType).toBe('application/json');
+    expect('text' in result.content[0]).toBe(true);
+    if ('text' in result.content[0]) {
+      const data = JSON.parse(result.content[0].text);
       expect(data).toEqual({ key: 'value' });
     }
 
