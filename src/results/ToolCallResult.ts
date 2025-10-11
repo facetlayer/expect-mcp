@@ -5,6 +5,8 @@ import type { CallToolResult, ContentBlock, TextContent } from '../schemas/tools
  * Wraps the result of a tool call with helper methods for accessing content.
  */
 export class ToolCallResult {
+  static _isToolCallResult = true;
+
   content: ContentBlock[] = [];
   structuredContent: Record<string, unknown> | undefined = undefined;
   isError: boolean = false;

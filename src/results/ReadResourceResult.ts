@@ -8,6 +8,8 @@ import type {
  * Wraps the result of a resource read with helper methods for accessing content.
  */
 export class ReadResourceResult {
+  static _isReadResourceResult = true;
+
   content: (TextResourceContents | BlobResourceContents)[] = [];
 
   constructor(result: ReadResourceResultType) {

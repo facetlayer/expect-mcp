@@ -1,6 +1,6 @@
 import { ToolCallResult } from '../results/ToolCallResult.js';
 import { MCPMatcherResult } from '../types.js';
-import { resolveUtils } from '../utils.js';
+import { checkCastToolCallResult, resolveUtils } from '../utils.js';
 
 export async function toMatchTextContent(
   this: any,
@@ -9,15 +9,15 @@ export async function toMatchTextContent(
 ): Promise<MCPMatcherResult> {
   const utils = resolveUtils(this);
 
-  if (!(received instanceof ToolCallResult)) {
-    return {
-      pass: false,
-      message: () =>
-        `Expected ${utils.printReceived(received)} to be a ToolCallResult instance`,
-    };
+  // Check and cast the received value to ToolCallResult
+  const castResult = checkCastToolCallResult(received, utils);
+
+  if (!castResult.ok) {
+    return castResult.result;
   }
 
-  const textContent = received.getTextContent();
+  const result = castResult.value as ToolCallResult;
+  const textContent = result.getTextContent();
 
   if (textContent === undefined) {
     return {

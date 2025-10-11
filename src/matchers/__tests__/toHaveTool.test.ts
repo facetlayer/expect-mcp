@@ -74,7 +74,7 @@ describe('toHaveTool', () => {
     const result = await toHaveTool.call(mockContext, notMCPServer, 'testTool');
 
     expect(result.pass).toBe(false);
-    expect(result.message()).toContain('Expected an MCPStdinSubprocess instance');
+    expect(result.message()).toContain('to be a MCPStdinSubprocess instance');
     expect(result.message()).toContain('received:');
   });
 
@@ -82,14 +82,14 @@ describe('toHaveTool', () => {
     const result = await toHaveTool.call(mockContext, null, 'testTool');
 
     expect(result.pass).toBe(false);
-    expect(result.message()).toContain('Expected an MCPStdinSubprocess instance');
+    expect(result.message()).toContain('to be a MCPStdinSubprocess instance');
   });
 
   it('should fail when received is undefined', async () => {
     const result = await toHaveTool.call(mockContext, undefined, 'testTool');
 
     expect(result.pass).toBe(false);
-    expect(result.message()).toContain('Expected an MCPStdinSubprocess instance');
+    expect(result.message()).toContain('to be a MCPStdinSubprocess instance');
   });
 
   it('should handle errors from hasTool method', async () => {

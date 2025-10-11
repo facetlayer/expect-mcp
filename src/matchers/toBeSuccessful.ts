@@ -1,6 +1,6 @@
 import { ToolCallResult } from '../results/ToolCallResult.js';
 import { MCPMatcherResult } from '../types.js';
-import { resolveUtils } from '../utils.js';
+import { checkCastToolCallResult, resolveUtils } from '../utils.js';
 
 export async function toBeSuccessful(
   this: any,
@@ -8,21 +8,21 @@ export async function toBeSuccessful(
 ): Promise<MCPMatcherResult> {
   const utils = resolveUtils(this);
 
-  if (!(received instanceof ToolCallResult)) {
-    return {
-      pass: false,
-      message: () =>
-        `Expected ${utils.printReceived(received)} to be a ToolCallResult instance`,
-    };
+  // Check and cast the received value to ToolCallResult
+  const castResult = checkCastToolCallResult(received, utils);
+
+  if (!castResult.ok) {
+    return castResult.result;
   }
 
-  const isSuccess = !received.isError;
+  const result = castResult.value as ToolCallResult;
+  const isSuccess = !result.isError;
 
   return {
     pass: isSuccess,
     message: () =>
       isSuccess
         ? `Expected tool call to have failed, but it succeeded`
-        : `Expected tool call to succeed, but it failed${received.getTextContent() ? `: ${received.getTextContent()}` : ''}`,
+        : `Expected tool call to succeed, but it failed${result.getTextContent() ? `: ${result.getTextContent()}` : ''}`,
   };
 }

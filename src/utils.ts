@@ -38,31 +38,108 @@ export function resolveUtils(ctx: unknown): MatcherUtils {
   return hasPrinter ? utils : fallbackPrinter;
 }
 
-export type CheckMCPSubprocessResult<T> =
-  | { ok: true; subprocess: T }
+export type CheckCastResult<T> =
+  | { ok: true; value: T }
   | { ok: false; result: { pass: false; message: () => string } };
 
-export function checkCastMCPStdinSubprocess<T>(
+export type CheckMCPSubprocessResult<T> =
+  | { ok: true; value: T; subprocess: T }
+  | { ok: false; result: { pass: false; message: () => string } };
+
+/**
+ * Generic type checking/casting utility.
+ *
+ * This function checks if a received value is an instance of a specific class
+ * by looking for a static marker property on the constructor.
+ *
+ * @param received - The value to check and cast
+ * @param markerProperty - The static property name to check on the constructor (e.g., '_isToolCallResult')
+ * @param expectedTypeName - The human-readable name of the expected type (e.g., 'ToolCallResult')
+ * @param utils - Matcher utilities for formatting error messages
+ * @returns A result object indicating success/failure with the cast value or error message
+ */
+export function checkCast<T>(
   received: unknown,
+  markerProperty: string,
+  expectedTypeName: string,
   utils: MatcherUtils
-): CheckMCPSubprocessResult<T> {
+): CheckCastResult<T> {
   if (
     !received ||
     typeof received !== 'object' ||
-    !(received.constructor as any)._isMCPStdinSubprocess
+    !(received.constructor as any)[markerProperty]
   ) {
     return {
       ok: false,
       result: {
         pass: false,
         message: () =>
-          `Expected an MCPStdinSubprocess instance, but received ${utils.printReceived(received)}`,
+          `Expected ${utils.printReceived(received)} to be a ${expectedTypeName} instance`,
       },
     };
   }
 
   return {
     ok: true,
-    subprocess: received as T,
+    value: received as T,
   };
+}
+
+export function checkCastMCPStdinSubprocess<T>(
+  received: unknown,
+  utils: MatcherUtils
+): CheckMCPSubprocessResult<T> {
+  const result = checkCast<T>(received, '_isMCPStdinSubprocess', 'MCPStdinSubprocess', utils);
+
+  if (!result.ok) {
+    return result;
+  }
+
+  return {
+    ok: true,
+    value: result.value,
+    subprocess: result.value,
+  };
+}
+
+/**
+ * Check and cast a value to ToolCallResult.
+ *
+ * @param received - The value to check and cast
+ * @param utils - Matcher utilities for formatting error messages
+ * @returns A result object indicating success/failure with the cast value or error message
+ */
+export function checkCastToolCallResult(
+  received: unknown,
+  utils: MatcherUtils
+): CheckCastResult<any> {
+  return checkCast(received, '_isToolCallResult', 'ToolCallResult', utils);
+}
+
+/**
+ * Check and cast a value to ReadResourceResult.
+ *
+ * @param received - The value to check and cast
+ * @param utils - Matcher utilities for formatting error messages
+ * @returns A result object indicating success/failure with the cast value or error message
+ */
+export function checkCastReadResourceResult(
+  received: unknown,
+  utils: MatcherUtils
+): CheckCastResult<any> {
+  return checkCast(received, '_isReadResourceResult', 'ReadResourceResult', utils);
+}
+
+/**
+ * Check and cast a value to GetPromptResult.
+ *
+ * @param received - The value to check and cast
+ * @param utils - Matcher utilities for formatting error messages
+ * @returns A result object indicating success/failure with the cast value or error message
+ */
+export function checkCastGetPromptResult(
+  received: unknown,
+  utils: MatcherUtils
+): CheckCastResult<any> {
+  return checkCast(received, '_isGetPromptResult', 'GetPromptResult', utils);
 }

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { ToolCallResult } from '../ToolCallResult.js';
+import { ToolCallResult } from '../results/ToolCallResult.js';
 import { ToolCallError } from '../errors.js';
 import type { CallToolResult } from '../schemas/tools.js';
 

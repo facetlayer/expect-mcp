@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { GetPromptResult } from '../GetPromptResult.js';
+import { GetPromptResult } from '../results/GetPromptResult.js';
 import type { GetPromptResult as GetPromptResultType } from '../schemas/prompts.js';
 
 describe('GetPromptResult', () => {

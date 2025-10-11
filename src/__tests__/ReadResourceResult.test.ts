@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { ReadResourceResult } from '../ReadResourceResult.js';
+import { ReadResourceResult } from '../results/ReadResourceResult.js';
 import type { ReadResourceResult as ReadResourceResultType } from '../schemas/resources.js';
 
 describe('ReadResourceResult', () => {

@@ -207,17 +207,38 @@ export class MCPStdinSubprocess extends JsonRpcSubprocess {
     return this.promptsCache;
   }
 
-  async supportsTools() {
+  /**
+   * Check if the server supports tools.
+   * Note: This will implicitly initialize the server if not already initialized.
+   *
+   * @returns Promise<boolean> indicating if tools are supported
+   */
+  async supportsTools(): Promise<boolean> {
+    await this._implicitInitialize();
     const capabilities = this.getInitializeResult()?.capabilities;
     return !!capabilities?.tools;
   }
 
-  async supportsResources() {
+  /**
+   * Check if the server supports resources.
+   * Note: This will implicitly initialize the server if not already initialized.
+   *
+   * @returns Promise<boolean> indicating if resources are supported
+   */
+  async supportsResources(): Promise<boolean> {
+    await this._implicitInitialize();
     const capabilities = this.getInitializeResult()?.capabilities;
     return !!capabilities?.resources;
   }
 
-  async supportsPrompts() {
+  /**
+   * Check if the server supports prompts.
+   * Note: This will implicitly initialize the server if not already initialized.
+   *
+   * @returns Promise<boolean> indicating if prompts are supported
+   */
+  async supportsPrompts(): Promise<boolean> {
+    await this._implicitInitialize();
     const capabilities = this.getInitializeResult()?.capabilities;
     return !!capabilities?.prompts;
   }

@@ -48,7 +48,7 @@ describe('toHaveResource', () => {
     const result = await toHaveResource.call(mockContext, notMCPServer, 'testResource');
 
     expect(result.pass).toBe(false);
-    expect(result.message()).toContain('Expected an MCPStdinSubprocess instance');
+    expect(result.message()).toContain('to be a MCPStdinSubprocess instance');
     expect(result.message()).toContain('received:');
   });
 
@@ -56,14 +56,14 @@ describe('toHaveResource', () => {
     const result = await toHaveResource.call(mockContext, null, 'testResource');
 
     expect(result.pass).toBe(false);
-    expect(result.message()).toContain('Expected an MCPStdinSubprocess instance');
+    expect(result.message()).toContain('to be a MCPStdinSubprocess instance');
   });
 
   it('should fail when received is undefined', async () => {
     const result = await toHaveResource.call(mockContext, undefined, 'testResource');
 
     expect(result.pass).toBe(false);
-    expect(result.message()).toContain('Expected an MCPStdinSubprocess instance');
+    expect(result.message()).toContain('to be a MCPStdinSubprocess instance');
   });
 
   it('should handle errors from hasResource method', async () => {

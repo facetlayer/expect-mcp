@@ -147,15 +147,15 @@ Methods:
 - **`app.callTool(name, arguments?): Promise<ToolCallResult>`** - Call a tool on the MCP server
 - **`app.readResource(uri): Promise<ReadResourceResult>`** - Read a resource from the MCP server
 - **`app.getPrompt(name, arguments?): Promise<GetPromptResult>`** - Get a prompt from the MCP server
-- **`app.getTools()`** - Get list of available tools from the server
-- **`app.getResources()`** - Get list of available resources from the server
-- **`app.getPrompts()`** - Get list of available prompts from the server
-- **`app.hasTool(name)`** - Check if a specific tool is available
-- **`app.hasResource(name)`** - Check if a specific resource is available
-- **`app.hasPrompt(name)`** - Check if a specific prompt is available
-- **`app.supportsTools()`** - Check if the server supports tools
-- **`app.supportsResources()`** - Check if the server supports resources
-- **`app.supportsPrompts()`** - Check if the server supports prompts
+- **`await app.getTools(): Promise<MCPTool[]>`** - Get list of available tools from the server
+- **`await app.getResources(): Promise<MCPResource[]>`** - Get list of available resources from the server (returns array directly, not wrapped object)
+- **`await app.getPrompts(): Promise<MCPPrompt[]>`** - Get list of available prompts from the server (returns array directly, not wrapped object)
+- **`await app.hasTool(name): Promise<boolean>`** - Check if a specific tool is available
+- **`await app.hasResource(name): Promise<boolean>`** - Check if a specific resource is available
+- **`await app.hasPrompt(name): Promise<boolean>`** - Check if a specific prompt is available
+- **`await app.supportsTools(): Promise<boolean>`** - Check if the server supports tools (returns Promise, must use await)
+- **`await app.supportsResources(): Promise<boolean>`** - Check if the server supports resources (returns Promise, must use await)
+- **`await app.supportsPrompts(): Promise<boolean>`** - Check if the server supports prompts (returns Promise, must use await)
 - **`app.isInitialized()`** - Check if the MCP server has been initialized
 - **`app.close(timeoutMs?)`** - Close the MCP server gracefully
 - **`app.waitForExit()`** - Wait for the process to exit and return the exit code
