@@ -32,7 +32,6 @@ export class MCPStdinSubprocess extends JsonRpcSubprocess {
   private resourcesCache?: MCPResource[];
   private promptsCache?: MCPPrompt[];
   private initialized = false;
-  private stderrBuffer: string[] = [];
 
   private initializePromise: Promise<MCPInitializeResult> | null = null;
   private protocolError: Error | null = null;
@@ -41,16 +40,21 @@ export class MCPStdinSubprocess extends JsonRpcSubprocess {
   constructor(options?: MCPStdinSubprocessOptions) {
     super(options);
 
-    this.on('stderr', line => {
-      this.stderrBuffer.push(line);
-    });
-
     this.on('output:error:non-json', (line: string) => {
       if (options?.allowDebugLogging) {
         let processName = this.initializeResult?.serverInfo?.name || 'mcp subprocess';
         console.log(`[${processName}]`, line);
       } else {
-        this.recordProtocolError(new ProtocolError('Process produced non-JSON output: ' + JSON.stringify(line)));
+        let errorMessage = 'Process produced non-JSON output: ' + JSON.stringify(line);
+
+        if (this.stdoutBuffer.length > 0) {
+          errorMessage += '\n\nstdout:\n' + this.stdoutBuffer.join('\n');
+        }
+        if (this.stderrBuffer.length > 0) {
+          errorMessage += '\n\nstderr:\n' + this.stderrBuffer.join('\n');
+        }
+
+        this.recordProtocolError(new ProtocolError(errorMessage));
       }
     });
 

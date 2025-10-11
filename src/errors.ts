@@ -31,6 +31,8 @@ export interface ProcessExitWhileWaitingForResponseOptions {
   exitCode: number;
   exitSignal: string | null;
   method: string;
+  stdout?: string[];
+  stderr?: string[];
 }
 
 export class ProcessExitWhileWaitingForResponse extends Error {
@@ -38,14 +40,27 @@ export class ProcessExitWhileWaitingForResponse extends Error {
   exitCode: number;
   exitSignal: string | null;
   method: string;
+  stdout?: string[];
+  stderr?: string[];
 
   constructor(options: ProcessExitWhileWaitingForResponseOptions) {
-    const message = `Process exited with code ${options.exitCode}${options.exitSignal ? ` (signal: ${options.exitSignal})` : ''} while waiting for response to '${options.method}'`;
+    let message = `Process exited with code ${options.exitCode}${options.exitSignal ? ` (signal: ${options.exitSignal})` : ''} while waiting for response to '${options.method}'`;
+
+    // Add stdout/stderr to the error message if they exist and are non-empty
+    if (options.stdout && options.stdout.length > 0) {
+      message += '\n\nstdout:\n' + options.stdout.join('\n');
+    }
+    if (options.stderr && options.stderr.length > 0) {
+      message += '\n\nstderr:\n' + options.stderr.join('\n');
+    }
+
     super(message);
     this.name = 'ProcessExitWhileWaitingForResponse';
     this.shellCommand = options.shellCommand;
     this.exitCode = options.exitCode;
     this.exitSignal = options.exitSignal;
     this.method = options.method;
+    this.stdout = options.stdout;
+    this.stderr = options.stderr;
   }
 }

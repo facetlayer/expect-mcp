@@ -33,6 +33,8 @@ export class JsonRpcSubprocess extends events.EventEmitter {
   private stdoutCleanup?: () => void;
   private stderrCleanup?: () => void;
   private shellCommand?: string;
+  protected stdoutBuffer: string[] = [];
+  protected stderrBuffer: string[] = [];
 
   options: JsonRpcSubprocessOptions;
 
@@ -89,6 +91,8 @@ export class JsonRpcSubprocess extends events.EventEmitter {
     });
 
     this.startPromise = new Promise<void>((resolve, reject) => {
+      let hasResolved = false;
+
       this.subprocess!.on('spawn', () => {
         this.emit('spawn');
         if (VerboseLogging) {
@@ -96,14 +100,32 @@ export class JsonRpcSubprocess extends events.EventEmitter {
         }
 
         this._hasStarted = true;
+        hasResolved = true;
         this.processEnqueuedRequests();
         resolve();
+      });
+
+      // If the process exits with non-zero code before spawning successfully, reject the promise
+      this.subprocess!.once('exit', (code: number | null, signal: string | null) => {
+        if (!hasResolved && code !== 0 && code !== null) {
+          let errorMessage = `Process exited with code ${code}${signal ? ` (signal: ${signal})` : ''} during startup`;
+
+          if (this.stdoutBuffer.length > 0) {
+            errorMessage += '\n\nstdout:\n' + this.stdoutBuffer.join('\n');
+          }
+          if (this.stderrBuffer.length > 0) {
+            errorMessage += '\n\nstderr:\n' + this.stderrBuffer.join('\n');
+          }
+
+          reject(new Error(errorMessage));
+        }
       });
     });
 
     this.stdoutCleanup = unixPipeToLines(this.subprocess!.stdout!, (line: string | null) => {
       if (line === null) return;
 
+      this.stdoutBuffer.push(line);
       this.emit('stdout', line);
 
       const trimmedLine = line.trim();
@@ -128,6 +150,7 @@ export class JsonRpcSubprocess extends events.EventEmitter {
     this.stderrCleanup = unixPipeToLines(this.subprocess!.stderr!, (line: string | null) => {
       if (line === null) return;
 
+      this.stderrBuffer.push(line);
       this.emit('stderr', line);
     });
 
@@ -148,6 +171,8 @@ export class JsonRpcSubprocess extends events.EventEmitter {
             exitCode: code,
             exitSignal: signal,
             method: pendingRequest.method,
+            stdout: this.stdoutBuffer.length > 0 ? this.stdoutBuffer : undefined,
+            stderr: this.stderrBuffer.length > 0 ? this.stderrBuffer : undefined,
           });
           pendingRequest.reject(error);
         }
