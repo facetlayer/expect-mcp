@@ -1,7 +1,7 @@
 import { unixPipeToLines } from '@facetlayer/parse-stdout-lines';
 import { ChildProcess, spawn, SpawnOptions } from 'child_process';
 import * as events from 'events';
-import { ProcessExitWhileWaitingForResponse } from './errors.js';
+import { ProcessExitWhileWaitingForResponse, ProcessFailedToStart } from './errors.js';
 import { JSONRPCMessageSchema } from './schemas/index.js';
 import { JsonRpcNotification, JsonRpcRequest, JsonRpcResponse } from './types/JsonRPC.js';
 
@@ -33,6 +33,8 @@ export class JsonRpcSubprocess extends events.EventEmitter {
   private stdoutCleanup?: () => void;
   private stderrCleanup?: () => void;
   private shellCommand?: string;
+  protected stdoutBuffer: string[] = [];
+  protected stderrBuffer: string[] = [];
 
   options: JsonRpcSubprocessOptions;
 
@@ -80,7 +82,9 @@ export class JsonRpcSubprocess extends events.EventEmitter {
 
     this._hasSetupListeners = true;
 
-    // Forward error events immediately to prevent unhandled errors
+    // Local callback that can be used to reject .startPromise if the process fails to start.
+    let rejectStartPromiseFn: ((error: Error) => void) | null = null;
+
     this.subprocess!.on('error', (error: Error) => {
       if (VerboseLogging) {
         console.error(`[json-rpc-subprocess] subprocess 'error' event`, error);
@@ -88,7 +92,53 @@ export class JsonRpcSubprocess extends events.EventEmitter {
       this.emit('error', error);
     });
 
+    this.subprocess!.on('exit', (code: number, signal: string | null) => {
+      if (VerboseLogging) {
+        console.error(`[json-rpc-subprocess] subprocess 'exit' event`, code, signal);
+      }
+
+      this._hasExited = true;
+      this._exitCode = code;
+
+      this.emit('exit', code, signal);
+
+      if (code !== 0 && code !== null) {
+        if (rejectStartPromiseFn) {
+          rejectStartPromiseFn(new ProcessFailedToStart({
+            shellCommand: this.shellCommand || 'unknown',
+            exitCode: code,
+            exitSignal: signal,
+            stdout: this.stdoutBuffer.length > 0 ? this.stdoutBuffer : undefined,
+            stderr: this.stderrBuffer.length > 0 ? this.stderrBuffer : undefined,
+          }));
+
+          rejectStartPromiseFn = null;
+        }
+
+        for (const [, pendingRequest] of this.pendingRequests) {
+          const error = new ProcessExitWhileWaitingForResponse({
+            shellCommand: this.shellCommand || 'unknown',
+            exitCode: code,
+            exitSignal: signal,
+            method: pendingRequest.method,
+            stdout: this.stdoutBuffer.length > 0 ? this.stdoutBuffer : undefined,
+            stderr: this.stderrBuffer.length > 0 ? this.stderrBuffer : undefined,
+          });
+          pendingRequest.reject(error);
+        }
+        this.pendingRequests.clear();
+      }
+
+      // Cleanup some references
+      rejectStartPromiseFn = null;
+      this.subprocess = null;
+    });
+
+    // Listen to the spawn event and set up .startPromise.
     this.startPromise = new Promise<void>((resolve, reject) => {
+      let hasResolved = false;
+      rejectStartPromiseFn = reject;
+
       this.subprocess!.on('spawn', () => {
         this.emit('spawn');
         if (VerboseLogging) {
@@ -96,14 +146,18 @@ export class JsonRpcSubprocess extends events.EventEmitter {
         }
 
         this._hasStarted = true;
+        hasResolved = true;
         this.processEnqueuedRequests();
+        rejectStartPromiseFn = null;
         resolve();
       });
     });
 
+    // Listen to the stdout pipe.
     this.stdoutCleanup = unixPipeToLines(this.subprocess!.stdout!, (line: string | null) => {
       if (line === null) return;
 
+      this.stdoutBuffer.push(line);
       this.emit('stdout', line);
 
       const trimmedLine = line.trim();
@@ -125,36 +179,12 @@ export class JsonRpcSubprocess extends events.EventEmitter {
       this.handleIncomingMessage(jsonMessage);
     });
 
+    // Listen to the stderr pipe.
     this.stderrCleanup = unixPipeToLines(this.subprocess!.stderr!, (line: string | null) => {
       if (line === null) return;
 
+      this.stderrBuffer.push(line);
       this.emit('stderr', line);
-    });
-
-    this.subprocess!.on('exit', (code: number | null, signal: string | null) => {
-      if (VerboseLogging) {
-        console.error(`[json-rpc-subprocess] subprocess 'exit' event`, code, signal);
-      }
-
-      this._hasExited = true;
-      this._exitCode = code;
-
-      this.emit('exit', code, signal);
-
-      if (code !== 0 && code !== null) {
-        for (const [, pendingRequest] of this.pendingRequests) {
-          const error = new ProcessExitWhileWaitingForResponse({
-            shellCommand: this.shellCommand || 'unknown',
-            exitCode: code,
-            exitSignal: signal,
-            method: pendingRequest.method,
-          });
-          pendingRequest.reject(error);
-        }
-        this.pendingRequests.clear();
-      }
-
-      this.subprocess = null;
     });
   }
 
