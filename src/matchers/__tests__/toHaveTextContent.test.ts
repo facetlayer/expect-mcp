@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 import '../../vitest-setup.js';
-import { ToolCallResult } from '../../ToolCallResult.js';
+import { ToolCallResult } from '../../results/ToolCallResult.js';
 import { resolveUtils } from '../../utils.js';
 import { toHaveTextContent } from '../toHaveTextContent.js';
 import type { CallToolResult } from '../../schemas/tools.js';

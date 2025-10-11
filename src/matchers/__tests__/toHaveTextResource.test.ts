@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 import '../../vitest-setup.js';
-import { ReadResourceResult } from '../../ReadResourceResult.js';
+import { ReadResourceResult } from '../../results/ReadResourceResult.js';
 import { resolveUtils } from '../../utils.js';
 import { toHaveTextResource } from '../toHaveTextResource.js';
 import type { ReadResourceResult as ReadResourceResultType } from '../../schemas/resources.js';

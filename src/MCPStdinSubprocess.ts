@@ -1,13 +1,13 @@
 import { PromptCallError, ProtocolError, ResourceCallError, ToolCallError } from './errors.js';
-import { GetPromptResult } from './GetPromptResult.js';
+import { GetPromptResult } from './results/GetPromptResult.js';
 import { JsonRpcSubprocess, JsonRpcSubprocessOptions } from './JsonRPCSubprocess.js';
-import { ReadResourceResult } from './ReadResourceResult.js';
+import { ReadResourceResult } from './results/ReadResourceResult.js';
 import { LATEST_PROTOCOL_VERSION } from './schemas/index.js';
 import { InitializeResultSchema } from './schemas/initialization.js';
 import { GetPromptResultSchema } from './schemas/prompts.js';
 import { ReadResourceResultSchema } from './schemas/resources.js';
 import { CallToolResultSchema } from './schemas/tools.js';
-import { ToolCallResult } from './ToolCallResult.js';
+import { ToolCallResult } from './results/ToolCallResult.js';
 import {
   MCPInitializeParams,
   MCPInitializeResult,

@@ -32,6 +32,7 @@ export class JsonRpcSubprocess extends events.EventEmitter {
   private startPromise?: Promise<void>;
   private stdoutCleanup?: () => void;
   private stderrCleanup?: () => void;
+  private shellCommand?: string;
 
   options: JsonRpcSubprocessOptions;
 
@@ -59,6 +60,9 @@ export class JsonRpcSubprocess extends events.EventEmitter {
     if (this.subprocess) {
       throw new Error('Subprocess already spawned');
     }
+
+    // Store the shell command for error messages
+    this.shellCommand = args.length > 0 ? `${command} ${args.join(' ')}` : command;
 
     const finalOptions: SpawnOptions = {
       ...spawnOptions,
@@ -140,6 +144,7 @@ export class JsonRpcSubprocess extends events.EventEmitter {
       if (code !== 0 && code !== null) {
         for (const [, pendingRequest] of this.pendingRequests) {
           const error = new ProcessExitWhileWaitingForResponse({
+            shellCommand: this.shellCommand || 'unknown',
             exitCode: code,
             exitSignal: signal,
             method: pendingRequest.method,

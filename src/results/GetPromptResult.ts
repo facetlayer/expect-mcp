@@ -1,4 +1,4 @@
-import type { GetPromptResult as GetPromptResultType, PromptMessage } from './schemas/prompts.js';
+import type { GetPromptResult as GetPromptResultType, PromptMessage } from '../schemas/prompts.js';
 
 /**
  * Wraps the result of a prompt get with helper methods for accessing messages.

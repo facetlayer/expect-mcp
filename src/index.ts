@@ -2,9 +2,9 @@ import { MCPMatchers } from './types.js';
 
 export { mcpShell } from './mcpShellCommand.js';
 export { MCPStdinSubprocess } from './MCPStdinSubprocess.js';
-export { ToolCallResult } from './ToolCallResult.js';
-export { ReadResourceResult } from './ReadResourceResult.js';
-export { GetPromptResult } from './GetPromptResult.js';
+export { ToolCallResult } from './results/ToolCallResult.js';
+export { ReadResourceResult } from './results/ReadResourceResult.js';
+export { GetPromptResult } from './results/GetPromptResult.js';
 
 declare module 'vitest' {
   interface Assertion<T = any> extends MCPMatchers {}

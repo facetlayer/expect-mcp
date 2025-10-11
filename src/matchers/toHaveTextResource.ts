@@ -1,4 +1,4 @@
-import { ReadResourceResult } from '../ReadResourceResult.js';
+import { ReadResourceResult } from '../results/ReadResourceResult.js';
 import { MCPMatcherResult } from '../types.js';
 import { resolveUtils } from '../utils.js';
 

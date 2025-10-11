@@ -1,5 +1,5 @@
-import { ToolCallError } from './errors.js';
-import type { CallToolResult, ContentBlock, TextContent } from './schemas/tools.js';
+import { ToolCallError } from '../errors.js';
+import type { CallToolResult, ContentBlock, TextContent } from '../schemas/tools.js';
 
 /**
  * Wraps the result of a tool call with helper methods for accessing content.
@@ -7,12 +7,12 @@ import type { CallToolResult, ContentBlock, TextContent } from './schemas/tools.
 export class ToolCallResult {
   content: ContentBlock[] = [];
   structuredContent: Record<string, unknown> | undefined = undefined;
-  isError: boolean | undefined = undefined;
+  isError: boolean = false;
 
   constructor(result: CallToolResult) {
     this.content = result.content;
     this.structuredContent = result.structuredContent;
-    this.isError = result.isError;
+    this.isError = result.isError ?? false;
   }
 
   /**

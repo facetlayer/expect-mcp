@@ -27,12 +27,14 @@ export class PromptCallError extends Error {
 }
 
 export interface ProcessExitWhileWaitingForResponseOptions {
+  shellCommand: string;
   exitCode: number;
   exitSignal: string | null;
   method: string;
 }
 
 export class ProcessExitWhileWaitingForResponse extends Error {
+  shellCommand: string;
   exitCode: number;
   exitSignal: string | null;
   method: string;
@@ -41,12 +43,9 @@ export class ProcessExitWhileWaitingForResponse extends Error {
     const message = `Process exited with code ${options.exitCode}${options.exitSignal ? ` (signal: ${options.exitSignal})` : ''} while waiting for response to '${options.method}'`;
     super(message);
     this.name = 'ProcessExitWhileWaitingForResponse';
+    this.shellCommand = options.shellCommand;
     this.exitCode = options.exitCode;
     this.exitSignal = options.exitSignal;
     this.method = options.method;
-  }
-
-  getErrorMessageWithoutMethod(): string {
-    return `Process exited with code ${this.exitCode}${this.exitSignal ? ` (signal: ${this.exitSignal})` : ''}`;
   }
 }

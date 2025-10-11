@@ -3,7 +3,7 @@ import { mcpMatchers } from './matchers/index.js';
 import { MCPMatchers } from './types.js';
 
 declare module 'vitest' {
-  interface Assertion extends MCPMatchers {}
+  interface Assertion<T = any> extends MCPMatchers {}
   interface AsymmetricMatchersContaining extends MCPMatchers {}
 }
 

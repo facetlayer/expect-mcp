@@ -11,16 +11,20 @@ Custom test matchers for [Vitest](https://vitest.dev/) and [Jest](https://jestjs
 ## Features
 
 - **Custom Matchers**: Adds `expect()` matchers to assert on MCP interactions.
-- **TypeScript Support**: Complete type definitions for all MCP types and matchers.
-- **MCP client**: Implements a special MCP client that includes strict protocol validation.
+- **MCP Client**: Implements a special MCP client with extra features for testing and validation.
 
-## Latest support:
+## Latest support
 
 Currently the library supports:
 
-- Testing **tools** and **resources**. Other MCP capabilities are not supported yet.
-- Testing **stdin** protocol servers. HTTP-based servers are not supported yet.
+- Testing MCP features: **tools**, **resources**, **prompts**.
+- Testing **stdin** protocol servers.
 - Integration with **Vitest** and **Jest**.
+
+On the roadmap for future support:
+
+- Planned: Testing HTTP services and Oauth.
+- Planned: Testing for features: Discovery, Sampling, Roots, Elicitation.
 
 ## Installation
 
@@ -44,7 +48,7 @@ Importing and using the library:
 
 ```
 import { mcpShell } from 'expect-mcp';
-import 'expect-mcp/vitest-setup'; // Install matchers onto expect()
+import 'expect-mcp/vitest-setup'; // Install 'expect' matchers
 
 it("the test", async () => {
   const app = mcpShell('path/to/mcp-server');
@@ -74,7 +78,7 @@ See the [Documentation](https://facetlayer.github.io/expect-mcp/) site for the f
 
 ## Requirements
 
-- Node.js >= 18
+- Node.js >= 20
 - Vitest ^1.5.0 or Jest ^29.0.0
 
 ## Feedback

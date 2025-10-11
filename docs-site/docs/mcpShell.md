@@ -5,7 +5,7 @@ Creates and spawns an MCP subprocess that communicates over stdin/stdout using J
 ## Syntax
 
 ```ts
-mcpShell(shellCommand: string, processOptions?: MCPStdinSubprocessOptions)
+mcpShell(shellCommand: string, processOptions?: MCPStdinSubprocessOptions): MCPStdinSubprocess
 ```
 
 ## Parameters

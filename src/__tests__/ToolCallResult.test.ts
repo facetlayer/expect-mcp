@@ -307,13 +307,13 @@ describe('ToolCallResult', () => {
       expect(toolResult.isError).toBe(false);
     });
 
-    it('should return undefined when isError is undefined', () => {
+    it('should return false when isError is undefined', () => {
       const result: CallToolResult = {
         content: [],
       };
 
       const toolResult = new ToolCallResult(result);
-      expect(toolResult.isError).toBeUndefined();
+      expect(toolResult.isError).toBe(false);
     });
   });
 });

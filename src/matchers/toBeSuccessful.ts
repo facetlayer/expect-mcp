@@ -1,4 +1,4 @@
-import { ToolCallResult } from '../ToolCallResult.js';
+import { ToolCallResult } from '../results/ToolCallResult.js';
 import { MCPMatcherResult } from '../types.js';
 import { resolveUtils } from '../utils.js';
 

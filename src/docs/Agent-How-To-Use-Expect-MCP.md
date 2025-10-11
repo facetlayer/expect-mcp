@@ -43,6 +43,12 @@ your-project/
 └── ...
 ```
 
+#### Package.json scripts
+
+The test script should also have a "test" command in the "scripts" section of package.json.
+
+If you are adding a test framework to the project, then make sure to add this script.
+
 #### Adding expect-mcp as a dependency
 
 The `expect-mcp` library should be added to package.json as a devDependency.
@@ -91,6 +97,10 @@ require('expect-mcp/cjs/jest-setup.cjs');
 Alternative: Instead of having a setup file, you can alternatively import the 'vitest-setup' or 'jest-setup'
 module inside each test file.
 
+#### Setup Antipatterns
+
+ - If possible, try NOT to add the test files to the 'exclude' section of tsconfig.json. Ideally they should typecheck.
+
 ## Writing Tests
 
 Once the setup is done, this section covers how to write test files.
@@ -121,31 +131,94 @@ The basic outline of each test is:
  2. Run assertions on it
  3. Close down the app
 
-
 ## API Reference
 
 ### Functions
 
-- **`mcpShell(shellCommand, options?)`** - Creates and spawns an MCP subprocess over stdin/stdout
+- **`mcpShell(shellCommand, options?): MCPStdinSubprocess`** - Creates and spawns an MCP subprocess over stdin/stdout
+
+#### MCPStdinSubprocess
+
+The MCPStdinSubprocess stores a running stdin process. This is usually named `app`
+
+Methods:
+
 - **`app.initialize(params?)`** - Perform MCP handshake and capability negotiation
-- **`app.callTool(name, arguments?)`** - Call a tool on the MCP server
-- **`app.readResource(uri)`** - Read a resource from the MCP server
+- **`app.callTool(name, arguments?): Promise<ToolCallResult>`** - Call a tool on the MCP server
+- **`app.readResource(uri): Promise<ReadResourceResult>`** - Read a resource from the MCP server
+- **`app.getPrompt(name, arguments?): Promise<GetPromptResult>`** - Get a prompt from the MCP server
 - **`app.getTools()`** - Get list of available tools from the server
 - **`app.getResources()`** - Get list of available resources from the server
+- **`app.getPrompts()`** - Get list of available prompts from the server
 - **`app.hasTool(name)`** - Check if a specific tool is available
 - **`app.hasResource(name)`** - Check if a specific resource is available
+- **`app.hasPrompt(name)`** - Check if a specific prompt is available
 - **`app.supportsTools()`** - Check if the server supports tools
 - **`app.supportsResources()`** - Check if the server supports resources
+- **`app.supportsPrompts()`** - Check if the server supports prompts
 - **`app.isInitialized()`** - Check if the MCP server has been initialized
 - **`app.close(timeoutMs?)`** - Close the MCP server gracefully
 - **`app.waitForExit()`** - Wait for the process to exit and return the exit code
 
+#### ToolCallResult
+
+Returned by `app.callTool()`
+
+Properties:
+- **`result.content`** - Array of content blocks returned by the tool
+- **`result.structuredContent`** - Structured content if present (optional)
+- **`result.isError`** - Boolean indicating if the result represents an error
+
+Methods:
+- **`result.getTextContent()`** - Returns the first .text block from the content array
+- **`result.expectSuccess()`** - Assert that the result is not an error (throws ToolCallError if isError is true)
+- **`result.getContentByType(type)`** - Get all content blocks of a specific type
+- **`result.findContentByType(type)`** - Find the first content block of a specific type
+
+#### ReadResourceResult
+
+Returned by `app.readResource()`
+
+Properties:
+- **`result.contents`** - Array of resources returned
+
+Methods:
+- **`result.getTextContent()`** - Get the text content from the first text resource
+- **`result.getBlobContent()`** - Get the blob content from the first blob resource
+- **`result.findByUri(uri)`** - Find a resource by its URI
+- **`result.getAllTextResources()`** - Get all text resources from the contents array
+- **`result.getAllBlobResources()`** - Get all blob resources from the contents array
+- **`result.hasTextContent()`** - Check if the result contains any text resources
+- **`result.hasBlobContent()`** - Check if the result contains any blob resources
+
+#### GetPromptResult
+
+Returned by `app.getPrompt()`
+
+Properties:
+- **`result.messages`** - Array of prompt messages
+- **`result.description`** - Description of the prompt (optional)
+
 ### Matchers
+
+#### MCP Server Matchers
 
 - **`await expect(app).toHaveTool(toolName)`** - Assert that a tool with the specified name exists
 - **`await expect(app).toHaveTools(toolNames[])`** - Assert that all specified tools exist
 - **`await expect(app).toHaveResource(resourceName)`** - Assert that a resource with the specified name exists
 - **`await expect(app).toHaveResources(resourceNames[])`** - Assert that all specified resources exist
+- **`await expect(app).toHavePrompts(promptNames[])`** - Assert that all specified prompts exist
+
+#### Tool Result Matchers
+
+- **`await expect(result).toBeSuccessful()`** - Check that a tool call succeeded (works with ToolCallResult)
+- **`await expect(result).toHaveTextContent(text)`** - Check tool result contains exact text
+- **`await expect(result).toMatchTextContent(pattern)`** - Check tool result matches a regex pattern
+
+#### Resource Result Matchers
+
+- **`await expect(result).toHaveResourceContent(uri)`** - Check resource has content for a URI
+- **`await expect(result).toHaveTextResource(text)`** - Check resource contains exact text
 
 ## Debugging Strategies
 

@@ -2,7 +2,7 @@ import type {
   BlobResourceContents,
   ReadResourceResult as ReadResourceResultType,
   TextResourceContents,
-} from './schemas/resources.js';
+} from '../schemas/resources.js';
 
 /**
  * Wraps the result of a resource read with helper methods for accessing content.
