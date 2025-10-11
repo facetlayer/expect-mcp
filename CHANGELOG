@@ -1,9 +1,9 @@
 
-(unreleased)
- - Add support for prompts
+0.8.0
  - Add matchers: toBeSuccessful, toHaveResourceContent, toHaveTextContent,
    toHaveTextResource, toMatchTextContent
- - Add classes ToolCallResult and ReadResourceResult
+ - Add result helper classes like ToolCallResult and ReadResourceResult
+ - Add support for testing prompts
  - Add CLI tool with 'how-to-use' document
  - Add support for Jest
  - Add a CJS build

@@ -28,3 +28,30 @@
   --ifm-color-primary-lightest: #4fddbf;
   --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
 }
+
+/* Modern & Clean Sidebar Styling */
+.menu__link {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  padding: 6px 16px;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.menu__link--active {
+  font-weight: 600;
+  background: linear-gradient(90deg, var(--ifm-color-primary-lighter), var(--ifm-color-primary-lightest));
+  border-left: 3px solid var(--ifm-color-primary);
+  color: white !important;
+}
+
+.menu__link:hover {
+  background-color: var(--ifm-color-emphasis-200);
+  color: var(--ifm-color-content);
+}
+
+.menu__link--active:hover {
+  background: linear-gradient(90deg, var(--ifm-color-primary-darker), var(--ifm-color-primary-dark));
+  color: white !important;
+}
