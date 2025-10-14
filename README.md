@@ -26,7 +26,18 @@ On the roadmap for future support:
 - Planned: Testing HTTP services and Oauth.
 - Planned: Testing for features: Discovery, Sampling, Roots, Elicitation.
 
+## Optional: Agentic Setup
+
+If you're using a coding agent like Claude Code or Codex, you can use our builtin prompt
+to instruct the agent on how to use the library. Copy-paste this text as the prompt and it should do pretty well:
+
+```
+Run `npx -y expect-mcp@latest how-to-use` and follow the instructions to set up tests for this project.
+```
+
 ## Installation
+
+Steps to install the library the normal way
 
 ```bash
 npm install --save-dev expect-mcp
